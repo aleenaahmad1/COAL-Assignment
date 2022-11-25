@@ -32,11 +32,11 @@ let memOpcode = new Map([
 ]);
 
 let instructionOpcode = new Map([
-    ["mov1", 000], ["mov2", 000], ["mov3", 000],
-    ["add", 000],["sub", 000],["mul", 000],
-    ["inc", 000],["dec", 000],["and", 000], //need 2 more instructions 
-    ["and", 000],["or", 000],["not", 000],
-    ["xor", 000],["lshift", 000],["rshift", 000]
+    ["mov1", 100010], ["mov2", 1100011], ["mov3", 1011],
+    ["add", 000000],["sub", 000101],["mul", 1111011],["imul",1111011],
+    ["inc", 1111111],["dec", 1111111],["neg", 1111011],
+    ["and", 001000],["or", 000010],["not", 1111011],
+    ["xor", 000110],["shl", 1101000],["shr", 1101000]
 ]);
 
 let memory = new Map([
