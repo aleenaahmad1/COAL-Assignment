@@ -21,9 +21,14 @@ let regVal = new Map([
 ]);
 
 let regOpcode = new Map([
-    ["AX", 111],["BX", 222],["CX", 333],["DX", 444],
-    ["AH", 555],["BH", 666],["CH", 777],["DH", 888],
-    ["AL", 999],["BL", 100],["CL", 111],["DL", 122],
+    ["AX", 000],["BX", 011],["CX", 001],["DX", 010],
+    ["AH", 100],["BH", 111],["CH", 101],["DH", 110],
+    ["AL", 000],["BL", 011],["CL", 001],["DL", 010]
+]);
+
+let memOpcode = new Map([
+    ["DS:[BX+SI]", 000],["DS:[BX+DI]", 001],["SS:[BP+SI]", 010],["SS:[BP+DI]", 011],
+    ["DS:[SI]", 100],["DS:[DI]", 101],["SS:[BP]", 110],["DS:[BX]", 111]
 ]);
 
 let instructionOpcode = new Map([
