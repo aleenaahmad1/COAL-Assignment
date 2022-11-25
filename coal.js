@@ -8,11 +8,11 @@ let regSize = new Map([
 let instruction = new Map([
     ["mov1", function(){}], ["mov2", function(){}], ["mov3", function(){}],
     ["add", function(){}],["sub", function(){}],["mul", function(){}],
-    ["inc", function(){}],["dec", function(){}],["and", function(){}], //need 2 more instructions 
+    ["inc", function(){}],["dec", function(){}],["and", function(){}], //need 4 more instructions 
     ["and", function(){}],["or", function(){}],["not", function(){}],
     ["xor", function(){}],["SHR", function(){}],["SHL", function(){}]
     ["cbw", function(){}],["", function(){}]
-]);
+]); //cbw, shr, shl, not,inc, dec: single operand
 
 let regVal = new Map([
     ["AX", 1],["BX", 2],["CX", 3],["DX", 4],
@@ -40,3 +40,49 @@ let memory = new Map([
     [14, 1], [15, 1]
 ])
 
+//instruction formats: 
+//mov reg, [mem], mov [mem],reg, mov reg, 1234H
+//add reg, reg, sub reg, reg, inc reg, dec reg
+//mul reg, reg, and reg, reg, or reg, reg, xor reg, reg
+//not reg, cbw reg, shr reg, shl reg,
+
+function parsing(input){ //mov ax, 1234H
+    const splitArray = input.split(" ");
+    let cmnd; //only validity check: correct command
+    let dest; //valid name, check size
+    let source; //valid name, check size, compatible with destination!
+    let movnum = 0;
+
+    if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
+        console.log("Invalid instruction.");
+        //input again
+    }
+    if(!(regSize.has(splitArray[1]) || memory.has(splitArray[1]))){ //checks if destination is valid
+        console.log("Invalid destination operand.")
+    }
+
+    cmnd=splitArray[0];
+    dest = splitArray[1];
+
+    //check source: valid, size comparable w dest
+    if (splitArray.length == 3){
+        if(!(regSize.has(splitArray[2]))){
+           console.log("Invalid source operand.");
+           //get input again
+        }
+        source = splitArray[2];
+        if(!(regSize.get(source)==regSize.get(dest))){
+            console.log("Sizes of operands do not match.");
+            //get input again
+        }
+        instruction.cmnd(dest, source);
+    }
+    else if(splitArray.length == 2){
+        instruction.cmnd(dest);
+    }
+    //else for another length of instruction?
+    else{
+        console.log("Invalid instruction.");
+        //input again
+    }
+}
