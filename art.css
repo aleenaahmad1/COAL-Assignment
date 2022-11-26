@@ -1,0 +1,453 @@
+
+@import url(https://fonts.googleapis.com/css?family=Montserrat);
+root{
+    font-size: 16px;
+}
+html{
+    font-family:"Courier New";
+    font-weight: bolder;
+    /*background-image: linear-gradient(45deg, black 5%, lightgrey 35%,gray 100%);*/
+    color :floralwhite;
+    /*background-color: #738276;*/
+    background-color: black;
+    border-color: floralwhite;
+}
+body{
+    display: flex;
+    direction: ltr;
+}
+main{
+display: flex;
+    direction: ltr;
+    height: 100%;
+    width: 95%;
+}
+
+.basic{
+    display: block;
+justify-content: center;
+
+    width: 70%;
+    height: 750px;
+    /*border-color: navajowhite;*/
+
+}
+.bakiajjebwalakaam{
+    height: 90%;
+    border-style: inset;
+    background-color: #840037;
+}
+#baki1{
+    width: 50%;
+    background-color: #03091d;
+}
+#baki2{
+    width: 17%;
+}
+#baki3{
+    width:33%;
+    display: grid;
+    grid-gap: 5px;
+    /*grid-column: span;*/
+    background-color: #03091d;
+}
+#textAboveAlu{
+    height: 65%;
+    background-color: #840037;
+    /*margin-top: .5%;*/
+    border-style: solid;
+    border-color: #03091d;
+    /*margin-bottom: .5%;*/
+}
+#ALUU{
+    background-color: #840037;
+    /*height: 70%;*/
+    /*margin-top: .5%;*/
+    border-style: solid;
+    border-color: #03091d;
+    /*margin-bottom: .5%;*/
+}
+#theTwoRegisters{
+    background-color: #840037;
+    /*height: 70%;*/
+    /*margin-top: .5%;*/
+    border-style: solid;
+    border-color: #03091d;
+    /*margin-bottom: .5%;*/
+    display: flex;
+    flex-direction: row;
+    flex-basis: border-box;
+    align-items: center;
+}
+#registernum1{
+    border-style: solid;
+    border-color: #03091d;
+    margin-right: 10%;
+    margin-left: 10%;
+    height: 60%;
+    width: 30%;
+    align-content: center;
+    color: #840037;
+
+}
+#registernum2{
+    border-style: solid;
+    border-color: #03091d;
+    margin-right: 10%;
+    margin-left: 10%;
+    height: 60%;
+    width: 30%;
+    align-content: center;
+    color: #840037;
+
+
+}
+
+.basicnext{
+    display: block;
+    justify-content: center;
+    border-style: double;
+    width: 25%;
+    height: 750px;
+    /*border-color: navajowhite;*/
+
+}
+/*#header{*/
+
+/*    height: 25%;*/
+/*    margin-top: 1cm;*/
+/*    font-size: xxx-large;*/
+/*    font*/
+/*    text-align: center;*/
+/*}*/
+
+
+
+.container {
+    display: flex;
+    /*   border:1px solid red; */
+    height: 30%;
+    align-items: center;
+}
+
+svg {
+    display: flex;
+    font: 10em 'Montserrat';
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;
+}
+
+.text-copy {
+    fill: none;
+    stroke: white;
+    stroke-dasharray: 6% 29%;
+    stroke-width: 5px;
+    stroke-dashoffset: 0%;
+    animation: stroke-offset 5.5s infinite linear;
+}
+
+.text-copy:nth-child(1){
+    stroke: #4D163D;
+    animation-delay: -1s;
+}
+
+.text-copy:nth-child(2){
+    stroke: #840037;
+    animation-delay: -2s;
+}
+
+.text-copy:nth-child(3){
+    stroke: #BD0034;
+    animation-delay: -3s;
+}
+
+.text-copy:nth-child(4){
+    stroke: #BD0034;
+    animation-delay: -4s;
+}
+
+.text-copy:nth-child(5){
+    stroke: #FDB731;
+    animation-delay: -5s;
+}
+
+@keyframes stroke-offset{
+    100% {stroke-dashoffset: -35%;}
+}
+.basic2{
+    height: 10%;
+    margin-left: 10%;
+    margin-right: 10%;
+    margin-bottom: 10px;
+    /*border-style: double;*/
+    position: relative;
+}
+#ara{
+    margin:0;
+    position: absolute;
+    top: 50%;
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+    height:100%;
+    background-color: #253529;
+    width: 100%;
+    font-weight: bolder;
+    color: honeydew;
+    font-size: x-large;
+    font-family:"Courier New";
+    border-radius: 30%;
+}
+#skrt{
+/*    position: absolute;*/
+/*    top:50%;*/
+/*    border-style: double;*/
+/*    height: 20px;*/
+/*    width: 100px;*/
+/*    left:45%;*/
+/*}*/
+    height: 100%;
+    width: 100%;
+    background-position: 20%;
+
+    position: relative;
+}
+
+#EU{
+    display: flex;
+    direction: ltr;
+    height: 40%;
+    width: 100%;
+    padding-top: 5%;
+
+
+}
+#BIU{
+    display: flex;
+    direction: ltr;
+    height: 60%;
+    width: 100%;
+
+}
+#ALU{
+height: 100%;
+    /*border-style: double     ;*/
+    /*border-color: blueviolet;*/
+    /*border-width: thick;*/
+    width: 50%;
+}
+#QUE{
+    height: 100%;
+    /*border-style: double     ;*/
+    /*border-color: gold;*/
+    /*border-width: thick;*/
+    width: 50%;
+}
+#Registers{
+    height: 100%;
+    width: 25%;
+    background-color: black;
+    padding-right: 10px  ;
+    /*border-style: double     ;*/
+    /*border-color: gold;*/
+    /*border-width: thick;*/
+    overflow-y: scroll;
+}
+#Registers::-webkit-scrollbar{
+    width: 0.25rem;
+}
+#Registers::-webkit-scrollbar-track{
+    background-color: #03091d;
+}
+#Registers::-webkit-scrollbar-thumb{
+    background-color: #840037;
+}
+#Baki_ajeeb{
+    margin-left: 10%;
+    margin-right: 10%;
+    height: 100%;
+    width: 75%;
+    /*border-style: double     ;*/
+    /*border-color: gold;*/
+    /*border-width: thick;*/
+    display: flex;
+    direction: ltr;
+    background-color: #03091d;
+
+}
+
+#pointer{
+    text-align:center;
+    display: block;
+    height: 80%;
+    width: 80%;
+    margin-left: 15%;
+    overflow-y: scroll;
+    background-color: #03091d;
+}
+#pointer::-webkit-scrollbar{
+    width:0.4rem;
+
+}
+#pointer::-webkit-scrollbar-thumb{
+    background-color: #840037;
+}
+#pointer::-webkit-scrollbar-track{
+    background-color: #03091d;
+}
+
+
+.pointers{
+    display:inline-block;
+    height: 20%;
+    width:70%;
+    background-color: #253529;
+    border-radius: 10%;
+    margin-left: 2%;
+margin-bottom: 10%;
+
+}
+#azeem_khrab{
+    margin-left: 16.5%;
+         width: 80%;
+         height: 70px;
+         background-color:#1A1110 ;
+    /*    background-image: linear-gradient(45deg, black 5%, lightgrey 35%,gray 100%);*/
+            justify-content: center;
+            text-align: center  ;
+            font-size: x-large;
+    transform: perspective(2px) rotateX(0.3deg);
+         margin-bottom:10px;
+    align-content: center;
+     }
+#trapeziumShadow{
+    align-items: center;
+    margin-left: 16.5%;
+    width: 80%;
+    height: 20px;
+    background-color:black ;
+    /*    background-image: linear-gradient(45deg, black 5%, lightgrey 35%,gray 100%);*/
+    justify-content: center;
+    text-align: center  ;
+    font-size: x-large;
+    transform: perspective(2px) rotateX(0.3deg);
+    margin-bottom:10px;
+}
+#index1 {
+    text-align: center;
+    justify-content: center;
+    height: 70px;
+    font-size: large;
+    display: flex;
+
+
+}
+#index div{
+    width: 50%;
+
+}
+#QUE>.ques{
+    margin-top: -5px;
+    text-align: center;
+    margin-left: 30%;
+    margin-bottom: 1%;
+    width: 40%;
+    height: 38px;
+    margin-bottom: 2%;
+    background-color: #253529;
+    border-radius: 30%;
+
+}
+
+.registers{
+    height: 30px;
+    text-align: center;
+    border-style: double;
+    border-width: thick;
+    border-color: mediumvioletred;
+
+    margin-left: 5%;
+    margin-bottom: 7%;
+}
+.navbar{
+    width: 5%;
+    background-color: black;
+    height: 100vh;
+}
+body::-webkit-scrollbar{
+    width: 0.4rem;
+}
+body::-webkit-scrollbar-thumb{
+    background-color: #840037;
+}
+body::-webkit-scrollbar-track{
+    background-color: #03091d;
+}
+.navbar-nav{
+    display: grid;
+    width:107%;
+    padding-right: 0;
+    margin-left: -47px;
+    margin-top: 0;
+
+    padding-top: 0;
+}
+ul{
+    width: 100%;
+}
+ul li{
+    padding-left: 10px;
+    margin-top: 0;
+    padding-top: 0;
+    height: 24.2vh;
+
+    margin-left: 10px   ;
+    border-color: #840037;
+    border-style: solid;
+    color: black;
+}
+
+
+#n1{
+    background-color: #840037;
+}
+.bakiajjebwalakaam1{
+    border-style:double ;
+    margin-bottom: 6px;
+    border-color: black;
+}
+#processor{
+height: 10%;
+    width: 100%;
+    text-align: center;
+font-kerning: auto;
+    background-color: #840037;
+
+    /*font-style: oblique ;*/
+}
+#controller{
+text-overflow-mode: scroll;
+    height: 30%;
+    color-rendering: optimizeQuality;
+    text-align: center;
+    background-color: #840037;
+
+
+}
+#remaining2{
+    height: 50%;
+    display: flex;
+    direction: ltr;
+align-items: center;
+    background-color: #840037;
+
+}
+.bakiajjebwalakaam11{
+    justify-content: center;
+    margin-left: 10px;
+    margin-right: 10px;
+    border-style: solid;
+    border-color: #03091d;
+    height: 50%;
+    width: 40%;
+}
