@@ -163,6 +163,7 @@ function and(dest,source){
         }
         else val2[i]="0";
     }
+    val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
     setreg(destname,val2);
 }
@@ -185,6 +186,7 @@ function or(dest,source){
         }
         else val2[i]="0";
     }
+    val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
     setreg(destname,val2);
 }
