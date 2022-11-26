@@ -16,9 +16,9 @@ let instruction = new Map([
 //inner mov functions for variations 
 
 let regVal = new Map([
-    ["AX", 1],["BX", 2],["CX", 3],["DX", 4],
-    ["AH", 5],["BH", 6],["CH", 7],["DH", 8],
-    ["AL", 9],["BL", 10],["CL", 11],["DL", 12],
+    ["AX", "1"],["BX", "2"],["CX", "3"],["DX", "4"],
+    ["AH", "5"],["BH", "6"],["CH", "7"],["DH", "8"],
+    ["AL", "9"],["BL", "10"],["CL", "11"],["DL", "12"],
 ]);
 
 let regCode = new Map([
@@ -41,9 +41,9 @@ let opcode = new Map([
 ]);
 
 let memory = new Map([
-    [0, 1],[1, 1], [2, 1], [3, 1], [4, 1], [5, 1], [6, 1],
-    [7, 1], [8, 1], [9, 1], [10, 1], [11, 1], [12, 1],
-    [14, 1], [15, 1]
+    ['0', 1],['1', 1], ['2', 1], ['3', 1], ['4', 1], ['5', 1], ['6', 1],
+    ['7', 1], ['8', 1], ['9', 1], ['A', 1], ['B', 1], ['C', 1],
+    ['D', 1], ['E', 1],['F',1]
 ])
 
 function is_immediate(source){
@@ -105,4 +105,22 @@ function parsing(input){ //mov ax, 1234H
         console.log("Invalid instruction.");
         //input again
     }
+}
+
+function setreg(destname,destvalue){}
+function errordisplay(){}
+
+//add function, reg to reg
+function addition(dest,source){
+    if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
+    val1=regVal.get(source);
+    val2=regVal.get(dest);
+    val1=parseInt(val1, 16);
+    val2=parseInt(val2, 16);
+    val2=val2+val1;
+    val2=val2.toString(16);
+    regVal.set(dest,val2);
+    setreg(destname,val2);
+    }
+    else{errordisplay();}
 }
