@@ -6,13 +6,14 @@ let regSize = new Map([
 ]);
 
 let instruction = new Map([
-    ["mov1", function(){}], ["mov2", function(){}], ["mov3", function(){}],
-    ["add", function(){}],["sub", function(){}],["mul", function(){}],
-    ["inc", function(){}],["dec", function(){}],["and", function(){}], //need 4 more instructions 
-    ["and", function(){}],["or", function(){}],["not", function(){}],
-    ["xor", function(){}],["SHR", function(){}],["SHL", function(){}]
-    ["cbw", function(){}],["", function(){}]
+    ["MOV", function(){}], ["ADD", function(){}],["SUB", function(){}],["MUL", function(){}],
+    ["INC", function(){}],["DEC", function(){}],["AND", function(){}], //need 4 more instructions 
+    ["DIV", function(){}],["OR", function(){}],["NOT", function(){}],
+    ["XOR", function(){}],["SHR", function(){}],["SHL", function(){}]
+    ["CBW", function(){}],["", function(){}]
 ]); //cbw, shr, shl, not,inc, dec: single operand
+
+//inner mov functions for variations 
 
 let regVal = new Map([
     ["AX", 1],["BX", 2],["CX", 3],["DX", 4],
@@ -20,23 +21,23 @@ let regVal = new Map([
     ["AL", 9],["BL", 10],["CL", 11],["DL", 12],
 ]);
 
-let regOpcode = new Map([
+let regCode = new Map([
     ["AX", 000],["BX", 011],["CX", 001],["DX", 010],
     ["AH", 100],["BH", 111],["CH", 101],["DH", 110],
     ["AL", 000],["BL", 011],["CL", 001],["DL", 010]
 ]);
 
-let memOpcode = new Map([
+let memCode = new Map([
     ["DS:[BX+SI]", 000],["DS:[BX+DI]", 001],["SS:[BP+SI]", 010],["SS:[BP+DI]", 011],
     ["DS:[SI]", 100],["DS:[DI]", 101],["SS:[BP]", 110],["DS:[BX]", 111]
 ]);
 
-let instructionOpcode = new Map([
-    ["mov1", 100010], ["mov2", 1100011], ["mov3", 1011],
-    ["add", 000000],["sub", 000101],["mul", 1111011],["imul",1111011],
-    ["inc", 1111111],["dec", 1111111],["neg", 1111011],
-    ["and", 001000],["or", 000010],["not", 1111011],
-    ["xor", 000110],["shl", 1101000],["shr", 1101000]
+let opcode = new Map([
+    ["MOV", 100010], ["mov2", 1100011], ["mov3", 1011],
+    ["ADD", 000000],["SUB", 000101],["MUL", 1111011],["imul",1111011],
+    ["INC", 1111111],["DEC", 1111111],["NEG", 1111011],
+    ["AND", 001000],["OR", 000010],["NOT", 1111011],
+    ["XOR", 000110],["SHL", 1101000],["SHR", 1101000]
 ]);
 
 let memory = new Map([
@@ -45,18 +46,36 @@ let memory = new Map([
     [14, 1], [15, 1]
 ])
 
-//instruction formats: 
-//mov reg, [mem], mov [mem],reg, mov reg, 1234H
-//add reg, reg, sub reg, reg, inc reg, dec reg
-//mul reg, reg, and reg, reg, or reg, reg, xor reg, reg
-//not reg, cbw reg, shr reg, shl reg,
+function is_immediate(source){
+    //source: can be integer or hex value 1234H
+    //for hex: 4 digits(each 1-9 or A-F), ends with 'H'
+    flag = true;
+    const digits = source.split("");
+    if(digits[digits.length - 1]==="H"){
+        for(let i=0;i<digits.length-1;i++){
+            if(!(digits[i]>=0 && digits[i]<=15) || (digits[i]>="A" && digits[i]<="F")){
+                return !flag;
+            }
+        }
+        return flag;
+    }   
+    else if(source<=65535){
+        return flag;
+    }
+    else{
+        return !flag;
+    }
+}
+
+function translation(cmnd, dest, source){} //for translation to machine code
 
 function parsing(input){ //mov ax, 1234H
+    input = input.toUpperCase();
     const splitArray = input.split(" ");
+    splitArray[1]=splitArray[1].substr(0,2);
     let cmnd; //only validity check: correct command
     let dest; //valid name, check size
     let source; //valid name, check size, compatible with destination!
-    let movnum = 0;
 
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
@@ -66,20 +85,16 @@ function parsing(input){ //mov ax, 1234H
         console.log("Invalid destination operand.")
     }
 
-    cmnd=splitArray[0];
+    cmnd = splitArray[0];
     dest = splitArray[1];
 
     //check source: valid, size comparable w dest
     if (splitArray.length == 3){
-        if(!(regSize.has(splitArray[2]))){
+        if(!(regSize.has(splitArray[2]) || memory.has(splitArray[2]))){
            console.log("Invalid source operand.");
            //get input again
         }
         source = splitArray[2];
-        if(!(regSize.get(source)==regSize.get(dest))){
-            console.log("Sizes of operands do not match.");
-            //get input again
-        }
         instruction.cmnd(dest, source);
     }
     else if(splitArray.length == 2){
