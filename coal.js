@@ -144,3 +144,25 @@ function addition(dest,source){
     }
     else{errordisplay();}
 }
+//add r1,r2 instruction
+function and(dest,source){
+    val1=regVal.get(source);
+    val2=regVal.get(dest);
+    val1=conversion(val1,16,2);
+    val2=conversion(val2, 16, 2);
+    if(val1.length!=val2.length) //sets size to be the same
+    {
+        val1 = setsize(val2,val1);
+        val2 = setsize(val1,val2);
+    }
+    for(i=0;i<val1.length;i++)
+    {
+        if(val1[i]==1 && val2[i]==1)
+        {
+            val2[i]="1";
+        }
+        else val2[i]="0";
+    }
+    regVal.set(dest,val2);
+    setreg(destname,val2);
+}
