@@ -110,6 +110,26 @@ function parsing(input){ //mov ax, 1234H
 function setreg(destname,destvalue){}
 function errordisplay(){}
 
+//conversion function, string as num, base from is initial base, and to is conversion's base
+//like hextobinary call: conversion(num,16,2)
+function conversion (num,from,to) {
+    return parseInt(num, from).toString(to);
+};
+
+//readjusts the smaller size where val1>val2 by appending zeros in the beginning
+function setsize(a,b){
+    len_a = a.length;
+    len_b = b.length;
+    if(len_a>len_b)
+    {
+        for(i=0; i<len_a-len_b;i++)
+        {
+            b=b.replace(/^/,"0");
+        }
+    }
+    return b;
+}
+
 //add function, reg to reg
 function addition(dest,source){
     if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
