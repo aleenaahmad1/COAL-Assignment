@@ -157,7 +157,7 @@ function and(dest,source){
     }
     for(i=0;i<val1.length;i++)
     {
-        if(val1[i]==1 && val2[i]==1)
+        if(val1[i]=="1" && val2[i]=="1")
         {
             val2[i]="1";
         }
@@ -180,7 +180,7 @@ function or(dest,source){
     }
     for(i=0;i<val1.length;i++)
     {
-        if(val1[i]==1 || val2[i]==1)
+        if(val1[i]=="1" || val2[i]=="1")
         {
             val2[i]="1";
         }
@@ -189,4 +189,43 @@ function or(dest,source){
     val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
     setreg(destname,val2);
+}
+//xor instruction
+function xor(dest,source){
+    val1=regVal.get(source);
+    val2=regVal.get(dest);
+    val1=conversion(val1,16,2);
+    val2=conversion(val2, 16, 2);
+    if(val1.length!=val2.length) //sets size to be the same
+    {
+        val1 = setsize(val2,val1);
+        val2 = setsize(val1,val2);
+    }
+    for(i=0;i<val1.length;i++)
+    {
+        if(val1[i]!=val2[i]) 
+        {
+            val2[i]="1";
+        }
+        else val2[i]="0";
+    }
+    val2 = conversion(val2,2,16);
+    regVal.set(dest,val2);
+    setreg(destname,val2);
+}
+//not instruction
+function not(source){
+    val1=regVal.get(source);
+    val1=conversion(val1,16,2);
+    for(i=0;i<val1.length;i++)
+    {
+        if(val1[i]=="0") 
+        {
+            val1[i]="1";
+        }
+        else val1[i]="0";
+    }
+    val1 = conversion(val2,2,16);
+    regVal.set(dest,val1);
+    setreg(destname,val1);
 }
