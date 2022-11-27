@@ -140,7 +140,18 @@ let instruction = new Map([
                 setreg("DX",regVal.get("DX"));
             }}
     }],
-    ["INC", function(){}],["DEC", function(){}],
+    ["INC", function(reg){
+    if (regSize.has(reg)){
+            setreg(reg,regVal.get(reg)+1);
+    }
+    else {console.log("Invalid Operand Name.");}
+}],
+    ["DEC", function(reg){
+    if (regSize.has(reg)){
+        setreg(reg,regVal.get(reg)-1);
+    }
+    else {console.log("Invalid Operand Name.");}
+}],
     ["AND", function(dest, source){
         val1=regVal.get(source);
         val2=regVal.get(dest);
@@ -427,6 +438,24 @@ function setsize(a,b){
         }
     }
     return b;
+}
+
+//1111111 //000 (dest)
+//increment value in registers
+function increment(reg){
+    if (regSize.has(reg)){
+            setreg(reg,regVal.get(reg)+1);
+    }
+    else {console.log("Invalid Operand Name.");}
+}
+
+//1111111 //001 (dest)
+//decrement value in registers
+function decrement(reg){
+    if (regSize.has(reg)){
+        setreg(reg,regVal.get(reg)-1);
+    }
+    else {console.log("Invalid Operand Name.");}
 }
 
 //MACHINE CODE TRANSLATION: 
