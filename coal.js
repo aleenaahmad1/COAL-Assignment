@@ -157,7 +157,6 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         setreg(destname,val2);
     }
-    }
     }],
     ["SUB", function(){}],["MUL", function(){                                                               //INSTRUCTION 2
             if (regSize.has(source)){
