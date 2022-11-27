@@ -6,12 +6,271 @@ let regSize = new Map([
 ]);
 
 let instruction = new Map([
-    ["MOV", function(){}], ["ADD", function(){}],["SUB", function(){}],["MUL", function(){}],
-    ["INC", function(){}],["DEC", function(){}],["AND", function(){}], //need 4 more instructions 
-    ["DIV", function(){}],["OR", function(){}],["NOT", function(){}],
-    ["XOR", function(){}],["SHR", function(){}],["SHL", function(){}]
+    ["MOV", function(){}], 
+    ["ADD", function(dest, source){
+        if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
+        val1=regVal.get(source);
+        val2=regVal.get(dest);
+        val1=parseInt(val1,16);
+        val2=parseInt(val2,16);
+        val2=val2+val1;
+        val2=val2.toString(16);
+        //yahan write code for caary flag?
+        if (val2.length>4){
+            val2=val2.slice(-4);}
+        regkey = dest.slice(0,1);
+        you_decide = dest[-1];
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        setreg(destname,val2);
+    }
+    }
+    }],
+    ["SUB", function(){}],["MUL", function(){
+            if (regSize.has(source)){
+            if (regSize.get(source)===8){
+                val1=regVal.get("AL");
+                val2=regVal.get(source);
+                val1=parseInt(val1,16);
+                val2=parseInt(val2,16);
+                val1=val1*val2;
+                val1=val1.toString(16);
+                val1=setsize("0000",val1);
+                regVal.set("AX",val1);
+                regVal.set("AL",val1.slice(4,8));
+                regVal.set("AH",val1.slice(0,4));
+                setreg("AX",val1);
+            }
+            if (regSize.get(source)===16){
+                val1=regVal.get("AX");
+                val2=regVal.get(source);
+                val1=parseInt(val1,16);
+                val2=parseInt(val2,16);
+                val1=val1*val2;
+                val1=val1.toString(16);
+                //pad w zeros to make final value 8 hex digits
+                val1=setsize("00000000",val1);
+                regVal.set("DX",val1.slice(0,4));
+                regVal.set("DL",val1.slice(2,4));
+                regVal.set("DH",val1.slice(0,2));
+                regVal.set("AX",val1.slice(4,8));
+                regVal.set("AL",val1.slice(6,8));
+                regVal.set("AH",val1.slice(4,6));
+                setreg("AX",regVal.get("AX"));
+                setreg("DX",regVal.get("DX"));
+            }}
+    }],
+    ["INC", function(){}],["DEC", function(){}],
+    ["AND", function(dest, source){
+        val1=regVal.get(source);
+        val2=regVal.get(dest);
+        val1=conversion(val1,16,2);
+        val2=conversion(val2, 16, 2);
+        if(val1.length!=val2.length) //sets size to be the same
+        {
+            val1 = setsize(val2,val1);
+            val2 = setsize(val1,val2);
+        }
+        for(i=0;i<val1.length;i++)
+        {
+            if(val1[i]=="1" && val2[i]=="1")
+            {
+              val2 = val2.replaceAt(i,"1");
+            }
+            else val2 = val2.replaceAt(i,"0");
+        }
+        val2 = conversion(val2,2,16);
+        regkey = dest.slice(0,1);
+        you_decide = dest[-1];
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        setreg(destname,val2);
+    }], 
+    ["DIV", function(){
+            if (regSize.has(source)){
+                if (regSize.get(source)===8){
+                    val1=regVal.get("AX");
+                    val2=regVal.get(source);
+                    val1=parseInt(val1,16);
+                    val2=parseInt(val2,16);
+                    quotient=val1/val2;
+                    remainder=val1%val2;
+                    quotient=quotient.toString(16);
+                    remainder=remainder.toString(16);
+                    setsize("00",quotient);
+                    setsize("00",remainder);
+                    regVal.set("AX",quotient+remainder);
+                    regVal.set("AL",quotient);
+                    regVal.set("AH",remainder);
+                    setreg("AX",val1);
+                }
+                if (regSize.get(source)===16){
+                    val1=regVal.get("DX")+regVal.get("AX");
+                    val2=regVal.get(source);
+                    val1=parseInt(val1,16);
+                    val2=parseInt(val2,16);
+                    quotient=val1/val2;
+                    remainder=val1%val2;
+                    quotient=quotient.toString(16);
+                    remainder=remainder.toString(16);
+                    setsize("0000",quotient);
+                    setsize("0000",remainder);
+                    regVal.set("DX",remainder);
+                    regVal.set("DL",remainder(2,4));
+                    regVal.set("DH",remainder(0,2));
+                    regVal.set("AX",quotient);
+                    regVal.set("AL",quotient(2,4));
+                    regVal.set("AH",quotient(0,2));
+                    setreg("AX",regVal.get("AX"));
+                    setreg("DX",regVal.get("DX"));
+                }
+            }
+            else{
+                //error
+            }
+    }],
+    ["OR", function(dest, source){
+        val1=regVal.get(source);
+        val2=regVal.get(dest);
+        val1=conversion(val1,16,2);
+        val2=conversion(val2, 16, 2);
+        if(val1.length!=val2.length) //sets size to be the same
+        {
+            val1 = setsize(val2,val1);
+            val2 = setsize(val1,val2);
+        }
+        for(i=0;i<val1.length;i++)
+        {
+            if(val1[i]=="1" || val2[i]=="1")
+            {
+              val2 = val2.replaceAt(i,"1");
+            }
+            else val2 = val2.replaceAt(i,"0");
+        }
+        val2 = conversion(val2,2,16);
+            regkey = dest.slice(0,1);
+        you_decide = dest[-1];
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        setreg(destname,val2);
+    }],
+    
+    ["NOT", function(dest){
+        val1=regVal.get(source);
+        val1=conversion(val1,16,2);
+        for(i=0;i<val1.length;i++)
+        {
+            if(val1[i]=="0") 
+            {
+              val1 = val1.replaceAt(i,"1");
+            }
+            else val1 = val1.replaceAt(i,"0");
+        }
+        val1 = conversion(val1,2,16);
+        regkey = dest.slice(0,1);
+        you_decide = dest[-1];
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val1=val1+regVal.get(regkey+"L");
+            }
+            else val1=regVal.get(regkey+"H")+val1;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val1);
+        regVal.set(regkey+"L",val1.slice(2,4));
+        regVal.set(regkey+"H",val1.slice(0,2));
+        setreg(destname,val1);
+    }],
+    ["XOR", function(dest, source){
+        val1=regVal.get(source);
+        val2=regVal.get(dest);
+        val1=conversion(val1,16,2);
+        val2=conversion(val2, 16, 2);
+        if(val1.length!=val2.length) //sets size to be the same
+        {
+            val1 = setsize(val2,val1);
+            val2 = setsize(val1,val2);
+        }
+        for(i=0;i<val1.length;i++)
+        {
+            if(val1[i]!=val2[i]) 
+            {
+              val2 = val2.replaceAt(i,"1");
+            }
+            else val2 = val2.replaceAt(i,"0");
+        }
+        val2 = conversion(val2,2,16);
+        regkey = dest.slice(0,1);
+        you_decide = dest[-1];
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        setreg(destname,val2);
+    }],
+    ["SHR", function(){}],["SHL", function(){}]
     ["CBW", function(){}],["", function(){}]
-]); //cbw, shr, shl, not,inc, dec: single operand
+]);
 
 //inner mov functions for variations 
 
@@ -137,308 +396,3 @@ function setsize(a,b){
     return b;
 }
 
-// reg to reg addition
-function addition(dest,source){
-    if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
-    val1=regVal.get(source);
-    val2=regVal.get(dest);
-    val1=parseInt(val1,16);
-    val2=parseInt(val2,16);
-    val2=val2+val1;
-    val2=val2.toString(16);
-    //yahan write code for caary flag?
-    if (val2.length>4){
-        val2=val2.slice(-4);}
-    regkey = dest.slice(0,1);
-    you_decide = dest[-1];
-    if(you_decide=="H"||you_decide=="L")
-    {
-        setsize("00",val2);
-        if(you_decide=="H")
-        {
-            val2=val2+regVal.get(regkey+"L");
-        }
-        else val2=regVal.get(regkey+"H")+val2;
-    }
-    else
-    {
-    setsize("0000",val2);
-    }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
-}
-    }
-}
-
-function subtraction(dest,source){ 
-    if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
-    val1=regVal.get(source);
-    val2=regVal.get(dest);
-    val1=parseInt(val1,16);
-    val2=parseInt(val2,16);
-    val2=val2-val1;
-    val2=val2.toString(16);
-    //yahan write code for flag?
-    if (val2.length>4){
-        val2=val2.slice(-4);}
-    setsize("0000",val2);
-    regkey=dest.slice(0,1);
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
-    }
-}
-
-// //mem OR reg, converts to negative
-// function negation(dest){
-//     if (memory.has(dest)){
-//         val=memory.get(dest);
-//         conversion(dest,16,10);
-//         val=-val;
-//         conversion(dest,10,16);
-//         memory.set(dest,val);
-//         setmem(destname,val);
-//     }
-//     else if (regSize.has(dest)){
-//         val=regVal.get(dest);
-//         conversion(dest,16,10);
-//         val=-val;
-//         conversion(dest,10,16);
-//         regVal.set(dest,val);
-//         setreg(destname,val);
-//     }
-// }
-
-//multiplication, reg as source dest will always be ax
-//carry flag to be added
-function multiplication(source){
-    if (regSize.has(source)){
-    if (regSize.get(source)===8){
-        val1=regVal.get("AL");
-        val2=regVal.get(source);
-        val1=parseInt(val1,16);
-        val2=parseInt(val2,16);
-        val1=val1*val2;
-        val1=val1.toString(16);
-        val1=setsize("0000",val1);
-        regVal.set("AX",val1);
-        regVal.set("AL",val1.slice(4,8));
-        regVal.set("AH",val1.slice(0,4));
-        setreg("AX",val1);
-    }
-    if (regSize.get(source)===16){
-        val1=regVal.get("AX");
-        val2=regVal.get(source);
-        val1=parseInt(val1,16);
-        val2=parseInt(val2,16);
-        val1=val1*val2;
-        val1=val1.toString(16);
-        //pad w zeros to make final value 8 hex digits
-        val1=setsize("00000000",val1);
-        regVal.set("DX",val1.slice(0,4));
-        regVal.set("DL",val1.slice(2,4));
-        regVal.set("DH",val1.slice(0,2));
-        regVal.set("AX",val1.slice(4,8));
-        regVal.set("AL",val1.slice(6,8));
-        regVal.set("AH",val1.slice(4,6));
-        setreg("AX",regVal.get("AX"));
-        setreg("DX",regVal.get("DX"));
-    }}
-}
-
-// division function, dest is ax, source is reg
-function division(source){
-    if (regSize.has(source)){
-        if (regSize.get(source)===8){
-            val1=regVal.get("AX");
-            val2=regVal.get(source);
-            val1=parseInt(val1,16);
-            val2=parseInt(val2,16);
-            quotient=val1/val2;
-            remainder=val1%val2;
-            quotient=quotient.toString(16);
-            remainder=remainder.toString(16);
-            setsize("00",quotient);
-            setsize("00",remainder);
-            regVal.set("AX",quotient+remainder);
-            regVal.set("AL",quotient);
-            regVal.set("AH",remainder);
-            setreg("AX",val1);
-        }
-        if (regSize.get(source)===16){
-            val1=regVal.get("DX")+regVal.get("AX");
-            val2=regVal.get(source);
-            val1=parseInt(val1,16);
-            val2=parseInt(val2,16);
-            quotient=val1/val2;
-            remainder=val1%val2;
-            quotient=quotient.toString(16);
-            remainder=remainder.toString(16);
-            setsize("0000",quotient);
-            setsize("0000",remainder);
-            regVal.set("DX",remainder);
-            regVal.set("DL",remainder(2,4));
-            regVal.set("DH",remainder(0,2));
-            regVal.set("AX",quotient);
-            regVal.set("AL",quotient(2,4));
-            regVal.set("AH",quotient(0,2));
-            setreg("AX",regVal.get("AX"));
-            setreg("DX",regVal.get("DX"));
-        }}
-}
-//and r1,r2 instruction
-function and(dest,source){
-    val1=regVal.get(source);
-    val2=regVal.get(dest);
-    val1=conversion(val1,16,2);
-    val2=conversion(val2, 16, 2);
-    if(val1.length!=val2.length) //sets size to be the same
-    {
-        val1 = setsize(val2,val1);
-        val2 = setsize(val1,val2);
-    }
-    for(i=0;i<val1.length;i++)
-    {
-        if(val1[i]=="1" && val2[i]=="1")
-        {
-          val2 = val2.replaceAt(i,"1");
-        }
-        else val2 = val2.replaceAt(i,"0");
-    }
-    val2 = conversion(val2,2,16);
-    regkey = dest.slice(0,1);
-    you_decide = dest[-1];
-    if(you_decide=="H"||you_decide=="L")
-    {
-        setsize("00",val2);
-        if(you_decide=="H")
-        {
-            val2=val2+regVal.get(regkey+"L");
-        }
-        else val2=regVal.get(regkey+"H")+val2;
-    }
-    else
-    {
-    setsize("0000",val2);
-    }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
-}
-//or instruction
-function or(dest,source){
-    val1=regVal.get(source);
-    val2=regVal.get(dest);
-    val1=conversion(val1,16,2);
-    val2=conversion(val2, 16, 2);
-    if(val1.length!=val2.length) //sets size to be the same
-    {
-        val1 = setsize(val2,val1);
-        val2 = setsize(val1,val2);
-    }
-    for(i=0;i<val1.length;i++)
-    {
-        if(val1[i]=="1" || val2[i]=="1")
-        {
-          val2 = val2.replaceAt(i,"1");
-        }
-        else val2 = val2.replaceAt(i,"0");
-    }
-    val2 = conversion(val2,2,16);
-        regkey = dest.slice(0,1);
-    you_decide = dest[-1];
-    if(you_decide=="H"||you_decide=="L")
-    {
-        setsize("00",val2);
-        if(you_decide=="H")
-        {
-            val2=val2+regVal.get(regkey+"L");
-        }
-        else val2=regVal.get(regkey+"H")+val2;
-    }
-    else
-    {
-    setsize("0000",val2);
-    }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
-}
-//xor instruction
-function xor(dest,source){
-    val1=regVal.get(source);
-    val2=regVal.get(dest);
-    val1=conversion(val1,16,2);
-    val2=conversion(val2, 16, 2);
-    if(val1.length!=val2.length) //sets size to be the same
-    {
-        val1 = setsize(val2,val1);
-        val2 = setsize(val1,val2);
-    }
-    for(i=0;i<val1.length;i++)
-    {
-        if(val1[i]!=val2[i]) 
-        {
-          val2 = val2.replaceAt(i,"1");
-        }
-        else val2 = val2.replaceAt(i,"0");
-    }
-    val2 = conversion(val2,2,16);
-    regkey = dest.slice(0,1);
-    you_decide = dest[-1];
-    if(you_decide=="H"||you_decide=="L")
-    {
-        setsize("00",val2);
-        if(you_decide=="H")
-        {
-            val2=val2+regVal.get(regkey+"L");
-        }
-        else val2=regVal.get(regkey+"H")+val2;
-    }
-    else
-    {
-    setsize("0000",val2);
-    }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
-}
-//not instruction
-function not(source){
-    val1=regVal.get(source);
-    val1=conversion(val1,16,2);
-    for(i=0;i<val1.length;i++)
-    {
-        if(val1[i]=="0") 
-        {
-          val1 = val1.replaceAt(i,"1");
-        }
-        else val1 = val1.replaceAt(i,"0");
-    }
-    val1 = conversion(val1,2,16);
-    regkey = dest.slice(0,1);
-    you_decide = dest[-1];
-    if(you_decide=="H"||you_decide=="L")
-    {
-        setsize("00",val2);
-        if(you_decide=="H")
-        {
-            val1=val1+regVal.get(regkey+"L");
-        }
-        else val1=regVal.get(regkey+"H")+val1;
-    }
-    else
-    {
-    setsize("0000",val2);
-    }
-    regVal.set(regkey+"X",val1);
-    regVal.set(regkey+"L",val1.slice(2,4));
-    regVal.set(regkey+"H",val1.slice(0,2));
-    setreg(destname,val1);
-}
