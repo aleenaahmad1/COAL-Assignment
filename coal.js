@@ -5,6 +5,38 @@ let regSize = new Map([
     ["AL", 8],["BL", 8],["CL", 8],["DL", 8],
 ]);
 
+
+//mov subfunction, mov reg to imm
+//isko daalti hoon map mein baad mein, aleena dont hit me
+function movregtoimm(reg,value){
+    if (is_immediate(value)){
+        if (value[-1]==='H'){ //value is in hex
+            value=value.slice(0,-1);
+        }
+        else{
+            value=conversion(10,16)}
+        if (value.length>4){errordisplay();}
+        regkey=reg.slice(0,1);
+        you_decide=reg[-1];
+        if(you_decide==="H"||you_decide==="L")
+        {
+            value=setsize("00",value);
+            if (you_decide==="H")
+            {
+                value=value+regVal.get(regkey+"L");
+            }
+            else value=regVal.get(regkey+"H")+value;
+        }
+        else{
+            value=setsize("0000",value);
+        }
+        regVal.set(regkey+"X",value);
+        regVal.set(regkey+"L",value.slice(2,4));
+        regVal.set(regkey+"H",value.slice(0,2));
+        setreg(destname,value);
+    }
+}
+
 let instruction = new Map([
     ["MOV", function(){}], 
     ["ADD", function(dest, source){
@@ -20,10 +52,10 @@ let instruction = new Map([
             val2=val2.slice(-4);}
         regkey = dest.slice(0,1);
         you_decide = dest[-1];
-        if(you_decide=="H"||you_decide=="L")
+        if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",val2);
-            if(you_decide=="H")
+            if(you_decide==="H")
             {
                 val2=val2+regVal.get(regkey+"L");
             }
