@@ -149,7 +149,7 @@ function addition(dest,source){
     //yahan write code for caary flag?
     if (val2.length>4){
         val2=val2.slice(-4);}
-    regkey = dest(0,1);
+    regkey = dest.slice(0,1);
     you_decide = dest[-1];
     if(you_decide=="H"||you_decide=="L")
     {
@@ -309,7 +309,24 @@ function and(dest,source){
         else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
-    regVal.set(dest,val2);
+    regkey = dest.slice(0,1);
+    you_decide = dest[-1];
+    if(you_decide=="H"||you_decide=="L")
+    {
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val2=val2+regVal.get(regkey+"L");
+        }
+        else val2=regVal.get(regkey+"H")+val2;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
     setreg(destname,val2);
 }
 //or instruction
@@ -332,7 +349,24 @@ function or(dest,source){
         else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
-    regVal.set(dest,val2);
+        regkey = dest.slice(0,1);
+    you_decide = dest[-1];
+    if(you_decide=="H"||you_decide=="L")
+    {
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val2=val2+regVal.get(regkey+"L");
+        }
+        else val2=regVal.get(regkey+"H")+val2;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
     setreg(destname,val2);
 }
 //xor instruction
@@ -355,7 +389,24 @@ function xor(dest,source){
         else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
-    regVal.set(dest,val2);
+    regkey = dest.slice(0,1);
+    you_decide = dest[-1];
+    if(you_decide=="H"||you_decide=="L")
+    {
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val2=val2+regVal.get(regkey+"L");
+        }
+        else val2=regVal.get(regkey+"H")+val2;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
     setreg(destname,val2);
 }
 //not instruction
@@ -366,11 +417,28 @@ function not(source){
     {
         if(val1[i]=="0") 
         {
-          val2 = val2.replaceAt(i,"1");
+          val1 = val1.replaceAt(i,"1");
         }
-        else val2 = val2.replaceAt(i,"0");
+        else val1 = val1.replaceAt(i,"0");
     }
-    val1 = conversion(val2,2,16);
-    regVal.set(dest,val1);
+    val1 = conversion(val1,2,16);
+    regkey = dest.slice(0,1);
+    you_decide = dest[-1];
+    if(you_decide=="H"||you_decide=="L")
+    {
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val1=val1+regVal.get(regkey+"L");
+        }
+        else val1=regVal.get(regkey+"H")+val1;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val1);
+    regVal.set(regkey+"L",val1.slice(2,4));
+    regVal.set(regkey+"H",val1.slice(0,2));
     setreg(destname,val1);
 }
