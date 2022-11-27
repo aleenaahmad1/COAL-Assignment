@@ -110,6 +110,12 @@ function parsing(input){ //mov ax, 1234H
 function setreg(destname,destvalue){}
 function errordisplay(){}
 
+//replacing at a particular index in string 
+//calling: str = str.replaceAt(index, "value")
+String.prototype.replaceAt = function(index, replacement) {
+    return this.substring(0, index) + replacement + this.substring(index + replacement.length);
+}
+
 //conversion function, string as num, base from is initial base, and to is conversion's base
 //like hextobinary call: conversion(num,16,2)
 function conversion (num,from,to) {
@@ -144,7 +150,7 @@ function addition(dest,source){
     }
     else{errordisplay();}
 }
-//add r1,r2 instruction
+//and r1,r2 instruction
 function and(dest,source){
     val1=regVal.get(source);
     val2=regVal.get(dest);
@@ -159,9 +165,9 @@ function and(dest,source){
     {
         if(val1[i]=="1" && val2[i]=="1")
         {
-            val2[i]="1";
+          val2 = val2.replaceAt(i,"1");
         }
-        else val2[i]="0";
+        else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
@@ -182,9 +188,9 @@ function or(dest,source){
     {
         if(val1[i]=="1" || val2[i]=="1")
         {
-            val2[i]="1";
+          val2 = val2.replaceAt(i,"1");
         }
-        else val2[i]="0";
+        else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
@@ -205,9 +211,9 @@ function xor(dest,source){
     {
         if(val1[i]!=val2[i]) 
         {
-            val2[i]="1";
+          val2 = val2.replaceAt(i,"1");
         }
-        else val2[i]="0";
+        else val2 = val2.replaceAt(i,"0");
     }
     val2 = conversion(val2,2,16);
     regVal.set(dest,val2);
@@ -221,9 +227,9 @@ function not(source){
     {
         if(val1[i]=="0") 
         {
-            val1[i]="1";
+          val2 = val2.replaceAt(i,"1");
         }
-        else val1[i]="0";
+        else val2 = val2.replaceAt(i,"0");
     }
     val1 = conversion(val2,2,16);
     regVal.set(dest,val1);
