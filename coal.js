@@ -41,9 +41,9 @@ let opcode = new Map([
 ]);
 
 let memory = new Map([
-    ['0', 1],['1', 1], ['2', 1], ['3', 1], ['4', 1], ['5', 1], ['6', 1],
-    ['7', 1], ['8', 1], ['9', 1], ['A', 1], ['B', 1], ['C', 1],
-    ['D', 1], ['E', 1],['F',1]
+    ['00000', 1],['00001', 1], ['00002', 1], ['00003', 1], ['00004', 1], ['00005', 1], ['00006', 1],
+    ['00007', 1], ['00008', 1], ['00009', 1], ['0000A', 1], ['0000B', 1], ['0000C', 1],
+    ['0000D', 1], ['0000E', 1],['0000F',1]
 ])
 
 function is_immediate(source){
@@ -108,6 +108,7 @@ function parsing(input){ //mov ax, 1234H
 }
 
 function setreg(destname,destvalue){}
+function setmem(destname,destvalue){}
 function errordisplay(){}
 
 //replacing at a particular index in string 
@@ -136,19 +137,143 @@ function setsize(a,b){
     return b;
 }
 
-//add function, reg to reg
+// reg to reg addition
 function addition(dest,source){
     if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
     val1=regVal.get(source);
     val2=regVal.get(dest);
-    val1=parseInt(val1, 16);
-    val2=parseInt(val2, 16);
+    val1=parseInt(val1,16);
+    val2=parseInt(val2,16);
     val2=val2+val1;
     val2=val2.toString(16);
-    regVal.set(dest,val2);
+    //yahan write code for caary flag?
+    if (val2.length>4){
+        val2=val2.slice(-4);}
+    val2=setsize("0000",val2);
+    regkey=dest.slice(0,1);
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
     setreg(destname,val2);
     }
-    else{errordisplay();}
+}
+
+function subtraction(dest,source){ 
+    if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
+    val1=regVal.get(source);
+    val2=regVal.get(dest);
+    val1=parseInt(val1,16);
+    val2=parseInt(val2,16);
+    val2=val2-val1;
+    val2=val2.toString(16);
+    //yahan write code for flag?
+    if (val2.length>4){
+        val2=val2.slice(-4);}
+    setsize("0000",val2);
+    regkey=dest.slice(0,1);
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
+    setreg(destname,val2);
+    }
+}
+
+// //mem OR reg, converts to negative
+// function negation(dest){
+//     if (memory.has(dest)){
+//         val=memory.get(dest);
+//         conversion(dest,16,10);
+//         val=-val;
+//         conversion(dest,10,16);
+//         memory.set(dest,val);
+//         setmem(destname,val);
+//     }
+//     else if (regSize.has(dest)){
+//         val=regVal.get(dest);
+//         conversion(dest,16,10);
+//         val=-val;
+//         conversion(dest,10,16);
+//         regVal.set(dest,val);
+//         setreg(destname,val);
+//     }
+// }
+
+//multiplication, reg as source dest will always be ax
+//carry flag to be added
+function multiplication(source){
+    if (regSize.has(source)){
+    if (regSize.get(source)===8){
+        val1=regVal.get("AL");
+        val2=regVal.get(source);
+        val1=parseInt(val1,16);
+        val2=parseInt(val2,16);
+        val1=val1*val2;
+        val1=val1.toString(16);
+        val1=setsize("0000",val1);
+        regVal.set("AX",val1);
+        regVal.set("AL",val1.slice(4,8));
+        regVal.set("AH",val1.slice(0,4));
+        setreg("AX",val1);
+    }
+    if (regSize.get(source)===16){
+        val1=regVal.get("AX");
+        val2=regVal.get(source);
+        val1=parseInt(val1,16);
+        val2=parseInt(val2,16);
+        val1=val1*val2;
+        val1=val1.toString(16);
+        //pad w zeros to make final value 8 hex digits
+        val1=setsize("00000000",val1);
+        regVal.set("DX",val1.slice(0,4));
+        regVal.set("DL",val1.slice(2,4));
+        regVal.set("DH",val1.slice(0,2));
+        regVal.set("AX",val1.slice(4,8));
+        regVal.set("AL",val1.slice(6,8));
+        regVal.set("AH",val1.slice(4,6));
+        setreg("AX",regVal.get("AX"));
+        setreg("DX",regVal.get("DX"));
+    }}
+}
+
+// division function, dest is ax, source is reg
+function division(source){
+    if (regSize.has(source)){
+        if (regSize.get(source)===8){
+            val1=regVal.get("AX");
+            val2=regVal.get(source);
+            val1=parseInt(val1,16);
+            val2=parseInt(val2,16);
+            quotient=val1/val2;
+            remainder=val1%val2;
+            quotient=quotient.toString(16);
+            remainder=remainder.toString(16);
+            setsize("00",quotient);
+            setsize("00",remainder);
+            regVal.set("AX",quotient+remainder);
+            regVal.set("AL",quotient);
+            regVal.set("AH",remainder);
+            setreg("AX",val1);
+        }
+        if (regSize.get(source)===16){
+            val1=regVal.get("DX")+regVal.get("AX");
+            val2=regVal.get(source);
+            val1=parseInt(val1,16);
+            val2=parseInt(val2,16);
+            quotient=val1/val2;
+            remainder=val1%val2;
+            quotient=quotient.toString(16);
+            remainder=remainder.toString(16);
+            setsize("0000",quotient);
+            setsize("0000",remainder);
+            regVal.set("DX",remainder);
+            regVal.set("DL",remainder(2,4));
+            regVal.set("DH",remainder(0,2));
+            regVal.set("AX",quotient);
+            regVal.set("AL",quotient(2,4));
+            regVal.set("AH",quotient(0,2));
+            setreg("AX",regVal.get("AX"));
+            setreg("DX",regVal.get("DX"));
+        }}
 }
 //and r1,r2 instruction
 function and(dest,source){
