@@ -73,7 +73,7 @@ function movregtoimm(reg,value){
 
 let instruction = new Map([
     ["MOV", function(){}], 
-    ["ADD", function(dest, source){
+    ["ADD", function(dest, source){                                                                         //INSTRUCTION 1
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
         val1=regVal.get(source);
         val2=regVal.get(dest);
@@ -106,7 +106,7 @@ let instruction = new Map([
     }
     }
     }],
-    ["SUB", function(){}],["MUL", function(){
+    ["SUB", function(){}],["MUL", function(){                                                               //INSTRUCTION 2
             if (regSize.has(source)){
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
@@ -140,19 +140,19 @@ let instruction = new Map([
                 setreg("DX",regVal.get("DX"));
             }}
     }],
-    ["INC", function(reg){
+    ["INC", function(reg){                                                                                   //INSTRUCTION 3
     if (regSize.has(reg)){
             setreg(reg,regVal.get(reg)+1);
     }
     else {console.log("Invalid Operand Name.");}
 }],
-    ["DEC", function(reg){
+    ["DEC", function(reg){                                                                                  //INSTRUCTION 4
     if (regSize.has(reg)){
         setreg(reg,regVal.get(reg)-1);
     }
     else {console.log("Invalid Operand Name.");}
 }],
-    ["AND", function(dest, source){
+    ["AND", function(dest, source){                                                                        //INSTRUCTION 5
         val1=regVal.get(source);
         val2=regVal.get(dest);
         val1=conversion(val1,16,2);
@@ -191,7 +191,7 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         setreg(destname,val2);
     }], 
-    ["DIV", function(){
+    ["DIV", function(){                                                                                    //INSTRUCTION 6
             if (regSize.has(source)){
                 if (regSize.get(source)===8){
                     val1=regVal.get("AX");
@@ -234,7 +234,7 @@ let instruction = new Map([
                 //error
             }
     }],
-    ["OR", function(dest, source){
+    ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
         val2=regVal.get(dest);
         val1=conversion(val1,16,2);
@@ -274,7 +274,7 @@ let instruction = new Map([
         setreg(destname,val2);
     }],
     
-    ["NOT", function(dest){
+    ["NOT", function(dest){                                                                                 //INSTRUCTION 8
         val1=regVal.get(source);
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
@@ -306,7 +306,7 @@ let instruction = new Map([
         regVal.set(regkey+"H",val1.slice(0,2));
         setreg(destname,val1);
     }],
-    ["XOR", function(dest, source){
+    ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
         val2=regVal.get(dest);
         val1=conversion(val1,16,2);
@@ -345,7 +345,67 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         setreg(destname,val2);
     }],
-    ["SHR", function(){}],["SHL", function(){}]
+    ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
+    size = regSize.get(source);
+    source = conversion(source,16,2);
+    if(size==8) setsize("00000000",source);
+    else setsize("0000000000000000",source);
+    source = source.slice(0,size-shift);
+    for(i=0;i<shift;i++)
+    {
+        source = source.replace(/^/,"0")
+    }
+    source = conversion(source,2,16);
+    if (size==8)
+    {
+        you_decide = dest[-1]
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val2=val2+regVal.get(regkey+"L");
+        }
+        else val2=regVal.get(regkey+"H")+val2;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
+    setreg(destname,val2);  
+    }],
+    
+    ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
+    size = regSize.get(source);
+    source = conversion(source,16,2);
+    if(size==8) setsize("00000000",source);
+    else setsize("0000000000000000",source);
+    source = source.slice(shift);
+    for(i=0;i<shift;i++)
+    {
+        source = source.concat("0");
+    }
+    source = conversion(source,2,16);
+    if (size==8)
+    {
+        you_decide = dest[-1]
+        setsize("00",val2);
+        if(you_decide=="H")
+        {
+            val2=val2+regVal.get(regkey+"L");
+        }
+        else val2=regVal.get(regkey+"H")+val2;
+    }
+    else
+    {
+    setsize("0000",val2);
+    }
+    regVal.set(regkey+"X",val2);
+    regVal.set(regkey+"L",val2.slice(2,4));
+    regVal.set(regkey+"H",val2.slice(0,2));
+    setreg(destname,val2);
+    }],   
     ["CBW", function(){}],["", function(){}]
 ]);
 
