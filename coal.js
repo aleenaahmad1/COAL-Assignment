@@ -192,17 +192,67 @@ let instruction = new Map([
                 setreg("DX",regVal.get("DX"));
             }}
     }],
-    ["INC", function(reg){                                                                                   //INSTRUCTION 3
-    if (regSize.has(reg)){
-            setreg(reg,regVal.get(reg)+1);
+        ["INC", function(reg){                                                                                   //INSTRUCTION 3
+    if (regSize.has(reg))
+    {
+        value=regVal.get(reg);
+        value=parseInt(value,16);
+        value=value+1;
+        value=value.toString(16);
+        if (value.length>4){
+            value=value.slice(-4);}
+        regkey = reg.slice(0,1);
+        you_decide = reg[-1];
+        if(you_decide==="H"||you_decide==="L")
+        {
+            setsize("00",value);
+            if(you_decide==="H")
+            {
+                value=value+regVal.get(regkey+"L");
+            }
+            else value=regVal.get(regkey+"H")+value;
+        }
+        else
+        {
+        setsize("0000",value);
+        }
+        regVal.set(regkey+"X",value);
+        regVal.set(regkey+"L",value.slice(2,4));
+        regVal.set(regkey+"H",value.slice(0,2));
+        setreg(regkey+"X",value);
     }
-    else {console.log("Invalid Operand Name.");}
+    else {errordisplay();} //invalid reg
 }],
     ["DEC", function(reg){                                                                                  //INSTRUCTION 4
-    if (regSize.has(reg)){
-        setreg(reg,regVal.get(reg)-1);
+    if (regSize.has(reg))
+    {
+        value=regVal.get(reg);
+        value=parseInt(value,16);
+        value=value-1;
+        value=value.toString(16);
+        if (value.length>4){
+            value=value.slice(-4);}
+        regkey = reg.slice(0,1);
+        you_decide = reg[-1];
+        if(you_decide==="H"||you_decide==="L")
+        {
+            setsize("00",value);
+            if(you_decide==="H")
+            {
+                value=value+regVal.get(regkey+"L");
+            }
+            else value=regVal.get(regkey+"H")+value;
+        }
+        else
+        {
+        setsize("0000",value);
+        }
+        regVal.set(regkey+"X",value);
+        regVal.set(regkey+"L",value.slice(2,4));
+        regVal.set(regkey+"H",value.slice(0,2));
+        setreg(regkey+"X",value);    
     }
-    else {console.log("Invalid Operand Name.");}
+    else {errordisplay();}
 }],
     ["AND", function(dest, source){                                                                        //INSTRUCTION 5
         val1=regVal.get(source);
