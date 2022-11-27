@@ -34,17 +34,15 @@ let opcode = new Map([
 ]);
 
 let memory = new Map([
-    ['00000', 1],['00001', 1], ['00002', 1], ['00003', 1], ['00004', 1], ['00005', 1], ['00006', 1],
-    ['00007', 1], ['00008', 1], ['00009', 1], ['0000A', 1], ['0000B', 1], ['0000C', 1],
-    ['0000D', 1], ['0000E', 1],['0000F',1]
+    ['0000', 1],['0001', 1], ['0002', 1], ['0003', 1], ['0004', 1], ['0005', 1], ['0006', 1],
+    ['0007', 1], ['0008', 1], ['0009', 1], ['000A', 1], ['000B', 1], ['000C', 1],
+    ['000D', 1], ['000E', 1],['000F',1]
 ]);
 
 
-//mov subfunction, mov reg to imm
-//isko daalti hoon map mein baad mein, aleena dont hit me
+//mov reg to imm
 function movregtoimm(reg,value){
-    if (is_immediate(value)){
-        if (value[-1]==='H'){ //value is in hex
+        if (value[-1]==='H'||value[-1]==='h'){ //value is in hex
             value=value.slice(0,-1);
         }
         else{
@@ -68,11 +66,66 @@ function movregtoimm(reg,value){
         regVal.set(regkey+"L",value.slice(2,4));
         regVal.set(regkey+"H",value.slice(0,2));
         setreg(destname,value);
-    }
 }
 
+//mov (reg,[mem]) wala mov
+function movmemtoreg(dest,source){
+    if (memory.has(source) && regSize.has(dest)) //assuming the brackets are removed from the memory location at this point
+    {
+        val1=memory.get(source);
+        if (regSize.get(dest)===8)
+        {
+            regkey=dest.slice(0,1);
+            regVal.set(dest,val1);
+            xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");
+            regVal.set(regkey+"X",xval);
+            setreg(dest,xval);
+        } 
+        else{errordisplay();} //8 bit data cannot move directly to 16 bit reg lmao
+    }
+    else{errordisplay();} //invalid mem location or dest reg
+}
+
+//mov ([mem],reg) wala mov
+function movregtomem(dest,source){
+    if (regSize.has(source) && memory.has(dest))
+    {
+        if (regSize.get(reg)===8)
+        {
+            value=regVal.get(reg);
+            memory.set(dest,value);
+            setmem(dest,value);
+        }
+        else{errordisplay();} //16 bits from reg cannot be moved to 8 bit mem location
+    }
+    else{errordisplay();} //invalid mem location or source reg
+}
+
+
 let instruction = new Map([
-    ["MOV", function(){}], 
+    ["MOV", function(dest,source){
+        if (is_immediate(source))
+        {
+            movregtoimm(dest,source);
+        }
+        else if (regSize.has(dest) && (source[0]==="[" && source[-1]==="]")){
+            source=source.slice(1,-1); //removing square brackets
+            if (source[-1]==="H" || source[-1]==="h"){  //value is in hex
+                source=source.slice(0,-1);
+            }
+            else {conversion(source,10,16);}
+            movmemtoreg(dest,source);
+        }
+        else if (regSize.has(source) && (dest[0]==="[" && dest[-1]==="]")){
+            dest=dest.slice(1,-1);
+            if (dest[-1]==="H" || dest[-1]==="h"){  //value is in hex
+                dest=dest.slice(0,-1);
+            }
+            else {conversion(dest,10,16);}
+            movregtomem(dest,source);
+        }
+        else{errordisplay();}
+    }],
     ["ADD", function(dest, source){                                                                         //INSTRUCTION 1
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
         val1=regVal.get(source);
