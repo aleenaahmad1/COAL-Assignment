@@ -361,8 +361,6 @@ function is_immediate(source){
     }
 }
 
-function translation(cmnd, dest, source){} //for translation to machine code
-
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
     const splitArray = input.split(" ");
@@ -429,4 +427,42 @@ function setsize(a,b){
         }
     }
     return b;
+}
+
+//MACHINE CODE TRANSLATION: 
+let fixedreg = new Map(
+    ["DIV", "110"], ["MUL","100"],["INC","000"],["DEC","001"],
+    ["NOT","010"],["NEG","011"],["SHR","101"],
+    ["SHL","100"]
+)
+
+function translation(cmnd, dest, source){
+    let d = "0"; let mod = "11"; let w; let finalCode;
+    if(regSize.get(dest)==8){
+        w = "0";
+    }
+    else{
+        w = "1";
+    }
+    if(arguments.length == 3){
+        finalCode = machinecode(opcode.get(cmnd),d,w,mod,regCode.get(dest),regCode.get(source));
+        return finalCode;
+    }
+    else if(arguments.length == 2){
+        if(cmnd=="SHR" || cmnd=="SHL"){
+            d = "0";
+        }
+        else{
+            d= "1";
+        }
+        finalCode = machinecode(opcode.get(cmnd),d,w,mod,fixedreg.get(cmnd),regCode.get(dest))
+        return finalCode;
+    }
+} 
+
+function machinecode(opcode, d, w, mod, reg, rm){
+    byte1 = opcode + d + w;
+    byte2 = mod + reg + rm;
+    code = byte1 + " " + byte2;
+    return code;
 }
