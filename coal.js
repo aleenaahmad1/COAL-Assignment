@@ -158,38 +158,6 @@ let instruction = new Map([
         setreg(destname,val2);
     }
     }],
-    ["SUB", function(dest, source){                                                                         //INSTRUCTION 1
-        if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        val1=parseInt(val1,16);
-        val2=parseInt(val2,16);
-        val2=val2+val1;
-        val2=val2.toString(16);
-        //yahan write code for caary flag?
-        if (val2.length>4){
-            val2=val2.slice(-4);}
-        regkey = dest.slice(0,1);
-        you_decide = dest[-1];
-        if(you_decide==="H"||you_decide==="L")
-        {
-            setsize("00",val2);
-            if(you_decide==="H")
-            {
-                val2=val2+regVal.get(regkey+"L");
-            }
-            else val2=regVal.get(regkey+"H")+val2;
-        }
-        else
-        {
-        setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        setreg(destname,val2);
-    }
-    }],
     ["SUB", function(dest,source){                                                                         
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
         val1=regVal.get(source);
