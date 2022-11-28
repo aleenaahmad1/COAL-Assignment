@@ -194,7 +194,7 @@ let instruction = new Map([
             setreg(destname,val2);
         }
     }
-    }],["MUL", function(){                                                               //INSTRUCTION 2
+    }],["MUL", function(source){                                                               //INSTRUCTION 2
             if (regSize.has(source)){
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
@@ -329,7 +329,7 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         setreg(destname,val2);
     }], 
-    ["DIV", function(){                                                                                    //INSTRUCTION 6
+    ["DIV", function(source){                                                                                    //INSTRUCTION 6
             if (regSize.has(source)){
                 if (regSize.get(source)===8){
                     val1=regVal.get("AX");
@@ -570,6 +570,34 @@ function is_immediate(source){
     }
 }
 
+function isNumber(dest, source){
+    if(!isNaN(source)){
+        if(source>regSize.has(dest)){
+            return false;
+            //input again
+        }
+        return true;
+    }
+    else{
+        return false;
+    }
+}
+
+function isMemory(dest){
+    flag = true;
+    if (value[-1]==='H'){ //value is in hex
+        value=value.slice(1,-2);
+    }
+    else{
+        console.log("Error.");
+        //input?
+    }
+    if(!memory.has(value)){
+        return !flag;
+    }
+    return flag;
+}
+
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
     const splitArray = input.split(" ");
@@ -582,7 +610,7 @@ function parsing(input){ //mov ax, 1234H
         console.log("Invalid instruction.");
         //input again
     }
-    if(!(regSize.has(splitArray[1]) || memory.has(splitArray[1]))){ //checks if destination is valid
+    if(!(regSize.has(splitArray[1]) || !(isMemory(splitArray[1])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
     }
 
@@ -591,15 +619,18 @@ function parsing(input){ //mov ax, 1234H
 
     //check source: valid, size comparable w dest
     if (splitArray.length == 3){
-        if(!(regSize.has(splitArray[2]) || memory.has(splitArray[2]))){
+        //if fun(dest, source)
+        if(!(regSize.has(splitArray[2]) || !(isMemory(splitArray[2]) || !(isNumber(splitArray[1], splitArray[2]))))){ //immediate bhi hosakta hai
            console.log("Invalid source operand.");
            //get input again
         }
         source = splitArray[2];
-        instruction.cmnd(dest, source);
+        instruction.get(cmnd)(dest, source);
+        translation(cmnd, dest, source);
     }
     else if(splitArray.length == 2){
-        instruction.cmnd(dest);
+        instruction.get(cmnd)(dest);
+        translation(cmnd, dest);
     }
     //else for another length of instruction?
     else{
