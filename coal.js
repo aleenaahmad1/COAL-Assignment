@@ -7,10 +7,10 @@ let regSize = new Map([
 ]);
 
 let regVal = new Map([
-    ["AX", "1"],["BX", "2"],["CX", "3"],["DX", "4"],
-    ["AH", "5"],["BH", "6"],["CH", "7"],["DH", "8"],
-    ["AL", "9"],["BL", "10"],["CL", "11"],["DL", "12"],
-    ["SP", "13"],["BP", "14"],["SI", "15"],["DI", "16"]
+    ["AX", "0001"],["BX", "2"],["CX", "3"],["DX", "4"],
+    ["AH", 5],["BH", 6],["CH", 7],["DH", 8],
+    ["AL", 9],["BL", 10],["CL", 11],["DL", 12],
+    ["SP", 13],["BP", 14],["SI", 15],["DI", 16]
 ]);
 
 let regCode = new Map([
@@ -30,13 +30,13 @@ let opcode = new Map([
     ["ADD", "000000"],["SUB", "000101"],["MUL", "1111011"],["DIV","1111011"],
     ["INC", "1111111"],["DEC", "1111111"],["NEG", "1111011"],
     ["AND", "001000"],["OR", "000010"],["NOT", "1111011"],
-    ["XOR", "000110"],["SHL", "1101000"],["SHR", "1101000"],["NOP","10010000"]
+    ["XOR", "000110"],["SHL", "1101000"],["SHR", "1101000"]
 ]);
 
 let memory = new Map([
-    ['0000', "00"],['0001', "00"], ['0002', "00"], ['0003', "00"], ['0004', "00"], ['0005', "00"], ['0006', "00"],
-    ['0007', "00"], ['0008', "00"], ['0009', "00"], ['000A', "00"], ['000B', "00"], ['000C', "00"],
-    ['000D', "00"], ['000E', "00"],['000F', "00"]
+    ['0000', 1],['0001', 1], ['0002', 1], ['0003', 1], ['0004', 1], ['0005', 1], ['0006', 1],
+    ['0007', 1], ['0008', 1], ['0009', 1], ['000A', 1], ['000B', 1], ['000C', 1],
+    ['000D', 1], ['000E', 1],['000F',1]
 ]);
 
 
@@ -65,7 +65,7 @@ function movregtoimm(reg,value){
         regVal.set(regkey+"X",value);
         regVal.set(regkey+"L",value.slice(2,4));
         regVal.set(regkey+"H",value.slice(0,2));
-        setreg(destname,value);
+        //setreg(destname,value);
 }
 
 //mov (reg,[mem]) wala mov
@@ -155,7 +155,7 @@ let instruction = new Map([
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
-        setreg(destname,val2);
+        //setreg(destname,val2);
     }
     }],
     ["SUB", function(dest,source){                                                                         
@@ -191,7 +191,7 @@ let instruction = new Map([
             regVal.set(regkey+"X",val2);
             regVal.set(regkey+"L",val2.slice(2,4));
             regVal.set(regkey+"H",val2.slice(0,2));
-            setreg(destname,val2);
+            //setreg(destname,val2);
         }
     }
     }],["MUL", function(source){                                                               //INSTRUCTION 2
@@ -207,7 +207,7 @@ let instruction = new Map([
                 regVal.set("AX",val1);
                 regVal.set("AL",val1.slice(4,8));
                 regVal.set("AH",val1.slice(0,4));
-                setreg("AX",val1);
+                //setreg("AX",val1);
             }
             if (regSize.get(source)===16){
                 val1=regVal.get("AX");
@@ -224,8 +224,8 @@ let instruction = new Map([
                 regVal.set("AX",val1.slice(4,8));
                 regVal.set("AL",val1.slice(6,8));
                 regVal.set("AH",val1.slice(4,6));
-                setreg("AX",regVal.get("AX"));
-                setreg("DX",regVal.get("DX"));
+                //setreg("AX",regVal.get("AX"));
+                //setreg("DX",regVal.get("DX"));
             }}
     }],
         ["INC", function(reg){                                                                                   //INSTRUCTION 3
@@ -255,7 +255,7 @@ let instruction = new Map([
         regVal.set(regkey+"X",value);
         regVal.set(regkey+"L",value.slice(2,4));
         regVal.set(regkey+"H",value.slice(0,2));
-        setreg(regkey+"X",value);
+        //setreg(regkey+"X",value);
     }
     else {errordisplay();} //invalid reg
 }],
@@ -286,7 +286,7 @@ let instruction = new Map([
         regVal.set(regkey+"X",value);
         regVal.set(regkey+"L",value.slice(2,4));
         regVal.set(regkey+"H",value.slice(0,2));
-        setreg(regkey+"X",value);    
+        //setreg(regkey+"X",value);    
     }
     else {errordisplay();}
 }],
@@ -327,7 +327,7 @@ let instruction = new Map([
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
-        setreg(destname,val2);
+        //setreg(destname,val2);
     }], 
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
             if (regSize.has(source)){
@@ -345,7 +345,7 @@ let instruction = new Map([
                     regVal.set("AX",quotient+remainder);
                     regVal.set("AL",quotient);
                     regVal.set("AH",remainder);
-                    setreg("AX",val1);
+                    //setreg("AX",val1);
                 }
                 if (regSize.get(source)===16){
                     val1=regVal.get("DX")+regVal.get("AX");
@@ -364,8 +364,8 @@ let instruction = new Map([
                     regVal.set("AX",quotient);
                     regVal.set("AL",quotient(2,4));
                     regVal.set("AH",quotient(0,2));
-                    setreg("AX",regVal.get("AX"));
-                    setreg("DX",regVal.get("DX"));
+                    //setreg("AX",regVal.get("AX"));
+                    //setreg("DX",regVal.get("DX"));
                 }
             }
             else{
@@ -409,11 +409,11 @@ let instruction = new Map([
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
-        setreg(destname,val2);
+        //setreg(destname,val2);
     }],
     
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
-        val1=regVal.get(source);
+        val1=regVal.get(dest);
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
@@ -423,26 +423,30 @@ let instruction = new Map([
             }
             else val1 = val1.replaceAt(i,"0");
         }
+        for(i=0;i<(regSize.get(dest)-val1.length);i++)
+        {
+            val1 = val1.replace(/^/,"1");
+        }
         val1 = conversion(val1,2,16);
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            setsize("00",val2);
+            //setsize("00",val2);
             if(you_decide=="H")
             {
                 val1=val1+regVal.get(regkey+"L");
             }
             else val1=regVal.get(regkey+"H")+val1;
         }
-        else
-        {
-        setsize("0000",val2);
-        }
+        //else
+        //{
+        //setsize("0000",val1);
+        //}
         regVal.set(regkey+"X",val1);
         regVal.set(regkey+"L",val1.slice(2,4));
         regVal.set(regkey+"H",val1.slice(0,2));
-        setreg(destname,val1);
+        //setreg(destname,val1);
     }],
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
@@ -481,7 +485,7 @@ let instruction = new Map([
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
-        setreg(destname,val2);
+        //setreg(destname,val2);
     }],
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
     size = regSize.get(source);
@@ -489,6 +493,7 @@ let instruction = new Map([
     if(size==8) setsize("00000000",source);
     else setsize("0000000000000000",source);
     source = source.slice(0,size-shift);
+    regkey= source.slice(0,1);
     for(i=0;i<shift;i++)
     {
         source = source.replace(/^/,"0")
@@ -497,21 +502,20 @@ let instruction = new Map([
     if (size==8)
     {
         you_decide = dest[-1]
-        setsize("00",val2);
+        setsize("00",source);
         if(you_decide=="H")
         {
-            val2=val2+regVal.get(regkey+"L");
+            source=source+regVal.get(regkey+"L");
         }
-        else val2=regVal.get(regkey+"H")+val2;
+        else source=regVal.get(regkey+"H")+source;
     }
     else
     {
-    setsize("0000",val2);
+    setsize("0000",source);
     }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);  
+    regVal.set(regkey+"X",source);
+    regVal.set(regkey+"L",source.slice(2,4));
+    regVal.set(regkey+"H",source.slice(0,2));  
     }],
     
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
@@ -520,6 +524,7 @@ let instruction = new Map([
     if(size==8) setsize("00000000",source);
     else setsize("0000000000000000",source);
     source = source.slice(shift);
+    regkey = source.slice(0,1);
     for(i=0;i<shift;i++)
     {
         source = source.concat("0");
@@ -528,23 +533,23 @@ let instruction = new Map([
     if (size==8)
     {
         you_decide = dest[-1]
-        setsize("00",val2);
+        setsize("00",source);
         if(you_decide=="H")
         {
-            val2=val2+regVal.get(regkey+"L");
+            source=source+regVal.get(regkey+"L");
         }
-        else val2=regVal.get(regkey+"H")+val2;
+        else source=regVal.get(regkey+"H")+source;
     }
     else
     {
-    setsize("0000",val2);
+    setsize("0000",source);
     }
-    regVal.set(regkey+"X",val2);
-    regVal.set(regkey+"L",val2.slice(2,4));
-    regVal.set(regkey+"H",val2.slice(0,2));
-    setreg(destname,val2);
+    regVal.set(regkey+"X",source);
+    regVal.set(regkey+"L",source.slice(2,4));
+    regVal.set(regkey+"H",source.slice(0,2));
+    //setreg(destname,source);
     }],   
-    ["NOP", function(){}],["", function(){}]
+    ["CBW", function(){}],["", function(){}]
 ]);
 
 //inner mov functions for variations 
@@ -556,7 +561,7 @@ function is_immediate(source){
     const digits = source.split("");
     if(digits[digits.length - 1]==="H"){
         for(let i=0;i<digits.length-1;i++){
-            if(!(digits[i]>=0 && digits[i]<=15) || (digits[i]>="A" && digits[i]<="F")){
+            if(!(digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F")){
                 return !flag;
             }
         }
@@ -585,14 +590,13 @@ function isNumber(dest, source){
 
 function isMemory(dest){
     flag = true;
-    if (value[-1]==='H'){ //value is in hex
-        value=value.slice(1,-2);
+    if (dest[-1]==='H'){ //value is in hex
+        dest=dest.slice(1,-2);
     }
     else{
-        console.log("Error.");
-        //input?
+        return !flag;
     }
-    if(!memory.has(value)){
+    if(!memory.has(dest)){
         return !flag;
     }
     return flag;
@@ -620,17 +624,17 @@ function parsing(input){ //mov ax, 1234H
     //check source: valid, size comparable w dest
     if (splitArray.length == 3){
         //if fun(dest, source)
-        if(!(regSize.has(splitArray[2]) || !(isMemory(splitArray[2]) || !(isNumber(splitArray[1], splitArray[2]))))){ //immediate bhi hosakta hai
+        if(!(regSize.has(splitArray[2]) || isMemory(splitArray[2]) || is_immediate(splitArray[2]) || isNumber(splitArray[1], splitArray[2]))){ //immediate bhi hosakta hai
            console.log("Invalid source operand.");
            //get input again
         }
         source = splitArray[2];
         instruction.get(cmnd)(dest, source);
-        translation(cmnd, dest, source);
+        //translation(cmnd, dest, source);
     }
     else if(splitArray.length == 2){
         instruction.get(cmnd)(dest);
-        translation(cmnd, dest);
+        //translation(cmnd, dest);
     }
     //else for another length of instruction?
     else{
@@ -639,9 +643,15 @@ function parsing(input){ //mov ax, 1234H
     }
 }
 
-function setreg(destname,destvalue){}
-function setmem(destname,destvalue){}
-function errordisplay(){}
+function setreg(destname,destvalue){
+    console.log("Set reg.");
+}
+function setmem(destname,destvalue){
+    console.log("set mem.");
+}
+function errordisplay(){
+    console.log("Error");
+}
 
 //replacing at a particular index in string 
 //calling: str = str.replaceAt(index, "value")
@@ -655,7 +665,7 @@ function conversion (num,from,to) {
     return parseInt(num, from).toString(to);
 };
 
-//readjusts the smaller size where val1>val2 by appending zeros in the beginning
+//readjusts the smaller size where val1>source by appending zeros in the beginning
 function setsize(a,b){
     len_a = a.length;
     len_b = b.length;
@@ -669,15 +679,32 @@ function setsize(a,b){
     return b;
 }
 
+//1111111 //000 (dest)
+//increment value in registers
+function increment(reg){
+    if (regSize.has(reg)){
+            setreg(reg,regVal.get(reg)+1);
+    }
+    else {console.log("Invalid Operand Name.");}
+}
+
+//1111111 //001 (dest)
+//decrement value in registers
+function decrement(reg){
+    if (regSize.has(reg)){
+        setreg(reg,regVal.get(reg)-1);
+    }
+    else {console.log("Invalid Operand Name.");}
+}
 
 //MACHINE CODE TRANSLATION: 
-let fixedreg = new Map(
+/*let fixedreg = new Map(
     ["DIV", "110"], ["MUL","100"],["INC","000"],["DEC","001"],
     ["NOT","010"],["NEG","011"],["SHR","101"],
     ["SHL","100"]
-)
+)*/
 
-function translation(cmnd, dest, source){
+/*function translation(cmnd, dest, source){
     let d = "0"; let mod = "11"; let w; let finalCode;
     if(regSize.get(dest)==8){
         w = "0";
@@ -701,9 +728,12 @@ function translation(cmnd, dest, source){
     }
 } 
 
-function machinecode(opcode, d, w, mod, reg, rm){
+/*function machinecode(opcode, d, w, mod, reg, rm){
     byte1 = opcode + d + w;
     byte2 = mod + reg + rm;
     code = byte1 + " " + byte2;
     return code;
-}
+}*/
+//ax=0001
+parsing("mov ax, 0012H");
+console.log(regVal.get("AX"));
