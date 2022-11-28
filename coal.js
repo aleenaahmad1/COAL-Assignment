@@ -560,6 +560,9 @@ function is_immediate(source){
     flag = true;
     const digits = source.split("");
     if(digits[digits.length - 1]==="H"){
+        if(digits.length>5){
+            return !flag;
+        }
         for(let i=0;i<digits.length-1;i++){
             if(!(digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F")){
                 return !flag;
