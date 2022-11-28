@@ -39,15 +39,15 @@ let memory = new Map([
     ['000D', "00"], ['000E', "00"],['000F', "00"]
 ]);
 
-
 //mov reg to imm
 function movregtoimm(reg,value){
-        if (value[-1]==='H'||value[-1]==='h'){ //value is in hex
+        if (value.slice(-1)==='H'||value.slice(-1)==='h'){ //value is in hex
             value=value.slice(0,-1);
         }
         else{
             value=conversion(10,16)}
-        if (value.length>4){errordisplay();}
+        if (value.length>4){
+                console.log("imm vale larger than 4, error")}
         regkey=reg.slice(0,1);
         you_decide=reg[-1];
         if(you_decide==="H"||you_decide==="L")
@@ -81,9 +81,9 @@ function movmemtoreg(dest,source){
             regVal.set(regkey+"X",xval);
             setreg(dest,xval);
         } 
-        else{errordisplay();} //8 bit data cannot move directly to 16 bit reg lmao
+        else{console.log("8 bit data cannot move directly into 16 bit reg")} 
     }
-    else{errordisplay();} //invalid mem location or dest reg
+    else{"invalid mem location or dest reg")} 
 }
 
 //mov ([mem],reg) wala mov
@@ -96,11 +96,10 @@ function movregtomem(dest,source){
             memory.set(dest,value);
             setmem(dest,value);
         }
-        else{errordisplay();} //16 bits from reg cannot be moved to 8 bit mem location
+        else{console.log("16 bits from reg cannot be moved to 8 bit mem location");}
     }
-    else{errordisplay();} //invalid mem location or source reg
+    else{console.log("invalid mem location or source reg");}
 }
-
 
 let instruction = new Map([
     ["MOV", function(dest,source){
@@ -108,23 +107,23 @@ let instruction = new Map([
         {
             movregtoimm(dest,source);
         }
-        else if (regSize.has(dest) && (source[0]==="[" && source[-1]==="]")){
+        else if (regSize.has(dest) && (source.slice(0,1)==="[" && source.slice(-1)==="]")){
             source=source.slice(1,-1); //removing square brackets
-            if (source[-1]==="H" || source[-1]==="h"){  //value is in hex
+            if (source.slice(-1)==="H" || source.slice(-1)==="h"){  //value is in hex
                 source=source.slice(0,-1);
             }
             else {conversion(source,10,16);}
             movmemtoreg(dest,source);
         }
-        else if (regSize.has(source) && (dest[0]==="[" && dest[-1]==="]")){
+        else if (regSize.has(source) && (dest.slice(0,1)==="[" && dest.slice(-1)==="]")){
             dest=dest.slice(1,-1);
-            if (dest[-1]==="H" || dest[-1]==="h"){  //value is in hex
+            if (dest.slice(-1)==="H" || dest.slice(-1)==="h"){  //value is in hex
                 dest=dest.slice(0,-1);
             }
             else {conversion(dest,10,16);}
             movregtomem(dest,source);
         }
-        else{errordisplay();}
+        else{console.log("mov didnt slay");}
     }],
     ["ADD", function(dest, source){                                                                         //INSTRUCTION 1
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
