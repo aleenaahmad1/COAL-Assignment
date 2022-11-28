@@ -83,7 +83,7 @@ function movmemtoreg(dest,source){
         } 
         else{console.log("8 bit data cannot move directly into 16 bit reg")} 
     }
-    else{"invalid mem location or dest reg")} 
+    else{console.log("invalid mem location or dest reg")} 
 }
 
 //mov ([mem],reg) wala mov
