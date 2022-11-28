@@ -27,10 +27,10 @@ let memCode = new Map([
 
 let opcode = new Map([
     ["MOV", "100010"], ["mov2", "1100011"], ["mov3", "1011"],
-    ["ADD", "000000"],["SUB", "000101"],["MUL", "1111011"],["DIV","1111011"],
-    ["INC", "1111111"],["DEC", "1111111"],["NEG", "1111011"],
-    ["AND", "001000"],["OR", "000010"],["NOT", "1111011"],
-    ["XOR", "000110"],["SHL", "1101000"],["SHR", "1101000"],["NOP","10010000"]
+    ["ADD", "000000"],["SUB", "000101"],["MUL", "111101"],["DIV","111101"],
+    ["INC", "111111"],["DEC", "111111"],["NEG", "111101"],
+    ["AND", "001000"],["OR", "000010"],["NOT", "111101"],
+    ["XOR", "000110"],["SHL", "110100"],["SHR", "110100"],["NOP","10010000"]
 ]);
 
 let memory = new Map([
@@ -682,13 +682,13 @@ function setsize(a,b){
 
 
 //MACHINE CODE TRANSLATION: 
-/*let fixedreg = new Map(
+let fixedreg = new Map([
     ["DIV", "110"], ["MUL","100"],["INC","000"],["DEC","001"],
     ["NOT","010"],["NEG","011"],["SHR","101"],
     ["SHL","100"]
-)*/
+])
 
-/*function translation(cmnd, dest, source){
+function translation(cmnd, dest, source){
     let d = "0"; let mod = "11"; let w; let finalCode;
     if(regSize.get(dest)==8){
         w = "0";
@@ -712,12 +712,12 @@ function setsize(a,b){
     }
 } 
 
-/*function machinecode(opcode, d, w, mod, reg, rm){
+function machinecode(opcode, d, w, mod, reg, rm){
     byte1 = opcode + d + w;
     byte2 = mod + reg + rm;
     code = byte1 + " " + byte2;
     return code;
-}*/
+}
 //ax=0001
 parsing("mov ax, 0012H");
 console.log(regVal.get("AX"));
