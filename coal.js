@@ -7,10 +7,10 @@ let regSize = new Map([
 ]);
 
 let regVal = new Map([
-    ["AX", "0001"],["BX", "2"],["CX", "3"],["DX", "4"],
-    ["AH", 5],["BH", 6],["CH", 7],["DH", 8],
-    ["AL", 9],["BL", 10],["CL", 11],["DL", 12],
-    ["SP", 13],["BP", 14],["SI", 15],["DI", 16]
+    ["AX", "1"],["BX", "2"],["CX", "3"],["DX", "4"],
+    ["AH", "5"],["BH", "6"],["CH", "7"],["DH", "8"],
+    ["AL", "9"],["BL", "10"],["CL", "11"],["DL", "12"],
+    ["SP", "13"],["BP", "14"],["SI", "15"],["DI", "16"]
 ]);
 
 let regCode = new Map([
@@ -30,13 +30,13 @@ let opcode = new Map([
     ["ADD", "000000"],["SUB", "000101"],["MUL", "1111011"],["DIV","1111011"],
     ["INC", "1111111"],["DEC", "1111111"],["NEG", "1111011"],
     ["AND", "001000"],["OR", "000010"],["NOT", "1111011"],
-    ["XOR", "000110"],["SHL", "1101000"],["SHR", "1101000"]
+    ["XOR", "000110"],["SHL", "1101000"],["SHR", "1101000"],["NOP","10010000"]
 ]);
 
 let memory = new Map([
-    ['0000', 1],['0001', 1], ['0002', 1], ['0003', 1], ['0004', 1], ['0005', 1], ['0006', 1],
-    ['0007', 1], ['0008', 1], ['0009', 1], ['000A', 1], ['000B', 1], ['000C', 1],
-    ['000D', 1], ['000E', 1],['000F',1]
+    ['0000', "00"],['0001', "00"], ['0002', "00"], ['0003', "00"], ['0004', "00"], ['0005', "00"], ['0006', "00"],
+    ['0007', "00"], ['0008', "00"], ['0009', "00"], ['000A', "00"], ['000B', "00"], ['000C', "00"],
+    ['000D', "00"], ['000E', "00"],['000F', "00"]
 ]);
 
 
@@ -549,7 +549,7 @@ let instruction = new Map([
     regVal.set(regkey+"H",source.slice(0,2));
     //setreg(destname,source);
     }],   
-    ["CBW", function(){}],["", function(){}]
+    ["NOP", function(){}],["", function(){}]
 ]);
 
 //inner mov functions for variations 
@@ -679,23 +679,7 @@ function setsize(a,b){
     return b;
 }
 
-//1111111 //000 (dest)
-//increment value in registers
-function increment(reg){
-    if (regSize.has(reg)){
-            setreg(reg,regVal.get(reg)+1);
-    }
-    else {console.log("Invalid Operand Name.");}
-}
 
-//1111111 //001 (dest)
-//decrement value in registers
-function decrement(reg){
-    if (regSize.has(reg)){
-        setreg(reg,regVal.get(reg)-1);
-    }
-    else {console.log("Invalid Operand Name.");}
-}
 
 //MACHINE CODE TRANSLATION: 
 /*let fixedreg = new Map(
