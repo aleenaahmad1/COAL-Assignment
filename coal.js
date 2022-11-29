@@ -49,7 +49,7 @@ function movregtoimm(reg,value){
         if (value.length>4){
                 console.log("imm vale larger than 4, error")}
         regkey=reg.slice(0,1);
-        you_decide=reg[-1];
+        you_decide=reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             value=setsize("00",value);
@@ -137,7 +137,7 @@ let instruction = new Map([
         if (val2.length>4){
             val2=val2.slice(-4);}
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide=reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",val2);
@@ -173,7 +173,7 @@ let instruction = new Map([
             if (val2.length>4){
                 val2=val2.slice(-4);}
             regkey = dest.slice(0,1);
-            you_decide = dest[-1];
+            you_decide=reg.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
                 setsize("00",val2);
@@ -237,7 +237,7 @@ let instruction = new Map([
         if (value.length>4){
             value=value.slice(-4);}
         regkey = reg.slice(0,1);
-        you_decide = reg[-1];
+       you_decide=reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",value);
@@ -268,7 +268,7 @@ let instruction = new Map([
         if (value.length>4){
             value=value.slice(-4);}
         regkey = reg.slice(0,1);
-        you_decide = reg[-1];
+        you_decide=reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",value);
@@ -309,7 +309,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide=reg.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -391,7 +391,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
             regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide=reg.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -467,7 +467,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide=reg.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -500,7 +500,7 @@ let instruction = new Map([
     source = conversion(source,2,16);
     if (size==8)
     {
-        you_decide = dest[-1]
+        you_decide=reg.slice(-1);
         setsize("00",source);
         if(you_decide=="H")
         {
@@ -531,7 +531,7 @@ let instruction = new Map([
     source = conversion(source,2,16);
     if (size==8)
     {
-        you_decide = dest[-1]
+        you_decide=reg.slice(-1);
         setsize("00",source);
         if(you_decide=="H")
         {
