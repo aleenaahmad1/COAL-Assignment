@@ -603,36 +603,37 @@ function isMemory(dest){
 
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
-    const splitArray = input.split(" ");
-    let cmnd; //only validity check: correct command
-    let dest; //valid name, check size
-    let source; //valid name, check size, compatible with destination!
-
+    splitArray = input.split(" ");
+    cmnd = splitArray[0];
+    let operands = input.split(" ").slice(1).join("").split(",");
+    let dest = operands[0];
+    let source;
+    
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
         //input again
     }
-    if(!(regSize.has(splitArray[1]) || !(isMemory(splitArray[1])))){ //checks if destination is valid
+    if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
     }
 
     cmnd = splitArray[0];
-    dest = splitArray[1];
+    dest = operands[0];
 
     //check source: valid, size comparable w dest
-    if (splitArray.length == 3){
-        splitArray[1]=splitArray[1].slice(0,-1);
-        dest = splitArray[1];
+    if (operands.length == 2){
+        //operands[1]=operands[1].slice(0,-1);
+        dest = operands[0];
         //if fun(dest, source)
-        if(!(regSize.has(splitArray[2]) || isMemory(splitArray[2]) || is_immediate(splitArray[2]) || isNumber(splitArray[1], splitArray[2]))){ //immediate bhi hosakta hai
+        if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
            console.log("Invalid source operand.");
            //get input again
         }
-        source = splitArray[2];
+        source = operands[1];
         instruction.get(cmnd)(dest, source);
         //translation(cmnd, dest, source);
     }
-    else if(splitArray.length == 2){
+    else if(operands.length == 1){
         instruction.get(cmnd)(dest);
         //translation(cmnd, dest);
     }
