@@ -26,56 +26,112 @@
     </ul>
 </div>
 <main>
+    <div class="overBasic" style="font-size: xx-small">
+<!--        HELLOOWORLD -->
+        <svg height="100%" width="100%">
+            <defs>
+                <marker id="arrowhead" markerWidth="10" markerHeight="7"
+                        refX="0" refY="3.5" orient="auto">
+                    <polygon points="0 0, 10 3.5, 0 7" />
+                </marker>
+            </defs>
+<!--            <line x1="280" y1="448" x2="280" y2="700"  style=" ;stroke-width: 2"></line>-->
+<!--            <path d="M 10 10 L 200 200" fill="yellow" stroke="green"/>-->
+<!--            <path d="M 0 8 L 0 220 a 20 30 10  0 0 10 30 h 600 a 40 40 0 0 1 0 80 h -140 a 30 30 0 0 0 0 60 h-->
+<!--            200 a 40 40 0 0 1 0 80 h -100 a 30 30 0 0 0 -30 30 v 20" fill="transparent"   stroke="green" marker-end="url(#arrowhead)"/>-->
+<!--            <path d="M 10 10 h 90 v 90 h -90 z"/> khial rkhna hai bara or chotay symbols ka unnka alag mtlb hota h-->
+            <path d="M 280 450
+             C 280 650, 330 650, 330 650" marker-end="url(#arrowhead)" stroke="green" fill="transparent"/>
+            <line x1="400" y1="660" x2="400" y2="600" style=" stroke-width: 8;stroke: chartreuse ;stroke-dasharray: 2px"></line>
+            <line x1="530" y1="660" x2="530" y2="600" style=" stroke-width: 8;stroke: chartreuse ;stroke-dasharray: 2px"></line>
+            <line x1="815" y1="660" x2="815" y2="600" style=" stroke-width: 8;stroke: chartreuse ;stroke-dasharray: 2px"></line>
+<!--            <path d="M 340 650"></path>-->
+
+
+        </svg>
+    </div>
+
     <div class="basic" id="basic">
-        <div class ='BIU 'id="BIU">
-            <div  id="ALU">
-                <div id="azeem_khrab">
-                    <div id="trapeziumShadow"></div>
+        <div class ='BIU' id="BIU">
+            <div class="Regs">
+<!--                REGISTER CONTENT KI HEADING DALNI HAI-->
+           <div class="firstEightRegs">
+               <div class="firstEightRegsNums">
+                   <div class ='firstEightRegisterNums' id="1stReg">00000</div>
+                   <div class ='firstEightRegisterNums' id="2ndReg">00001</div>
+                   <div class ='firstEightRegisterNums' id="3rdReg">00002</div>
+                   <div class ='firstEightRegisterNums' id="4thReg">00003</div>
+                   <div class ='firstEightRegisterNums' id="5thReg">00004</div>
+                   <div class ='firstEightRegisterNums' id="6thReg">00005</div>
+                   <div class ='firstEightRegisterNums' id="7thReg">00006</div>
+                   <div class ='firstEightRegisterNums' id="8thReg">00007</div>
+               </div>
+               <div class="firstEightRegsLocs" >
+               <div class="firstEightRegistersLocs" id="0000"></div>
+               <div class="firstEightRegistersLocs" id="0001"></div>
+               <div class="firstEightRegistersLocs" id="0002"></div>
+               <div class="firstEightRegistersLocs" id="0003"></div>
+               <div class="firstEightRegistersLocs" id="0004"></div>
+               <div class="firstEightRegistersLocs" id="0005"></div>
+               <div class="firstEightRegistersLocs" id="0006"></div>
+               <div class="firstEightRegistersLocs" id="0007"></div>
+               </div>
+
+               </div>
+            <div class="lastEightRegs">
+                <div class="lastEightRegsNums">
+                    <div class ='lastEightRegisterNums' id="9thReg">00008</div>
+                    <div class ='lastEightRegisterNums' id="10thReg">00009</div>
+                    <div class ='lastEightRegisterNums' id="11thReg">0000A</div>
+                    <div class ='lastEightRegisterNums' id="12thReg">0000B</div>
+                    <div class ='lastEightRegisterNums' id="13thReg">0000C</div>
+                    <div class ='lastEightRegisterNums' id="14thReg">0000D</div>
+                    <div class ='lastEightRegisterNums' id="15thReg">0000E</div>
+                    <div class ='lastEightRegisterNums' id="16thReg">0000F</div>
                 </div>
-                <div id="pointer">
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
-                    <div class='pointers' ></div>
+                <div class="lastEightRegsLocs">
+                <div class="LastEightRegistersLocs" id="0008"></div>
+                <div class="LastEightRegistersLocs" id="0009"></div>
+                <div class="LastEightRegistersLocs" id="000A"></div>
+                <div class="LastEightRegistersLocs" id="000B"></div>
+                <div class="LastEightRegistersLocs" id="000C"></div>
+                <div class="LastEightRegistersLocs" id="000D"></div>
+                <div class="LastEightRegistersLocs" id="000E"></div>
+                <div class="LastEightRegistersLocs" id="000F"></div>
                 </div>
+                </div>
+
+
             </div>
 
-            <div  id="QUE">
-                <!--            6 byte fetch que-->
-                <div class='que' id="index1">
-                    <div>6 byte Pre-Fetch Que</div>
+            <div class="machineCode">
+                <div id="displayMachineCode"> Machine code</div>
+                <div id="displayMachineCodeValue" style="align-content: center">
+                    <div id="mcode" style="color: #03091d;font-size:xx-large;text-align: center ;text-justify: auto;align-items: center ">01100011010001010</div>
                 </div>
-                <div class='ques' id="index2">1</div>
-                <div class='ques' id="index3">2</div>
-                <div class='ques' id="index4">3</div>
-                <div class='ques' id="index5">4</div>
-                <div class='ques' id="index6">5</div>
-                <div class='ques' id="index7">6</div>
+
             </div>
         </div> <!--  Bus interfacing unit ka sb kuch-->
         <div class ='EU' id="EU">
             <div  id="Registers">
-                <div class='registers' id="Ax">AX</div>
+                <div class='registers' id="AX">AX</div>
                 <!--            <button type="submit" id="btn1">subbbbbb</button>-->
-                <div class='registers' id="Bx">BX</div>
-                <div class='registers' id="Cx">CX</div>
-                <div class='registers' id="Dx">DX</div>
-                <div class='registers' id="SP">SP</div>
-                <div class='registers' id="BP">BP</div>
-                <div class='registers' id="SI">SI</div>
-                <div class='registers' id="DI">DI</div>
+                <div class='registers' id="BX">BX</div>
+                <div class='registers' id="CX">CX</div>
+                <div class='registers' id="DX">DX</div>
+<!--                <div class='registers' id="SP">SP</div>-->
+<!--                <div class='registers' id="BP">BP</div>-->
+<!--                <div class='registers' id="SI">SI</div>-->
+<!--                <div class='registers' id="DI">DI</div>-->
+                <div class='registers' id="Ds">DS</div>
             </div>
             <div  id="Baki_ajeeb">
                 <div class="bakiajjebwalakaam" id="baki1">
                     <div class="bakiajjebwalakaam1" id="processor">PROCESSOR</div>
-                    <div class="bakiajjebwalakaam1" id="controller">Controller</div>
+                    <div class="bakiajjebwalakaam1" id="controller"><text id="cont">CONTROLLER</text></div>
                     <div class="bakiajjebwalakaam1" id="remaining2">
-                        <div class="bakiajjebwalakaam11" id="PC"></div>
-                        <div class="bakiajjebwalakaam11" id="IR"></div>
+                        <div class="bakiajjebwalakaam11" id="PC">PC</div>
+                        <div class="bakiajjebwalakaam11" id="IR">IR</div>
                     </div>
                 </div>
                 <div class="bakiajjebwalakaam" id="baki2"></div>
@@ -98,7 +154,11 @@
         <!--        8086 Simulation-->
         <!--    </header>-->
         <div class="container">
-            <svg viewBox="0 0 1350 700">
+            <svg  viewBox="0 0 1350 700" style="display: flex;
+    font: 10em 'Montserrat';
+    width: 100%;
+    height: 300px;
+    margin: 0 auto;">
                 <symbol id="s-text">
                     <text text-anchor="middle" x="50%" y="80%">8086 simulation</text>
                 </symbol>
@@ -112,11 +172,15 @@
                 </g>
             </svg>
         </div>
-        <div class="basic2" id="ajeeb">
+        <div class="basic2" id="ajeeb"
+        style="height: 20%">
             <button type="submit" id="ara">Write an Assembly Operation</button>
             <!--        ctrl shift i say uski properties aa jai gi when placed the cursor on the id-->
         </div>
-        <div class="basic2"></div>
+        <div class="basic2" id="iinn">
+            <input  id='inputlainawaladabba'type="text">
+            <button id="'submitButton" type="submit"> submit</button>
+        </div>
         <div class="basic2"></div>
         <div class="basic2"></div>
         <div class="basic2"></div>
@@ -126,4 +190,5 @@
 
 </body>
 <script src="art.js"></script>
+<!--<script src="part2.js"></script>-->
 </html>
