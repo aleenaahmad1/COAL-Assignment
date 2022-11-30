@@ -801,34 +801,97 @@ let fixedreg = new Map([
     ["SHL","100"]
 ])
 
-function translation(cmnd, dest, source){
-    let d = "0"; let mod = "11"; let w; let finalCode;
-    if(regSize.get(dest)==8){
-        w = "0";
+function machinecode(opcode, d, w, reg, rm, mod){
+    if(arguments.length == 6){
+        byte1 = opcode + d + w;
+        byte2 = mod + reg + rm;
     }
     else{
-        w = "1";
+        byte1 = opcode + d + w + reg;
+        byte2 = rm;
+        console.log("RM: ", rm);
     }
-    if(arguments.length == 3){
-        finalCode = machinecode(opcode.get(cmnd),d,w,mod,regCode.get(dest),regCode.get(source));
-        document.getElementById("mcode").innerHTML = finalCode;
-    }
-    else if(arguments.length == 2){
-        if(cmnd=="SHR" || cmnd=="SHL"){
-            d = "0";
-        }
-        else{
-            d= "1";
-        }
-        finalCode = machinecode(opcode.get(cmnd),d,w,mod,fixedreg.get(cmnd),regCode.get(dest))
-        document.getElementById("mcode").innerHTML = finalCode;
+    code = byte1 + " " + byte2;
+    return code;
+}
 
+function getW(input){
+    if(regSize.get(input)==8){
+        return 0;
+    }
+    else{
+        return 1;
     }
 }
 
-function machinecode(opcode, d, w, mod, reg, rm){
-    byte1 = opcode + d + w;
-    byte2 = mod + reg + rm;
-    code = byte1 + " " + byte2;
-    return code;
+function translation(cmnd, dest, source){
+    let d = "0"; let mod = "11"; var w; let finalCode;
+    if(cmnd=="MOV" && (isMemory(dest) || isMemory(source)) ){ //mov reg, [mem]; mov [mem], reg opcode SAME as in map
+        mod = "00";
+        if(isMemory(dest)){ //MOV [MEM], REG
+            d = 0;
+            w = getW(source); //SLICE MEMORY BEFORE PASSING
+            dest = dest.slice(1,-2); //removing brackets and H from memory
+            dest = conversion(dest, 16, 2);
+            len = dest.length;
+            for(i=0;i<(16-len);i++){
+                dest=dest.replace(/^/,"0");
+            }
+            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(source),dest,mod);
+            return finalCode;
+        }
+        else if(isMemory(source)){ //MOV REG, [MEM]
+            d = 1;
+            w = getW(dest);
+            source = source.slice(1,-2); //removing brackets and H from memory
+            source = conversion(source, 16, 2);
+            len = source.length;
+            for(i=0;i<(16-len);i++){
+                source=source.replace(/^/,"0");
+            }
+            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),source,mod);
+            return finalCode;
+        }
+    }
+    else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
+        let immcode = "101";
+        d = 1; 
+        w = getW(dest); let imm;
+        h = source.slice(-1,-2);
+        if(isNumber(source)){
+            console.log("Source 1: ", source);
+            imm = conversion(source, 10, 2);
+            console.log("Imm after conversion: ", imm);
+        }
+        else{//if in hex: REMOVE H, CONVERT TO BINARY, APPEND ZEROES if len<4
+            console.log("Source 2: ", source);
+            source = source.slice(0,-1);
+            console.log("Source after slicing:",source);
+            imm = conversion(source, 16, 2);
+            console.log("Imm after conversion:", imm);
+            len = imm.length;
+            for(i=0;i<(16-len);i++){
+                imm=imm.replace(/^/,"0");
+            }
+        }
+        finalCode = machinecode(immcode,d,w,regCode.get(dest),imm);
+        return finalCode;
+    }
+    else{ //move and dest & source is REG OR command not move (dest and source will be reg hi ig lol)
+        w = getW(dest);
+        if(arguments.length == 3){
+            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),regCode.get(source),mod);
+            return finalCode;
+        }
+        else if(arguments.length == 2){
+            if(cmnd=="SHR" || cmnd=="SHL"){
+                d = "0";
+            }
+            else{
+                d= "1";
+            }
+            finalCode = machinecode(opcode.get(cmnd),d,w,fixedreg.get(cmnd),regCode.get(dest),mod)
+            return finalCode;
+        }
+    }
 }
