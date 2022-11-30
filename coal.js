@@ -649,17 +649,19 @@ function isNumber(dest, source){
 
 function isMemory(dest){
     flag = true;
-    if (dest[-1]==='H'){ //value is in hex
+    let hex = dest.slice(-2,-1);
+    if (hex ==="H" || hex === "h"){ //value is in hex
         dest=dest.slice(1,-2);
+        if(!memory.has(dest)){
+            return !flag;
+        }
+        return flag;
     }
     else{
         return !flag;
     }
-    if(!memory.has(dest)){
-        return !flag;
-    }
-    return flag;
 }
+
 
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
