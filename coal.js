@@ -614,7 +614,7 @@ function is_immediate(source){
     //for hex: 4 digits(each 1-9 or A-F), ends with 'H'
     flag = true;
     const digits = source.split("");
-    if(digits[digits.length - 1]==="H"){
+    if(digits[digits.length - 1]==="H" || digits[digits.length-1]==="h"){
         if(digits.length>5){
             return !flag;
         }
@@ -622,8 +622,9 @@ function is_immediate(source){
             if(!(digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F")){
                 return !flag;
             }
+            return flag;
         }
-        return flag;
+        
     }   
     else if(source<=65535){
         return flag;
