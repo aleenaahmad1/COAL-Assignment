@@ -686,6 +686,10 @@ function isMemory(dest){
 }
 
 function parsing(input){ //mov ax, 1234H
+     if(document.getElementById('inputlainawaladabba').value==''){
+        document.getElementById('mcode').innerHTML='No Command Entered';
+    }
+    else{
     input = input.toUpperCase();
     splitArray = input.split(" ");
     cmnd = splitArray[0];
@@ -725,6 +729,7 @@ function parsing(input){ //mov ax, 1234H
     else{
         console.log("Invalid instruction.");
         //input again
+    }
     }
 }
 
