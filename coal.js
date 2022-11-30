@@ -1,4 +1,4 @@
-//data structures: map for instructions with functions, registers with sizes 
+//data structures: map for instructions with functions, registers with sizes
 let regSize = new Map([
     ["AX", 16],["BX", 16],["CX", 16],["DX", 16],
     ["AH", 8],["BH", 8],["CH", 8],["DH", 8],
@@ -39,33 +39,34 @@ let memory = new Map([
     ['000D', "00"], ['000E', "00"],['000F', "00"]
 ]);
 
-//mov reg to imm
+//mov imm to reg
 function movregtoimm(reg,value){
-        if (value.slice(-1)==='H'||value.slice(-1)==='h'){ //value is in hex
-            value=value.slice(0,-1);
-        }
-        else{
-            value=conversion(value,10,16)}
-        if (value.length>4){
-                console.log("imm vale larger than 4, error")}
-        regkey=reg.slice(0,1);
-        you_decide=reg.slice(-1);
-        if(you_decide==="H"||you_decide==="L")
+    if (value.slice(-1)==='H'||value.slice(-1)==='h'){ //value is in hex
+        value=value.slice(0,-1);
+    }
+    else{
+        value=conversion(value,10,16)}
+    if (value.length>4){
+        console.log("imm vale larger than 4, error")}
+    regkey=reg.slice(0,1);
+    you_decide=reg.slice(-1);
+    if(you_decide==="H"||you_decide==="L")
+    {
+        value=setsize("00",value);
+        if (you_decide==="H")
         {
-            value=setsize("00",value);
-            if (you_decide==="H")
-            {
-                value=value+regVal.get(regkey+"L");
-            }
-            else value=regVal.get(regkey+"H")+value;
+            value=value+regVal.get(regkey+"L");
         }
-        else{
-            value=setsize("0000",value);
-        }
-        regVal.set(regkey+"X",value);
-        regVal.set(regkey+"L",value.slice(2,4));
-        regVal.set(regkey+"H",value.slice(0,2));
-        //setreg(destname,value);
+        else value=regVal.get(regkey+"H")+value;
+    }
+    else{
+        value=setsize("0000",value);
+    }
+    regVal.set(regkey+"X",value);
+    regVal.set(regkey+"L",value.slice(2,4));
+    regVal.set(regkey+"H",value.slice(0,2));
+    document.getElementById(regkey+'X').innerHTML=value;
+    /////////////////////Arslan nai imm to reg Likh lia////
 }
 
 // mov reg to reg
@@ -83,10 +84,11 @@ function movregtoreg(dest,source){
             }
             else val=regVal.get(regkey+"H")+val;
         }
-        regVal.set(regkey+"X",value);
-        regVal.set(regkey+"L",value.slice(2,4));
+        regVal.set(regkey+"X",val);
+        regVal.set(regkey+"L",val.slice(2,4));
         regVal.set(regkey+"H",val.slice(0,2));
         //idhr arslan function call karo
+        document.getElementById(regkey+'X').innerHTML=val;
     }
 }
 
@@ -101,11 +103,12 @@ function movmemtoreg(dest,source){
             regVal.set(dest,val1);
             xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");
             regVal.set(regkey+"X",xval);
-            setreg(dest,xval);
-        } 
-        else{console.log("8 bit data cannot move directly into 16 bit reg")} 
+            // setreg(dest,xval);
+            document.getElementById(regkey+'X').innerHTML=xval;
+        }
+        else{console.log("8 bit data cannot move directly into 16 bit reg")}
     }
-    else{console.log("invalid mem location or dest reg")} 
+    else{console.log("invalid mem location or dest reg")}
 }
 
 //mov ([mem],reg) wala mov
@@ -116,7 +119,8 @@ function movregtomem(dest,source){
         {
             value=regVal.get(source);
             memory.set(dest,value);
-            setmem(dest,value);
+            // setmem(dest,value);
+        document.getElementById(dest).innerHTML=value;
         }
         else{console.log("16 bits from reg cannot be moved to 8 bit mem location");}
     }
@@ -153,73 +157,75 @@ let instruction = new Map([
     }],
     ["ADD", function(dest, source){                                                                         //INSTRUCTION 1
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        val1=parseInt(val1,16);
-        val2=parseInt(val2,16);
-        val2=val2+val1;
-        val2=val2.toString(16);
-        //yahan write code for caary flag?
-        if (val2.length>4){
-            val2=val2.slice(-4);}
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide==="H"||you_decide==="L")
-        {
-            setsize("00",val2);
-            if(you_decide==="H")
+            val1=regVal.get(source);
+            val2=regVal.get(dest);
+            val1=parseInt(val1,16);
+            val2=parseInt(val2,16);
+            val2=val2+val1;
+            val2=val2.toString(16);
+            //yahan write code for caary flag?
+            if (val2.length>4){
+                val2=val2.slice(-4);}
+            regkey = dest.slice(0,1);
+            you_decide = dest.slice(-1);
+            if(you_decide==="H"||you_decide==="L")
             {
-                val2=val2+regVal.get(regkey+"L");
+                setsize("00",val2);
+                if(you_decide==="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
             }
-            else val2=regVal.get(regkey+"H")+val2;
+            else
+            {
+                setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //setreg(destname,val2);
+            document.getElementById(regkey+'X').innerHTML=val2;
         }
-        else
-        {
-        setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-    }
     }],
-    ["SUB", function(dest,source){                                                                         
+    ["SUB", function(dest,source){
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        val1=parseInt(val1,16);
-        val2=parseInt(val2,16);
-        val2=val2-val1;
-        if (val2<0)
-        {
-            val2=-val2;
-            val2=val2.toString(2);
-            val2=twoscompliment(val2);
-            val2=conversion(val2,2,16);
-        }
-        else val2=val2.toString(16);
-        if (val2.length>4){
-            val2=val2.slice(-4);}
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide==="H"||you_decide==="L")
-        {
-            setsize("00",val2);
-            if(you_decide==="H")
+            val1=regVal.get(source);
+            val2=regVal.get(dest);
+            val1=parseInt(val1,16);
+            val2=parseInt(val2,16);
+            val2=val2-val1;
+            if (val2<0)
             {
-                val2=val2+regVal.get(regkey+"L");
+                val2=-val2;
+                val2=val2.toString(2);
+                val2=twoscompliment(val2);
+                val2=conversion(val2,2,16);
             }
-            else val2=regVal.get(regkey+"H")+val2;
+            else val2=val2.toString(16);
+            if (val2.length>4){
+                val2=val2.slice(-4);}
+            regkey = dest.slice(0,1);
+            you_decide = dest.slice(-1);
+            if(you_decide==="H"||you_decide==="L")
+            {
+                setsize("00",val2);
+                if(you_decide==="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
+            }
+            else
+            {
+                setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //setreg(destname,val2);
+            document.getElementById(regkey+'X').innerHTML=val2;
         }
-        else
-        {
-        setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-    }
     }],
     ["NEG", function(dest){
         if (regSize.has(dest)){
@@ -238,18 +244,19 @@ let instruction = new Map([
                 }
                 else val2=regVal.get(regkey+"H")+val2;
             }
-        else
-        {
-        setsize("0000",val2);
+            else
+            {
+                setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //arslannnn likho pls:OK
+            document.getElementById(regkey+'X').innerHTML=val2;
         }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //arslannnn likho pls
-        }    
     }],
     ["MUL", function(source){                                                               //INSTRUCTION 2
-            if (regSize.has(source)){
+        if (regSize.has(source)){
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
@@ -262,6 +269,7 @@ let instruction = new Map([
                 regVal.set("AL",val1.slice(4,8));
                 regVal.set("AH",val1.slice(0,4));
                 //setreg("AX",val1);
+                document.getElementById('AX').innerHTML=val1;
             }
             if (regSize.get(source)===16){
                 val1=regVal.get("AX");
@@ -279,71 +287,76 @@ let instruction = new Map([
                 regVal.set("AL",val1.slice(6,8));
                 regVal.set("AH",val1.slice(4,6));
                 //setreg("AX",regVal.get("AX"));
+                document.getElementById('AX').innerHTML=val1.slice(4,8);
                 //setreg("DX",regVal.get("DX"));
+                document.getElementById('DX').innerHTML=val1.slice(0,4);
             }}
     }],
-        ["INC", function(reg){                                                                                   //INSTRUCTION 3
-    if (regSize.has(reg))
-    {
-        value=regVal.get(reg);
-        value=parseInt(value,16);
-        value=value+1;
-        value=value.toString(16);
-        if (value.length>4){
-            value=value.slice(-4);}
-        regkey = reg.slice(0,1);
-        you_decide = reg.slice(-1);
-        if(you_decide==="H"||you_decide==="L")
+    ["INC", function(reg){                                                                                   //INSTRUCTION 3
+        if (regSize.has(reg))
         {
-            setsize("00",value);
-            if(you_decide==="H")
+            value=regVal.get(reg);
+            value=parseInt(value,16);
+            value=value+1;
+            value=value.toString(16);
+            if (value.length>4){
+                value=value.slice(-4);}
+            regkey = reg.slice(0,1);
+            you_decide = reg.slice(-1);
+            if(you_decide==="H"||you_decide==="L")
             {
-                value=value+regVal.get(regkey+"L");
+                setsize("00",value);
+                if(you_decide==="H")
+                {
+                    value=value+regVal.get(regkey+"L");
+                }
+                else value=regVal.get(regkey+"H")+value;
             }
-            else value=regVal.get(regkey+"H")+value;
+            else
+            {
+                setsize("0000",value);
+            }
+            regVal.set(regkey+"X",value);
+            regVal.set(regkey+"L",value.slice(2,4));
+            regVal.set(regkey+"H",value.slice(0,2));
+            //setreg(regkey+"X",value);
+            document.getElementById(regkey+'X').innerHTML=value;
         }
-        else
-        {
-        setsize("0000",value);
-        }
-        regVal.set(regkey+"X",value);
-        regVal.set(regkey+"L",value.slice(2,4));
-        regVal.set(regkey+"H",value.slice(0,2));
-        //setreg(regkey+"X",value);
-    }
-    else {errordisplay();} //invalid reg
-}],
+        else {errordisplay();} //invalid reg
+    }],
     ["DEC", function(reg){                                                                                  //INSTRUCTION 4
-    if (regSize.has(reg))
-    {
-        value=regVal.get(reg);
-        value=parseInt(value,16);
-        value=value-1;
-        value=value.toString(16);
-        if (value.length>4){
-            value=value.slice(-4);}
-        regkey = reg.slice(0,1);
-        you_decide = reg.slice(-1);
-        if(you_decide==="H"||you_decide==="L")
+        if (regSize.has(reg))
         {
-            setsize("00",value);
-            if(you_decide==="H")
+            value=regVal.get(reg);
+            value=parseInt(value,16);
+            value=value-1;
+            value=value.toString(16);
+            if (value.length>4){
+                value=value.slice(-4);}
+            regkey = reg.slice(0,1);
+            you_decide = reg.slice(-1);
+            if(you_decide==="H"||you_decide==="L")
             {
-                value=value+regVal.get(regkey+"L");
+                setsize("00",value);
+                if(you_decide==="H")
+                {
+                    value=value+regVal.get(regkey+"L");
+                }
+                else value=regVal.get(regkey+"H")+value;
             }
-            else value=regVal.get(regkey+"H")+value;
+            else
+            {
+                setsize("0000",value);
+            }
+            regVal.set(regkey+"X",value);
+            regVal.set(regkey+"L",value.slice(2,4));
+            regVal.set(regkey+"H",value.slice(0,2));
+            document.getElementById(regkey+'X').innerHTML=value;
+
+            //setreg(regkey+"X",value);
         }
-        else
-        {
-        setsize("0000",value);
-        }
-        regVal.set(regkey+"X",value);
-        regVal.set(regkey+"L",value.slice(2,4));
-        regVal.set(regkey+"H",value.slice(0,2));
-        //setreg(regkey+"X",value);    
-    }
-    else {errordisplay();}
-}],
+        else {errordisplay();}
+    }],
     ["AND", function(dest, source){                                                                        //INSTRUCTION 5
         val1=regVal.get(source);
         val2=regVal.get(dest);
@@ -358,7 +371,7 @@ let instruction = new Map([
         {
             if(val1[i]=="1" && val2[i]=="1")
             {
-              val2 = val2.replaceAt(i,"1");
+                val2 = val2.replaceAt(i,"1");
             }
             else val2 = val2.replaceAt(i,"0");
         }
@@ -376,55 +389,59 @@ let instruction = new Map([
         }
         else
         {
-        setsize("0000",val2);
+            setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
-    }], 
+        document.getElementById(regkey+'X').innerHTML=val2;
+    }],
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
-            if (regSize.has(source)){
-                if (regSize.get(source)===8){
-                    val1=regVal.get("AX");
-                    val2=regVal.get(source);
-                    val1=parseInt(val1,16);
-                    val2=parseInt(val2,16);
-                    quotient=val1/val2;
-                    remainder=val1%val2;
-                    quotient=quotient.toString(16);
-                    remainder=remainder.toString(16);
-                    setsize("00",quotient);
-                    setsize("00",remainder);
-                    regVal.set("AX",quotient+remainder);
-                    regVal.set("AL",quotient);
-                    regVal.set("AH",remainder);
-                    //setreg("AX",val1);
-                }
-                if (regSize.get(source)===16){
-                    val1=regVal.get("DX")+regVal.get("AX");
-                    val2=regVal.get(source);
-                    val1=parseInt(val1,16);
-                    val2=parseInt(val2,16);
-                    quotient=val1/val2;
-                    remainder=val1%val2;
-                    quotient=quotient.toString(16);
-                    remainder=remainder.toString(16);
-                    setsize("0000",quotient);
-                    setsize("0000",remainder);
-                    regVal.set("DX",remainder);
-                    regVal.set("DL",remainder(2,4));
-                    regVal.set("DH",remainder(0,2));
-                    regVal.set("AX",quotient);
-                    regVal.set("AL",quotient(2,4));
-                    regVal.set("AH",quotient(0,2));
-                    //setreg("AX",regVal.get("AX"));
-                    //setreg("DX",regVal.get("DX"));
-                }
+        if (regSize.has(source)){
+            if (regSize.get(source)===8){
+                val1=regVal.get("AX");
+                val2=regVal.get(source);
+                val1=parseInt(val1,16);
+                val2=parseInt(val2,16);
+                quotient=val1/val2;
+                remainder=val1%val2;
+                quotient=quotient.toString(16);
+                remainder=remainder.toString(16);
+                setsize("00",quotient);
+                setsize("00",remainder);
+                regVal.set("AX",quotient+remainder);
+                regVal.set("AL",quotient);
+                regVal.set("AH",remainder);
+                //setreg("AX",val1);
+                document.getElementById('AX').innerHTML=quotient+remainder;
             }
-            else{
-                //error
+            if (regSize.get(source)===16){
+                val1=regVal.get("DX")+regVal.get("AX");
+                val2=regVal.get(source);
+                val1=parseInt(val1,16);
+                val2=parseInt(val2,16);
+                quotient=val1/val2;
+                remainder=val1%val2;
+                quotient=quotient.toString(16);
+                remainder=remainder.toString(16);
+                setsize("0000",quotient);
+                setsize("0000",remainder);
+                regVal.set("DX",remainder);
+                regVal.set("DL",remainder(2,4));
+                regVal.set("DH",remainder(0,2));
+                regVal.set("AX",quotient);
+                regVal.set("AL",quotient(2,4));
+                regVal.set("AH",quotient(0,2));
+                //setreg("AX",regVal.get("AX"));
+                document.getElementById('AX').innerHTML=quotient;
+                //setreg("DX",regVal.get("DX"));
+                document.getElementById('DX').innerHTML=remainder;
             }
+        }
+        else{
+            //error
+        }
     }],
     ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
@@ -440,12 +457,12 @@ let instruction = new Map([
         {
             if(val1[i]=="1" || val2[i]=="1")
             {
-              val2 = val2.replaceAt(i,"1");
+                val2 = val2.replaceAt(i,"1");
             }
             else val2 = val2.replaceAt(i,"0");
         }
         val2 = conversion(val2,2,16);
-            regkey = dest.slice(0,1);
+        regkey = dest.slice(0,1);
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
@@ -458,22 +475,23 @@ let instruction = new Map([
         }
         else
         {
-        setsize("0000",val2);
+            setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
+        document.getElementById(regkey+'X').innerHTML=val2;
     }],
-    
+
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
         val1=regVal.get(dest);
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
-            if(val1[i]=="0") 
+            if(val1[i]=="0")
             {
-              val1 = val1.replaceAt(i,"1");
+                val1 = val1.replaceAt(i,"1");
             }
             else val1 = val1.replaceAt(i,"0");
         }
@@ -502,6 +520,7 @@ let instruction = new Map([
         regVal.set(regkey+"L",val1.slice(2,4));
         regVal.set(regkey+"H",val1.slice(0,2));
         //setreg(destname,val1);
+        document.getElementById(regkey+'X').innerHTML=val1;
     }],
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
@@ -515,9 +534,9 @@ let instruction = new Map([
         }
         for(i=0;i<val1.length;i++)
         {
-            if(val1[i]!=val2[i]) 
+            if(val1[i]!=val2[i])
             {
-              val2 = val2.replaceAt(i,"1");
+                val2 = val2.replaceAt(i,"1");
             }
             else val2 = val2.replaceAt(i,"0");
         }
@@ -535,97 +554,102 @@ let instruction = new Map([
         }
         else
         {
-        setsize("0000",val2);
+            setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
+        document.getElementById(regkey+'X').innerHTML=val2;
     }],
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
-    size = regSize.get(source);
-    source = conversion(source,16,2);
-    if(size==8) setsize("00000000",source);
-    else setsize("0000000000000000",source);
-    source = source.slice(0,size-shift);
-    regkey= source.slice(0,1);
-    for(i=0;i<shift;i++)
-    {
-        source = source.replace(/^/,"0")
-    }
-    source = conversion(source,2,16);
-    if (size==8)
-    {
-        you_decide = dest.slice(-1);
-        setsize("00",source);
-        if(you_decide=="H")
+        size = regSize.get(source);
+        source = conversion(source,16,2);
+        if(size==8) setsize("00000000",source);
+        else setsize("0000000000000000",source);
+        source = source.slice(0,size-shift);
+        regkey= source.slice(0,1);
+        for(i=0;i<shift;i++)
         {
-            source=source+regVal.get(regkey+"L");
+            source = source.replace(/^/,"0")
         }
-        else source=regVal.get(regkey+"H")+source;
-    }
-    else
-    {
-    setsize("0000",source);
-    }
-    regVal.set(regkey+"X",source);
-    regVal.set(regkey+"L",source.slice(2,4));
-    regVal.set(regkey+"H",source.slice(0,2));  
+        source = conversion(source,2,16);
+        if (size==8)
+        {
+            you_decide = dest.slice(-1);
+            setsize("00",source);
+            if(you_decide=="H")
+            {
+                source=source+regVal.get(regkey+"L");
+            }
+            else source=regVal.get(regkey+"H")+source;
+        }
+        else
+        {
+            setsize("0000",source);
+        }
+        regVal.set(regkey+"X",source);
+        regVal.set(regkey+"L",source.slice(2,4));
+        regVal.set(regkey+"H",source.slice(0,2));
+        document.getElementById(regkey+'X').innerHTML=source;
+
     }],
-    
+
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
-    size = regSize.get(source);
-    source = conversion(source,16,2);
-    if(size==8) setsize("00000000",source);
-    else setsize("0000000000000000",source);
-    source = source.slice(shift);
-    regkey = source.slice(0,1);
-    for(i=0;i<shift;i++)
-    {
-        source = source.concat("0");
-    }
-    source = conversion(source,2,16);
-    if (size==8)
-    {
-        you_decide = dest.slice(-1);
-        setsize("00",source);
-        if(you_decide=="H")
+        size = regSize.get(source);
+        source = conversion(source,16,2);
+        if(size==8) setsize("00000000",source);
+        else setsize("0000000000000000",source);
+        source = source.slice(shift);
+        regkey = source.slice(0,1);
+        for(i=0;i<shift;i++)
         {
-            source=source+regVal.get(regkey+"L");
+            source = source.concat("0");
         }
-        else source=regVal.get(regkey+"H")+source;
-    }
-    else
-    {
-    setsize("0000",source);
-    }
-    regVal.set(regkey+"X",source);
-    regVal.set(regkey+"L",source.slice(2,4));
-    regVal.set(regkey+"H",source.slice(0,2));
-    //setreg(destname,source);
-    }],   
+        source = conversion(source,2,16);
+        if (size==8)
+        {
+            you_decide = dest.slice(-1);
+            setsize("00",source);
+            if(you_decide=="H")
+            {
+                source=source+regVal.get(regkey+"L");
+            }
+            else source=regVal.get(regkey+"H")+source;
+        }
+        else
+        {
+            setsize("0000",source);
+        }
+        regVal.set(regkey+"X",source);
+        regVal.set(regkey+"L",source.slice(2,4));
+        regVal.set(regkey+"H",source.slice(0,2));
+        //setreg(destname,source);
+        document.getElementById(regkey+'X').innerHTML=source;
+
+    }],
     ["NOP", function(){}],["", function(){}]
 ]);
 
-//inner mov functions for variations 
+//inner mov functions for variations
 
 function is_immediate(source){
     //source: can be integer or hex value 1234H
     //for hex: 4 digits(each 1-9 or A-F), ends with 'H'
     flag = true;
     const digits = source.split("");
-    if(digits[digits.length - 1]==="H" || digits[digits.length-1]==="h"){
+    if(digits[digits.length-1]==="H" || digits[digits.length-1]==="h"){
         if(digits.length>5){
             return !flag;
         }
-        for(let i=0;i<digits.length-1;i++){
+        for(let i=0;i<=digits.length-1;i++){
             if(!(digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F")){
                 return !flag;
             }
             return flag;
         }
-        
-    }   
+
+    }
     else if(source<=65535){
         return flag;
     }
@@ -648,20 +672,18 @@ function isNumber(dest, source){
 }
 
 function isMemory(dest){
-    flag = true;
     let hex = dest.slice(-2,-1);
-    if (hex ==="H" || hex === "h"){ //value is in hex
+    flag = true;
+    if (hex==='H'||hex==="h"){ //value is in hex
         dest=dest.slice(1,-2);
         if(!memory.has(dest)){
             return !flag;
         }
         return flag;
     }
-    else{
-        return !flag;
-    }
-}
+    return !flag;
 
+}
 
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
@@ -688,16 +710,16 @@ function parsing(input){ //mov ax, 1234H
         dest = operands[0];
         //if fun(dest, source)
         if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
-           console.log("Invalid source operand.");
-           //get input again
+            console.log("Invalid source operand.");
+            //get input again
         }
         source = operands[1];
         instruction.get(cmnd)(dest, source);
-        //translation(cmnd, dest, source);
+        translation(cmnd, dest, source);
     }
     else if(operands.length == 1){
         instruction.get(cmnd)(dest);
-        //translation(cmnd, dest);
+        translation(cmnd, dest);
     }
     //else for another length of instruction?
     else{
@@ -706,14 +728,9 @@ function parsing(input){ //mov ax, 1234H
     }
 }
 
-function setreg(destname,destvalue){
-    console.log("Set reg.");
-}
-function setmem(destname,destvalue){
-    console.log("set mem.");
-}
 function errordisplay(){
-    console.log("Error");
+    // console.log("Error");
+    window.prompt('ERROR SKILL ISSUE');
 }
 
 //twos comliment function
@@ -733,23 +750,23 @@ function binaryAddition(a,b){
     var result = "",
         carry = 0
     while(a || b || carry){
-      let sum = +a.slice(-1) + +b.slice(-1) + carry // get last digit from each number and sum 
-      if( sum > 1 ){  
-        result = sum%2 + result
-        carry = 1
-      }
-      else{
-        result = sum + result
-        carry = 0
-      }
-      a = a.slice(0, -1)
-      b = b.slice(0, -1)
-    } 
+        let sum = +a.slice(-1) + +b.slice(-1) + carry // get last digit from each number and sum
+        if( sum > 1 ){
+            result = sum%2 + result
+            carry = 1
+        }
+        else{
+            result = sum + result
+            carry = 0
+        }
+        a = a.slice(0, -1)
+        b = b.slice(0, -1)
+    }
     return result
-  }
+}
 
 
-//replacing at a particular index in string 
+//replacing at a particular index in string
 //calling: str = str.replaceAt(index, "value")
 String.prototype.replaceAt = function(index, replacement) {
     return this.substring(0, index) + replacement + this.substring(index + replacement.length);
@@ -777,7 +794,7 @@ function setsize(a,b){
 
 
 
-//MACHINE CODE TRANSLATION: 
+//MACHINE CODE TRANSLATION:
 let fixedreg = new Map([
     ["DIV", "110"], ["MUL","100"],["INC","000"],["DEC","001"],
     ["NOT","010"],["NEG","011"],["SHR","101"],
@@ -794,7 +811,6 @@ function translation(cmnd, dest, source){
     }
     if(arguments.length == 3){
         finalCode = machinecode(opcode.get(cmnd),d,w,mod,regCode.get(dest),regCode.get(source));
-        return finalCode;
         document.getElementById("mcode").innerHTML = finalCode;
     }
     else if(arguments.length == 2){
@@ -805,10 +821,10 @@ function translation(cmnd, dest, source){
             d= "1";
         }
         finalCode = machinecode(opcode.get(cmnd),d,w,mod,fixedreg.get(cmnd),regCode.get(dest))
-        return finalCode;
         document.getElementById("mcode").innerHTML = finalCode;
+
     }
-} 
+}
 
 function machinecode(opcode, d, w, mod, reg, rm){
     byte1 = opcode + d + w;
@@ -816,4 +832,3 @@ function machinecode(opcode, d, w, mod, reg, rm){
     code = byte1 + " " + byte2;
     return code;
 }
-
