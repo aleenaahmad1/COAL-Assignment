@@ -795,6 +795,7 @@ function translation(cmnd, dest, source){
     if(arguments.length == 3){
         finalCode = machinecode(opcode.get(cmnd),d,w,mod,regCode.get(dest),regCode.get(source));
         return finalCode;
+        document.getElementById("mcode").innerHTML = finalCode;
     }
     else if(arguments.length == 2){
         if(cmnd=="SHR" || cmnd=="SHL"){
@@ -805,6 +806,7 @@ function translation(cmnd, dest, source){
         }
         finalCode = machinecode(opcode.get(cmnd),d,w,mod,fixedreg.get(cmnd),regCode.get(dest))
         return finalCode;
+        document.getElementById("mcode").innerHTML = finalCode;
     }
 } 
 
@@ -814,8 +816,4 @@ function machinecode(opcode, d, w, mod, reg, rm){
     code = byte1 + " " + byte2;
     return code;
 }
-//ax=0001
-console.log(regVal.get("AX"));
-//parsing("mov ah, 60");
-movregtoimm("AH","60H");
-console.log(regVal.get("AX"));
+
