@@ -45,7 +45,7 @@ function movregtoimm(reg,value){
             value=value.slice(0,-1);
         }
         else{
-            value=conversion(value,10,16)}
+            value=conversion(10,16)}
         if (value.length>4){
                 console.log("imm vale larger than 4, error")}
         regkey=reg.slice(0,1);
@@ -66,6 +66,28 @@ function movregtoimm(reg,value){
         regVal.set(regkey+"L",value.slice(2,4));
         regVal.set(regkey+"H",value.slice(0,2));
         //setreg(destname,value);
+}
+
+// mov reg to reg
+function movregtoreg(dest,source){
+    if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
+    {
+        val=regVal.get(source);
+        regkey=dest.slice(0,1);
+        you_decide=dest.slice(-1);
+        if (you_decide==="L" || you_decide==="H")
+        {
+            if (you_decide==="H")
+            {
+                val=val+regVal.get(regkey+"L");
+            }
+            else val=regVal.get(regkey+"H")+val;
+        }
+        regVal.set(regkey+"X",value);
+        regVal.set(regkey+"L",value.slice(2,4));
+        regVal.set(regkey+"H",val.slice(0,2));
+        //idhr arslan function call karo
+    }
 }
 
 //mov (reg,[mem]) wala mov
@@ -90,9 +112,9 @@ function movmemtoreg(dest,source){
 function movregtomem(dest,source){
     if (regSize.has(source) && memory.has(dest))
     {
-        if (regSize.get(source)===8)
+        if (regSize.get(reg)===8)
         {
-            value=regVal.get(source);
+            value=regVal.get(reg);
             memory.set(dest,value);
             setmem(dest,value);
         }
@@ -112,7 +134,7 @@ let instruction = new Map([
             if (source.slice(-1)==="H" || source.slice(-1)==="h"){  //value is in hex
                 source=source.slice(0,-1);
             }
-            else {source=conversion(source,10,16);}
+            else {conversion(source,10,16);}
             movmemtoreg(dest,source);
         }
         else if (regSize.has(source) && (dest.slice(0,1)==="[" && dest.slice(-1)==="]")){
@@ -120,8 +142,12 @@ let instruction = new Map([
             if (dest.slice(-1)==="H" || dest.slice(-1)==="h"){  //value is in hex
                 dest=dest.slice(0,-1);
             }
-            else {console.log("mem should be in hex");}
+            else {conversion(dest,10,16);}
             movregtomem(dest,source);
+        }
+        else if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
+        {
+            movregtoreg(dest,source);
         }
         else{console.log("mov didnt slay");}
     }],
@@ -137,7 +163,7 @@ let instruction = new Map([
         if (val2.length>4){
             val2=val2.slice(-4);}
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide = dest.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",val2);
@@ -166,34 +192,63 @@ let instruction = new Map([
         val2=val2-val1;
         if (val2<0)
         {
-            errordisplay(); //negative value
+            val2=-val2;
+            val2=val2.toString(2);
+            val2=twoscompliment(val2);
+            val2=conversion(val2,2,16);
         }
-        else{
-            val2=val2.toString(16);
-            if (val2.length>4){
-                val2=val2.slice(-4);}
-            regkey = dest.slice(0,1);
-            you_decide = dest[-1];
-            if(you_decide==="H"||you_decide==="L")
+        else val2=val2.toString(16);
+        if (val2.length>4){
+            val2=val2.slice(-4);}
+        regkey = dest.slice(0,1);
+        you_decide = dest.slice(-1);
+        if(you_decide==="H"||you_decide==="L")
+        {
+            setsize("00",val2);
+            if(you_decide==="H")
             {
-                setsize("00",val2);
-                if(you_decide==="H")
-                {
-                    val2=val2+regVal.get(regkey+"L");
-                }
-                else val2=regVal.get(regkey+"H")+val2;
+                val2=val2+regVal.get(regkey+"L");
             }
-            else
-            {
-            setsize("0000",val2);
-            }
-            regVal.set(regkey+"X",val2);
-            regVal.set(regkey+"L",val2.slice(2,4));
-            regVal.set(regkey+"H",val2.slice(0,2));
-            //setreg(destname,val2);
+            else val2=regVal.get(regkey+"H")+val2;
         }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        //setreg(destname,val2);
     }
-    }],["MUL", function(source){                                                               //INSTRUCTION 2
+    }],
+    ["NEG", function(dest){
+        if (regSize.has(dest)){
+            value=regVal.get(dest);
+            value=conversion(value,16,2);
+            value=twoscompliment(value);
+            value=conversion(value,2,16);
+            regkey=dest.slice(0,1);
+            you_decide=dest.slice(-1);
+            if(you_decide==="H"||you_decide==="L")
+        {
+            setsize("00",val2);
+            if(you_decide==="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+        setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        //arslannnn likho pls
+        }    
+    }],
+    ["MUL", function(source){                                                               //INSTRUCTION 2
             if (regSize.has(source)){
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
@@ -237,7 +292,7 @@ let instruction = new Map([
         if (value.length>4){
             value=value.slice(-4);}
         regkey = reg.slice(0,1);
-        you_decide = reg[-1];
+        you_decide = reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",value);
@@ -268,7 +323,7 @@ let instruction = new Map([
         if (value.length>4){
             value=value.slice(-4);}
         regkey = reg.slice(0,1);
-        you_decide = reg[-1];
+        you_decide = reg.slice(-1);
         if(you_decide==="H"||you_decide==="L")
         {
             setsize("00",value);
@@ -309,7 +364,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -391,7 +446,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
             regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -412,7 +467,7 @@ let instruction = new Map([
     }],
     
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
-        val1= regVal.get(dest);
+        val1=regVal.get(dest);
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
@@ -422,8 +477,7 @@ let instruction = new Map([
             }
             else val1 = val1.replaceAt(i,"0");
         }
-        len = val1.length;
-        for(i=0;i<(regSize.get(dest)-len);i++)
+        for(i=0;i<(regSize.get(dest)-val1.length);i++)
         {
             val1 = val1.replace(/^/,"1");
         }
@@ -432,17 +486,21 @@ let instruction = new Map([
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            setsize("00",val2);
+            //setsize("00",val2);
             if(you_decide=="H")
             {
                 val1=val1+regVal.get(regkey+"L");
             }
             else val1=regVal.get(regkey+"H")+val1;
         }
-        setsize("0000",val1);
+        //else
+        //{
+        //setsize("0000",val1);
+        //}
         regVal.set(regkey+"X",val1);
         regVal.set(regkey+"L",val1.slice(2,4));
         regVal.set(regkey+"H",val1.slice(0,2));
+        //setreg(destname,val1);
     }],
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
@@ -464,7 +522,7 @@ let instruction = new Map([
         }
         val2 = conversion(val2,2,16);
         regkey = dest.slice(0,1);
-        you_decide = dest[-1];
+        you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
             setsize("00",val2);
@@ -497,7 +555,7 @@ let instruction = new Map([
     source = conversion(source,2,16);
     if (size==8)
     {
-        you_decide = dest[-1]
+        you_decide = dest.slice(-1);
         setsize("00",source);
         if(you_decide=="H")
         {
@@ -528,7 +586,7 @@ let instruction = new Map([
     source = conversion(source,2,16);
     if (size==8)
     {
-        you_decide = dest[-1]
+        you_decide = dest.slice(-1);
         setsize("00",source);
         if(you_decide=="H")
         {
@@ -603,37 +661,35 @@ function isMemory(dest){
 
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
-    splitArray = input.split(" ");
-    cmnd = splitArray[0];
-    let operands = input.split(" ").slice(1).join("").split(",");
-    let dest = operands[0];
-    let source;
-    
+    const splitArray = input.split(" ");
+    splitArray[1]=splitArray[1].substr(0,2);
+    let cmnd; //only validity check: correct command
+    let dest; //valid name, check size
+    let source; //valid name, check size, compatible with destination!
+
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
         //input again
     }
-    if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
+    if(!(regSize.has(splitArray[1]) || !(isMemory(splitArray[1])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
     }
 
     cmnd = splitArray[0];
-    dest = operands[0];
+    dest = splitArray[1];
 
     //check source: valid, size comparable w dest
-    if (operands.length == 2){
-        //operands[1]=operands[1].slice(0,-1);
-        dest = operands[0];
+    if (splitArray.length == 3){
         //if fun(dest, source)
-        if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
+        if(!(regSize.has(splitArray[2]) || isMemory(splitArray[2]) || is_immediate(splitArray[2]) || isNumber(splitArray[1], splitArray[2]))){ //immediate bhi hosakta hai
            console.log("Invalid source operand.");
            //get input again
         }
-        source = operands[1];
+        source = splitArray[2];
         instruction.get(cmnd)(dest, source);
         //translation(cmnd, dest, source);
     }
-    else if(operands.length == 1){
+    else if(splitArray.length == 2){
         instruction.get(cmnd)(dest);
         //translation(cmnd, dest);
     }
@@ -653,6 +709,39 @@ function setmem(destname,destvalue){
 function errordisplay(){
     console.log("Error");
 }
+
+//twos comliment function
+function twoscompliment(s){
+    const slay = s.split("");
+    for (i=0;i<slay.length;i++){
+        if (slay[i]==="0"){slay[i]="1";}
+        else slay[i]="0";
+    }
+    slaystring = slay.join('');
+    slaystring=binaryAddition(slaystring,"1");
+    return slaystring;
+}
+
+// binary addition
+function binaryAddition(a,b){
+    var result = "",
+        carry = 0
+    while(a || b || carry){
+      let sum = +a.slice(-1) + +b.slice(-1) + carry // get last digit from each number and sum 
+      if( sum > 1 ){  
+        result = sum%2 + result
+        carry = 1
+      }
+      else{
+        result = sum + result
+        carry = 0
+      }
+      a = a.slice(0, -1)
+      b = b.slice(0, -1)
+    } 
+    return result
+  }
+
 
 //replacing at a particular index in string 
 //calling: str = str.replaceAt(index, "value")
@@ -719,7 +808,8 @@ function machinecode(opcode, d, w, mod, reg, rm){
     code = byte1 + " " + byte2;
     return code;
 }
-parsing("mov AX, 1234H");
+//ax=0001
 console.log(regVal.get("AX"));
-parsing("NOT AX");
+//parsing("mov ah, 60");
+movregtoimm("AH","60H");
 console.log(regVal.get("AX"));
