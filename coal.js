@@ -45,7 +45,7 @@ function movregtoimm(reg,value){
             value=value.slice(0,-1);
         }
         else{
-            value=conversion(10,16)}
+            value=conversion(value,10,16)}
         if (value.length>4){
                 console.log("imm vale larger than 4, error")}
         regkey=reg.slice(0,1);
@@ -112,9 +112,9 @@ function movmemtoreg(dest,source){
 function movregtomem(dest,source){
     if (regSize.has(source) && memory.has(dest))
     {
-        if (regSize.get(reg)===8)
+        if (regSize.get(source)===8)
         {
-            value=regVal.get(reg);
+            value=regVal.get(source);
             memory.set(dest,value);
             setmem(dest,value);
         }
@@ -134,7 +134,7 @@ let instruction = new Map([
             if (source.slice(-1)==="H" || source.slice(-1)==="h"){  //value is in hex
                 source=source.slice(0,-1);
             }
-            else {conversion(source,10,16);}
+            else {source=conversion(source,10,16);}
             movmemtoreg(dest,source);
         }
         else if (regSize.has(source) && (dest.slice(0,1)==="[" && dest.slice(-1)==="]")){
@@ -142,7 +142,7 @@ let instruction = new Map([
             if (dest.slice(-1)==="H" || dest.slice(-1)==="h"){  //value is in hex
                 dest=dest.slice(0,-1);
             }
-            else {conversion(dest,10,16);}
+            else {console.log("mem should b in hex");}
             movregtomem(dest,source);
         }
         else if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
@@ -230,14 +230,14 @@ let instruction = new Map([
             regkey=dest.slice(0,1);
             you_decide=dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
-        {
-            setsize("00",val2);
-            if(you_decide==="H")
             {
-                val2=val2+regVal.get(regkey+"L");
+                setsize("00",val2);
+                if(you_decide==="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
             }
-            else val2=regVal.get(regkey+"H")+val2;
-        }
         else
         {
         setsize("0000",val2);
@@ -477,7 +477,8 @@ let instruction = new Map([
             }
             else val1 = val1.replaceAt(i,"0");
         }
-        for(i=0;i<(regSize.get(dest)-val1.length);i++)
+        len=val1.length;
+        for(i=0;i<(regSize.get(dest)-len);i++)
         {
             val1 = val1.replace(/^/,"1");
         }
@@ -661,35 +662,37 @@ function isMemory(dest){
 
 function parsing(input){ //mov ax, 1234H
     input = input.toUpperCase();
-    const splitArray = input.split(" ");
-    splitArray[1]=splitArray[1].substr(0,2);
-    let cmnd; //only validity check: correct command
-    let dest; //valid name, check size
-    let source; //valid name, check size, compatible with destination!
+    splitArray = input.split(" ");
+    cmnd = splitArray[0];
+    let operands = input.split(" ").slice(1).join("").split(",");
+    let dest = operands[0];
+    let source;
 
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
         //input again
     }
-    if(!(regSize.has(splitArray[1]) || !(isMemory(splitArray[1])))){ //checks if destination is valid
+    if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
     }
 
     cmnd = splitArray[0];
-    dest = splitArray[1];
+    dest = operands[0];
 
     //check source: valid, size comparable w dest
-    if (splitArray.length == 3){
+    if (operands.length == 2){
+        //operands[1]=operands[1].slice(0,-1);
+        dest = operands[0];
         //if fun(dest, source)
-        if(!(regSize.has(splitArray[2]) || isMemory(splitArray[2]) || is_immediate(splitArray[2]) || isNumber(splitArray[1], splitArray[2]))){ //immediate bhi hosakta hai
+        if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
            console.log("Invalid source operand.");
            //get input again
         }
-        source = splitArray[2];
+        source = operands[1];
         instruction.get(cmnd)(dest, source);
         //translation(cmnd, dest, source);
     }
-    else if(splitArray.length == 2){
+    else if(operands.length == 1){
         instruction.get(cmnd)(dest);
         //translation(cmnd, dest);
     }
