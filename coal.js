@@ -420,12 +420,12 @@ let instruction = new Map([
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
-                quotient=val1/val2;
+                quotient=parseInt(val1/val2);
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
                 remainder=remainder.toString(16);
-                setsize("0000",quotient);
-                setsize("0000",remainder);
+                quotient = setsize("0000",quotient);
+                remainder = setsize("0000",remainder);
                 regVal.set("DX",remainder);
                 regVal.set("DL",remainder.slice(2,4));
                 regVal.set("DH",remainder.slice(0,2));
@@ -465,7 +465,7 @@ let instruction = new Map([
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            setsize("00",val2);
+            val2  = setsize("00",val2);
             if(you_decide=="H")
             {
                 val2=val2+regVal.get(regkey+"L");
@@ -474,7 +474,7 @@ let instruction = new Map([
         }
         else
         {
-            setsize("0000",val2);
+            val2 = setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
@@ -504,17 +504,17 @@ let instruction = new Map([
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            //setsize("00",val2);
+            val1 = setsize("00",val1);
             if(you_decide=="H")
             {
                 val1=val1+regVal.get(regkey+"L");
             }
             else val1=regVal.get(regkey+"H")+val1;
         }
-        //else
-        //{
-        //setsize("0000",val1);
-        //}
+        else
+        {
+        val1 = setsize("0000",val1);
+        }
         regVal.set(regkey+"X",val1);
         regVal.set(regkey+"L",val1.slice(2,4));
         regVal.set(regkey+"H",val1.slice(0,2));
@@ -544,7 +544,7 @@ let instruction = new Map([
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            setsize("00",val2);
+            val2 = setsize("00",val2);
             if(you_decide=="H")
             {
                 val2=val2+regVal.get(regkey+"L");
@@ -553,7 +553,7 @@ let instruction = new Map([
         }
         else
         {
-            setsize("0000",val2);
+            val2 = setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
