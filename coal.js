@@ -643,7 +643,7 @@ function is_immediate(source){
             return !flag;
         }
         for(let i=0;i<=digits.length-1;i++){
-            if(!(digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F")){
+            if(!((digits[i]>=0 && digits[i]<=9) || (digits[i]>="A" && digits[i]<="F"))){
                 return !flag;
             }
             return flag;
