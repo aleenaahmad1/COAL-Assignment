@@ -230,29 +230,31 @@ let instruction = new Map([
     ["NEG", function(dest){
         if (regSize.has(dest)){
             value=regVal.get(dest);
-            value=conversion(value,16,2);
+            value=parseInt(value,16);
+            value=value.toString(2);
             value=twoscompliment(value);
-            value=conversion(value,2,16);
+            value=parseInt(value,2);
+            value=value.toString(16);
             regkey=dest.slice(0,1);
             you_decide=dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
-                setsize("00",val2);
+                setsize("00",value);
                 if(you_decide==="H")
                 {
-                    val2=val2+regVal.get(regkey+"L");
+                    value=value+regVal.get(regkey+"L");
                 }
-                else val2=regVal.get(regkey+"H")+val2;
+                else value=regVal.get(regkey+"H")+value;
             }
             else
             {
-                setsize("0000",val2);
+                setsize("0000",value);
             }
-            regVal.set(regkey+"X",val2);
-            regVal.set(regkey+"L",val2.slice(2,4));
-            regVal.set(regkey+"H",val2.slice(0,2));
+            regVal.set(regkey+"X",value);
+            regVal.set(regkey+"L",value.slice(2,4));
+            regVal.set(regkey+"H",value.slice(0,2));
             //arslannnn likho pls:OK
-            document.getElementById(regkey+'X').innerHTML=val2;
+            document.getElementById(regkey+'X').innerHTML=value;
         }
     }],
     ["MUL", function(source){                                                               //INSTRUCTION 2
@@ -400,39 +402,39 @@ let instruction = new Map([
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
         if (regSize.has(source)){
             if (regSize.get(source)===8){
-                val1=regVal.get("AX");
+                val1=regVal.get("AL");
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
-                quotient=val1/val2;
+                quotient=parseInt(val1/val2);
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
                 remainder=remainder.toString(16);
-                setsize("00",quotient);
-                setsize("00",remainder);
-                regVal.set("AX",quotient+remainder);
+                quotient = setsize("00",quotient);
+                remainder = setsize("00",remainder);
+                regVal.set("AX",remainder + quotient);
                 regVal.set("AL",quotient);
                 regVal.set("AH",remainder);
                 //setreg("AX",val1);
-                document.getElementById('AX').innerHTML=quotient+remainder;
+                document.getElementById('AX').innerHTML= remainder + quotient;
             }
             if (regSize.get(source)===16){
                 val1=regVal.get("DX")+regVal.get("AX");
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
-                quotient=val1/val2;
+                quotient=parseInt(val1/val2);
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
                 remainder=remainder.toString(16);
-                setsize("0000",quotient);
-                setsize("0000",remainder);
+                quotient = setsize("0000",quotient);
+                remainder = setsize("0000",remainder);
                 regVal.set("DX",remainder);
-                regVal.set("DL",remainder(2,4));
-                regVal.set("DH",remainder(0,2));
+                regVal.set("DL",remainder.slice(2,4));
+                regVal.set("DH",remainder.slice(0,2));
                 regVal.set("AX",quotient);
-                regVal.set("AL",quotient(2,4));
-                regVal.set("AH",quotient(0,2));
+                regVal.set("AL",quotient.slice(2,4));
+                regVal.set("AH",quotient.slice(0,2));
                 //setreg("AX",regVal.get("AX"));
                 document.getElementById('AX').innerHTML=quotient;
                 //setreg("DX",regVal.get("DX"));
@@ -442,6 +444,46 @@ let instruction = new Map([
         else{
             //error
         }
+    }],
+    ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
+        val1=regVal.get(source);
+        val2=regVal.get(dest);
+        val1=conversion(val1,16,2);
+        val2=conversion(val2, 16, 2);
+        if(val1.length!=val2.length) //sets size to be the same
+        {
+            val1 = setsize(val2,val1);
+            val2 = setsize(val1,val2);
+        }
+        for(i=0;i<val1.length;i++)
+        {
+            if(val1[i]=="1" || val2[i]=="1")
+            {
+                val2 = val2.replaceAt(i,"1");
+            }
+            else val2 = val2.replaceAt(i,"0");
+        }
+        val2 = conversion(val2,2,16);
+        regkey = dest.slice(0,1);
+        you_decide = dest.slice(-1);
+        if(you_decide=="H"||you_decide=="L")
+        {
+            setsize("00",val2);
+            if(you_decide=="H")
+            {
+                val2=val2+regVal.get(regkey+"L");
+            }
+            else val2=regVal.get(regkey+"H")+val2;
+        }
+        else
+        {
+            setsize("0000",val2);
+        }
+        regVal.set(regkey+"X",val2);
+        regVal.set(regkey+"L",val2.slice(2,4));
+        regVal.set(regkey+"H",val2.slice(0,2));
+        //setreg(destname,val2);
+        document.getElementById(regkey+'X').innerHTML=val2;
     }],
     ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
