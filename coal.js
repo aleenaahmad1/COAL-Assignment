@@ -230,11 +230,9 @@ let instruction = new Map([
     ["NEG", function(dest){
         if (regSize.has(dest)){
             value=regVal.get(dest);
-            value=parseInt(value,16);
-            value=value.toString(2);
+            value=conversion(value,16,2);
             value=twoscompliment(value);
-            value=parseInt(value,2);
-            value=value.toString(16);
+            value=conversion(value,2,16);
             regkey=dest.slice(0,1);
             you_decide=dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
@@ -242,9 +240,9 @@ let instruction = new Map([
                 setsize("00",value);
                 if(you_decide==="H")
                 {
-                    value=value+regVal.get(regkey+"L");
+                    value = value+regVal.get(regkey+"L");
                 }
-                else value=regVal.get(regkey+"H")+value;
+                else value = regVal.get(regkey+"H")+value;
             }
             else
             {
@@ -412,23 +410,22 @@ let instruction = new Map([
                 remainder=remainder.toString(16);
                 quotient = setsize("00",quotient);
                 remainder = setsize("00",remainder);
-                regVal.set("AX",remainder + quotient);
+                regVal.set("AX",remainder+quotient);
                 regVal.set("AL",quotient);
                 regVal.set("AH",remainder);
-                //setreg("AX",val1);
-                document.getElementById('AX').innerHTML= remainder + quotient;
+                document.getElementById('AX').innerHTML=remainder+quotient;
             }
             if (regSize.get(source)===16){
                 val1=regVal.get("DX")+regVal.get("AX");
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
-                quotient=parseInt(val1/val2);
+                quotient=val1/val2;
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
                 remainder=remainder.toString(16);
-                quotient = setsize("0000",quotient);
-                remainder = setsize("0000",remainder);
+                setsize("0000",quotient);
+                setsize("0000",remainder);
                 regVal.set("DX",remainder);
                 regVal.set("DL",remainder.slice(2,4));
                 regVal.set("DH",remainder.slice(0,2));
@@ -444,46 +441,6 @@ let instruction = new Map([
         else{
             //error
         }
-    }],
-    ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        val1=conversion(val1,16,2);
-        val2=conversion(val2, 16, 2);
-        if(val1.length!=val2.length) //sets size to be the same
-        {
-            val1 = setsize(val2,val1);
-            val2 = setsize(val1,val2);
-        }
-        for(i=0;i<val1.length;i++)
-        {
-            if(val1[i]=="1" || val2[i]=="1")
-            {
-                val2 = val2.replaceAt(i,"1");
-            }
-            else val2 = val2.replaceAt(i,"0");
-        }
-        val2 = conversion(val2,2,16);
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide=="H"||you_decide=="L")
-        {
-            setsize("00",val2);
-            if(you_decide=="H")
-            {
-                val2=val2+regVal.get(regkey+"L");
-            }
-            else val2=regVal.get(regkey+"H")+val2;
-        }
-        else
-        {
-            setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-        document.getElementById(regkey+'X').innerHTML=val2;
     }],
     ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
@@ -607,8 +564,8 @@ let instruction = new Map([
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
         size = regSize.get(source);
         source = conversion(source,16,2);
-        if(size==8) setsize("00000000",source);
-        else setsize("0000000000000000",source);
+        if(size==8) source = setsize("00000000",source);
+        else source = setsize("0000000000000000",source);
         source = source.slice(0,size-shift);
         regkey= source.slice(0,1);
         for(i=0;i<shift;i++)
@@ -619,7 +576,7 @@ let instruction = new Map([
         if (size==8)
         {
             you_decide = dest.slice(-1);
-            setsize("00",source);
+            source = setsize("00",source);
             if(you_decide=="H")
             {
                 source=source+regVal.get(regkey+"L");
@@ -628,7 +585,7 @@ let instruction = new Map([
         }
         else
         {
-            setsize("0000",source);
+            source = setsize("0000",source);
         }
         regVal.set(regkey+"X",source);
         regVal.set(regkey+"L",source.slice(2,4));
@@ -640,8 +597,8 @@ let instruction = new Map([
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
         size = regSize.get(source);
         source = conversion(source,16,2);
-        if(size==8) setsize("00000000",source);
-        else setsize("0000000000000000",source);
+        if(size==8) source = setsize("00000000",source);
+        else source = setsize("0000000000000000",source);
         source = source.slice(shift);
         regkey = source.slice(0,1);
         for(i=0;i<shift;i++)
@@ -652,7 +609,7 @@ let instruction = new Map([
         if (size==8)
         {
             you_decide = dest.slice(-1);
-            setsize("00",source);
+            source = setsize("00",source);
             if(you_decide=="H")
             {
                 source=source+regVal.get(regkey+"L");
@@ -661,7 +618,7 @@ let instruction = new Map([
         }
         else
         {
-            setsize("0000",source);
+            source = setsize("0000",source);
         }
         regVal.set(regkey+"X",source);
         regVal.set(regkey+"L",source.slice(2,4));
@@ -728,10 +685,6 @@ function isMemory(dest){
 }
 
 function parsing(input){ //mov ax, 1234H
-     if(document.getElementById('inputlainawaladabba').value==''){
-        document.getElementById('mcode').innerHTML='No Command Entered';
-    }
-    else{
     input = input.toUpperCase();
     splitArray = input.split(" ");
     cmnd = splitArray[0];
@@ -771,7 +724,6 @@ function parsing(input){ //mov ax, 1234H
     else{
         console.log("Invalid instruction.");
         //input again
-    }
     }
 }
 
@@ -885,7 +837,7 @@ function translation(cmnd, dest, source){
                 dest=dest.replace(/^/,"0");
             }
             finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(source),dest,mod);
-            return finalCode;
+            document.getElementById("mcode").innerHTML = finalCode;
         }
         else if(isMemory(source)){ //MOV REG, [MEM]
             d = 1;
@@ -897,7 +849,7 @@ function translation(cmnd, dest, source){
                 source=source.replace(/^/,"0");
             }
             finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),source,mod);
-            return finalCode;
+            document.getElementById("mcode").innerHTML = finalCode;
         }
     }
     else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
@@ -922,13 +874,13 @@ function translation(cmnd, dest, source){
             }
         }
         finalCode = machinecode(immcode,d,w,regCode.get(dest),imm);
-        return finalCode;
+        document.getElementById("mcode").innerHTML = finalCode;
     }
     else{ //move and dest & source is REG OR command not move (dest and source will be reg hi ig lol)
         w = getW(dest);
         if(arguments.length == 3){
             finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),regCode.get(source),mod);
-            return finalCode;
+            document.getElementById("mcode").innerHTML = finalCode;
         }
         else if(arguments.length == 2){
             if(cmnd=="SHR" || cmnd=="SHL"){
@@ -938,7 +890,7 @@ function translation(cmnd, dest, source){
                 d= "1";
             }
             finalCode = machinecode(opcode.get(cmnd),d,w,fixedreg.get(cmnd),regCode.get(dest),mod)
-            return finalCode;
+            document.getElementById("mcode").innerHTML = finalCode;
         }
     }
 }
