@@ -902,7 +902,7 @@ function translation(cmnd, dest, source){
             document.getElementById("mcode").innerHTML = finalCode;
         }
     }
-    else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
+   else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
         let immcode = "101";
         d = 1; 
         w = getW(dest); let imm;
@@ -913,15 +913,27 @@ function translation(cmnd, dest, source){
             console.log("Imm after conversion: ", imm);
         }
         else{//if in hex: REMOVE H, CONVERT TO BINARY, APPEND ZEROES if len<4
-            console.log("Source 2: ", source);
             source = source.slice(0,-1);
-            console.log("Source after slicing:",source);
-            imm = conversion(source, 16, 2);
-            console.log("Imm after conversion:", imm);
-            len = imm.length;
-            for(i=0;i<(16-len);i++){
-                imm=imm.replace(/^/,"0");
+            lenhex = source.length; //length of hex (number of hex digits)
+            imm = conversion(source, 16, 2);//1234: 00010010 00110100->00110100 00010010
+            lenbin = imm.length;
+            for(i=0;i<((4*lenhex)-lenbin);i++){
+                imm=imm.replace(/^/,"0"); //appends zeroes as needed
             }
+
+            //IF HEX NUM>2 digits, little endian format needs to be applied:
+            if(lenhex==4){
+                imm1= imm.slice(0,8);
+                imm2 = imm.slice(8,16);
+            }
+            else if(lenhex==3){
+                imm1= imm.slice(0,4);
+                imm2 = imm.slice(4,12);
+                for(i=0;i<4;i++){
+                    imm1=imm1.replace(/^/,"0"); //appends zeroes 
+                }
+            }
+            imm = imm2+imm1;
         }
         finalCode = machinecode(immcode,d,w,regCode.get(dest),imm);
         document.getElementById("mcode").innerHTML = finalCode;
