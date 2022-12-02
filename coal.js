@@ -97,16 +97,18 @@ function movmemtoreg(dest,source){
     if (memory.has(source) && regSize.has(dest)) //assuming the brackets are removed from the memory location at this point
     {
         val1=memory.get(source);
+        regkey=dest.slice(0,1);
+        regVal.set(dest,val1);
         if (regSize.get(dest)===8)
         {
-            regkey=dest.slice(0,1);
-            regVal.set(dest,val1);
-            xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");
-            regVal.set(regkey+"X",xval);
-            // setreg(dest,xval);
-            document.getElementById(regkey+'X').innerHTML=xval;
+            xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");   
         }
-        else{console.log("8 bit data cannot move directly into 16 bit reg")}
+        else
+        {
+            xval=setsize("0000",val1);
+        }
+        regVal.set(regkey+"X",xval);
+        document.getElementById(regkey+'X').innerHTML=xval;
     }
     else{console.log("invalid mem location or dest reg")}
 }
@@ -122,7 +124,27 @@ function movregtomem(dest,source){
             // setmem(dest,value);
         document.getElementById(dest).innerHTML=value;
         }
-        else{console.log("16 bits from reg cannot be moved to 8 bit mem location");}
+        else
+        {
+            regkey=source.slice(0,1);
+            slayvalue=regVal.get(regkey+"L");
+            memory.set(dest,slayvalue);
+            document.getElementById(dest).innerHTML=slayvalue;
+            slayvalue=regVal.get(regkey+"H");
+            arslanmem=parseInt(dest,16);
+            arslanmem=arslanmem+1;
+            if (arslanmem>15)
+            {
+                return;
+            }
+            arslanmem=arslanmem.toString(16);
+            arslanmem=setsize("0000",arslanmem);
+            if (memory.has(arslanmem))
+            {
+                memory.set(arslanmem,slayvalue);
+                document.getElementById(arslanmem).innerHTML=slayvalue;
+            }
+        }
     }
     else{console.log("invalid mem location or source reg");}
 }
@@ -138,7 +160,11 @@ let instruction = new Map([
             if (source.slice(-1)==="H" || source.slice(-1)==="h"){  //value is in hex
                 source=source.slice(0,-1);
             }
-            else {source=conversion(source,10,16);}
+            else
+            {
+                source=conversion(source,10,16);
+                source=setsize("0000",source);
+            }
             movmemtoreg(dest,source);
         }
         else if (regSize.has(source) && (dest.slice(0,1)==="[" && dest.slice(-1)==="]")){
@@ -146,7 +172,10 @@ let instruction = new Map([
             if (dest.slice(-1)==="H" || dest.slice(-1)==="h"){  //value is in hex
                 dest=dest.slice(0,-1);
             }
-            else {console.log("mem should b in hex");}
+            else {
+                dest=conversion(dest,10,16);
+                dest=setsize("0000",dest);
+            }
             movregtomem(dest,source);
         }
         else if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
@@ -198,7 +227,11 @@ let instruction = new Map([
             if (val2<0)
             {
                 val2=-val2;
-                val2=val2.toString(2);
+                val2=conversion(val2,16,2);
+                if (regSize.get(dest)===8){
+                    val2 = setsize("00000000",val2);
+                }
+                else val2=setsize("0000000000000000",val2);
                 val2=twoscompliment(val2);
                 val2=conversion(val2,2,16);
             }
@@ -231,6 +264,10 @@ let instruction = new Map([
         if (regSize.has(dest)){
             value=regVal.get(dest);
             value=conversion(value,16,2);
+            if (regSize.get(dest)===8){
+                value = setsize("00000000",value);
+            }
+            else value=setsize("0000000000000000",value);
             value=twoscompliment(value);
             value=conversion(value,2,16);
             regkey=dest.slice(0,1);
@@ -404,6 +441,12 @@ let instruction = new Map([
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
+                if (val2===0)
+                {
+                    //errordisplay
+                    console.log("denominator cant b zero!!!");
+                    return;
+                }
                 quotient=parseInt(val1/val2);
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
@@ -420,6 +463,12 @@ let instruction = new Map([
                 val2=regVal.get(source);
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
+                if (val2===0)
+                {
+                    //errordisplay
+                    console.log("denominator cant b zero!!!");
+                    return;
+                }
                 quotient=parseInt(val1/val2);
                 remainder=val1%val2;
                 quotient=quotient.toString(16);
@@ -673,6 +722,7 @@ function isNumber(dest, source){
 function isMemory(dest){
     let hex = dest.slice(-2,-1);
     flag = true;
+    //aleenaaa if mem isnt hex dont return false, in that case ill convert the decimal into hex in my own check
     if (hex==='H'||hex==="h"){ //value is in hex
         dest=dest.slice(1,-2);
         if(!memory.has(dest)){
@@ -894,3 +944,5 @@ function translation(cmnd, dest, source){
         }
     }
 }
+
+
