@@ -901,41 +901,27 @@ function translation(cmnd, dest, source){
             finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),source,mod);
             document.getElementById("mcode").innerHTML = finalCode;
         }
-    }
-   else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
+    }//10111 00000
+    else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
         let immcode = "101";
         d = 1; 
         w = getW(dest); let imm;
-        h = source.slice(-1,-2);
-        if(isNumber(source)){
-            console.log("Source 1: ", source);
-            imm = conversion(source, 10, 2);
-            console.log("Imm after conversion: ", imm);
-        }
-        else{//if in hex: REMOVE H, CONVERT TO BINARY, APPEND ZEROES if len<4
+        h = source.charAt(source. length-1) 
+        console.log("H:", h);
+        if(h=="H" || h=="h"){//immediate value is HEX
             source = source.slice(0,-1);
-            lenhex = source.length; //length of hex (number of hex digits)
-            imm = conversion(source, 16, 2);//1234: 00010010 00110100->00110100 00010010
-            lenbin = imm.length;
-            for(i=0;i<((4*lenhex)-lenbin);i++){
-                imm=imm.replace(/^/,"0"); //appends zeroes as needed
-            }
-
-            //IF HEX NUM>2 digits, little endian format needs to be applied:
-            if(lenhex==4){
-                imm1= imm.slice(0,8);
-                imm2 = imm.slice(8,16);
-            }
-            else if(lenhex==3){
-                imm1= imm.slice(0,4);
-                imm2 = imm.slice(4,12);
-                for(i=0;i<4;i++){
-                    imm1=imm1.replace(/^/,"0"); //appends zeroes 
-                }
-            }
-            imm = imm2+imm1;
+            immediate = littlendian(source);
         }
-        finalCode = machinecode(immcode,d,w,regCode.get(dest),imm);
+        else{//decimal number
+            if(source>256){
+                source = conversion(source, 10, 16);
+                immediate = littlendian(source);    
+            }
+            else{
+                immediate = conversion(source, 10, 2);
+            }
+        }
+        finalCode = machinecode(immcode,d,w,regCode.get(dest),immediate);
         document.getElementById("mcode").innerHTML = finalCode;
     }
     else{ //move and dest & source is REG OR command not move (dest and source will be reg hi ig lol)
@@ -957,4 +943,31 @@ function translation(cmnd, dest, source){
     }
 }
 
+function littlendian(source){
+    lenhex = source.length; //length of hex (number of hex digits)
+    imm = conversion(source, 16, 2);//1234: 00010010 00110100->00110100 00010010
+    lenbin = imm.length;
+    for(i=0;i<((4*lenhex)-lenbin);i++){
+        imm=imm.replace(/^/,"0"); //appends zeroes as needed
+    }
+    
+    if(lenhex==2){
+        return imm;
+    }
+    //IF HEX NUM>2 digits, little endian format needs to be applied
+    
+    else if(lenhex==4){
+        imm1= imm.slice(0,8);
+        imm2 = imm.slice(8,16);
+    }
+    else if(lenhex==3){
+        imm1= imm.slice(0,4);
+        imm2 = imm.slice(4,12);
+        for(i=0;i<4;i++){
+            imm1=imm1.replace(/^/,"0"); //appends zeroes 
+        }
+    }
+    imm = imm2+imm1;
+    return imm;
+}
 
