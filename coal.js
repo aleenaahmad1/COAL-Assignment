@@ -39,6 +39,11 @@ let memory = new Map([
     ['000D', "00"], ['000E', "00"],['000F', "00"]
 ]);
 
+let components = new Map([
+    ["PC", 0], ["IR", 0],["ControlUnit", 0]
+    ["memory",0],["ALU",0]
+])
+
 //mov imm to reg
 function movregtoimm(reg,value){
     if (value.slice(-1)==='H'||value.slice(-1)==='h'){ //value is in hex
@@ -66,6 +71,10 @@ function movregtoimm(reg,value){
     regVal.set(regkey+"L",value.slice(2,4));
     regVal.set(regkey+"H",value.slice(0,2));
     document.getElementById(regkey+'X').innerHTML=value;
+    components.set("PC", 1);
+    components.set("IR",1);
+    components.set("ControlUnit",1);
+    components.set("ALU",1);
     /////////////////////Arslan nai imm to reg Likh lia////
 }
 
@@ -89,6 +98,10 @@ function movregtoreg(dest,source){
         regVal.set(regkey+"H",val.slice(0,2));
         //idhr arslan function call karo
         document.getElementById(regkey+'X').innerHTML=val;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
     }
 }
 
@@ -109,6 +122,11 @@ function movmemtoreg(dest,source){
         }
         regVal.set(regkey+"X",xval);
         document.getElementById(regkey+'X').innerHTML=xval;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("memory",1);
+        components.set("ALU",1);
     }
     else{console.log("invalid mem location or dest reg")}
 }
@@ -143,6 +161,11 @@ function movregtomem(dest,source){
             {
                 memory.set(arslanmem,slayvalue);
                 document.getElementById(arslanmem).innerHTML=slayvalue;
+                components.set("PC", 1);
+                components.set("IR",1);
+                components.set("ControlUnit",1);
+                components.set("memory",1);
+                components.set("ALU",1);
             }
         }
     }
@@ -215,6 +238,10 @@ let instruction = new Map([
             regVal.set(regkey+"H",val2.slice(0,2));
             //setreg(destname,val2);
             document.getElementById(regkey+'X').innerHTML=val2;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
         }
     }],
     ["SUB", function(dest,source){
@@ -258,6 +285,10 @@ let instruction = new Map([
             regVal.set(regkey+"H",val2.slice(0,2));
             //setreg(destname,val2);
             document.getElementById(regkey+'X').innerHTML=val2;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
         }
     }],
     ["NEG", function(dest){
@@ -290,6 +321,10 @@ let instruction = new Map([
             regVal.set(regkey+"H",value.slice(0,2));
             //arslannnn likho pls:OK
             document.getElementById(regkey+'X').innerHTML=value;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
         }
     }],
     ["MUL", function(source){                                                               //INSTRUCTION 2
@@ -327,6 +362,10 @@ let instruction = new Map([
                 document.getElementById('AX').innerHTML=val1.slice(4,8);
                 //setreg("DX",regVal.get("DX"));
                 document.getElementById('DX').innerHTML=val1.slice(0,4);
+                components.set("PC", 1);
+                components.set("IR",1);
+                components.set("ControlUnit",1);
+                components.set("ALU",1);
             }}
     }],
     ["INC", function(reg){                                                                                   //INSTRUCTION 3
@@ -358,6 +397,10 @@ let instruction = new Map([
             regVal.set(regkey+"H",value.slice(0,2));
             //setreg(regkey+"X",value);
             document.getElementById(regkey+'X').innerHTML=value;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
         }
         else {errordisplay();} //invalid reg
     }],
@@ -389,6 +432,10 @@ let instruction = new Map([
             regVal.set(regkey+"L",value.slice(2,4));
             regVal.set(regkey+"H",value.slice(0,2));
             document.getElementById(regkey+'X').innerHTML=value;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
 
             //setreg(regkey+"X",value);
         }
@@ -433,6 +480,10 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
         document.getElementById(regkey+'X').innerHTML=val2;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
     }],
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
         if (regSize.has(source)){
@@ -485,6 +536,10 @@ let instruction = new Map([
                 document.getElementById('AX').innerHTML=quotient;
                 //setreg("DX",regVal.get("DX"));
                 document.getElementById('DX').innerHTML=remainder;
+                components.set("PC", 1);
+                components.set("IR",1);
+                components.set("ControlUnit",1);
+                components.set("ALU",1);
             }
         }
         else{
@@ -530,6 +585,10 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
         document.getElementById(regkey+'X').innerHTML=val2;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
     }],
 
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
@@ -569,6 +628,10 @@ let instruction = new Map([
         regVal.set(regkey+"H",val1.slice(0,2));
         //setreg(destname,val1);
         document.getElementById(regkey+'X').innerHTML=val1;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
     }],
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
@@ -609,6 +672,10 @@ let instruction = new Map([
         regVal.set(regkey+"H",val2.slice(0,2));
         //setreg(destname,val2);
         document.getElementById(regkey+'X').innerHTML=val2;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
     }],
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
         size = regSize.get(source);
@@ -640,6 +707,10 @@ let instruction = new Map([
         regVal.set(regkey+"L",source.slice(2,4));
         regVal.set(regkey+"H",source.slice(0,2));
         document.getElementById(regkey+'X').innerHTML=source;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
 
     }],
 
@@ -674,9 +745,17 @@ let instruction = new Map([
         regVal.set(regkey+"H",source.slice(0,2));
         //setreg(destname,source);
         document.getElementById(regkey+'X').innerHTML=source;
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+        components.set("ALU",1);
 
     }],
-    ["NOP", function(){}],["", function(){}]
+    ["NOP", function(){}],["", function(){
+        components.set("PC", 1);
+        components.set("IR",1);
+        components.set("ControlUnit",1);
+    }]
 ]);
 
 //inner mov functions for variations
