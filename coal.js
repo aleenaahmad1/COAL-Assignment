@@ -52,7 +52,9 @@ function movregtoimm(reg,value){
     else{
         value=conversion(value,10,16)}
     if (value.length>4){
-        console.log("imm vale larger than 4, error")}
+        console.log("imm vale larger than 4, error")
+        return;}
+    document.getElementById(registernum1).innerHTML=value;
     regkey=reg.slice(0,1);
     you_decide=reg.slice(-1);
     if(you_decide==="H"||you_decide==="L")
@@ -83,6 +85,7 @@ function movregtoreg(dest,source){
     if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
     {
         val=regVal.get(source);
+        document.getElementById(registernum1).innerHTML=val;
         regkey=dest.slice(0,1);
         you_decide=dest.slice(-1);
         if (you_decide==="L" || you_decide==="H")
@@ -110,6 +113,7 @@ function movmemtoreg(dest,source){
     if (memory.has(source) && regSize.has(dest)) //assuming the brackets are removed from the memory location at this point
     {
         val1=memory.get(source);
+        document.getElementById(registernum1).innerHTML=val1;
         regkey=dest.slice(0,1);
         regVal.set(dest,val1);
         if (regSize.get(dest)===8)
@@ -135,6 +139,7 @@ function movmemtoreg(dest,source){
 function movregtomem(dest,source){
     if (regSize.has(source) && memory.has(dest))
     {
+        document.getElementById(registernum1).innerHTML=regVal.get(source);
         if (regSize.get(source)===8)
         {
             value=regVal.get(source);
@@ -211,6 +216,8 @@ let instruction = new Map([
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
             val1=regVal.get(source);
             val2=regVal.get(dest);
+            document.getElementById(registernum1).innerHTML=val1;
+            document.getElementById(registernum2).innerHTML=val2;
             val1=parseInt(val1,16);
             val2=parseInt(val2,16);
             val2=val2+val1;
@@ -248,6 +255,8 @@ let instruction = new Map([
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
             val1=regVal.get(source);
             val2=regVal.get(dest);
+            document.getElementById(registernum1).innerHTML=val1;
+            document.getElementById(registernum2).innerHTML=val2;
             val1=parseInt(val1,16);
             val2=parseInt(val2,16);
             val2=val2-val1;
@@ -294,6 +303,7 @@ let instruction = new Map([
     ["NEG", function(dest){
         if (regSize.has(dest)){
             value=regVal.get(dest);
+            document.getElementById(registernum1).innerHTML=value;
             value=conversion(value,16,2);
             if (regSize.get(dest)===8){
                 value = setsize("00000000",value);
@@ -332,6 +342,8 @@ let instruction = new Map([
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
+                document.getElementById(registernum1).innerHTML=val1;
+                document.getElementById(registernum2).innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -346,6 +358,8 @@ let instruction = new Map([
             if (regSize.get(source)===16){
                 val1=regVal.get("AX");
                 val2=regVal.get(source);
+                document.getElementById(registernum1).innerHTML=val1;
+                document.getElementById(registernum2).innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -372,6 +386,7 @@ let instruction = new Map([
         if (regSize.has(reg))
         {
             value=regVal.get(reg);
+            document.getElementById(registernum1).innerHTML=value;
             value=parseInt(value,16);
             value=value+1;
             value=value.toString(16);
@@ -408,6 +423,7 @@ let instruction = new Map([
         if (regSize.has(reg))
         {
             value=regVal.get(reg);
+            document.getElementById(registernum1).innerHTML=value;
             value=parseInt(value,16);
             if (value===0)
             {
@@ -450,6 +466,8 @@ let instruction = new Map([
     ["AND", function(dest, source){                                                                        //INSTRUCTION 5
         val1=regVal.get(source);
         val2=regVal.get(dest);
+        document.getElementById(registernum1).innerHTML=val1;
+        document.getElementById(registernum2).innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -496,6 +514,8 @@ let instruction = new Map([
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
+                document.getElementById(registernum1).innerHTML=val1;
+                document.getElementById(registernum2).innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 if (val2===0)
@@ -518,6 +538,8 @@ let instruction = new Map([
             if (regSize.get(source)===16){
                 val1=regVal.get("DX")+regVal.get("AX");
                 val2=regVal.get(source);
+                document.getElementById(registernum1).innerHTML=val1;
+                document.getElementById(registernum2).innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 if (val2===0)
@@ -555,6 +577,8 @@ let instruction = new Map([
     ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
         val2=regVal.get(dest);
+        document.getElementById(registernum1).innerHTML=val1;
+        document.getElementById(registernum2).innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -599,6 +623,7 @@ let instruction = new Map([
 
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
         val1=regVal.get(dest);
+        document.getElementById(registernum1).innerHTML=val1;
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
@@ -642,6 +667,8 @@ let instruction = new Map([
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
         val2=regVal.get(dest);
+        document.getElementById(registernum1).innerHTML=val1;
+        document.getElementById(registernum2).innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -685,6 +712,7 @@ let instruction = new Map([
     }],
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
         size = regSize.get(source);
+        document.getElementById(registernum1).innerHTML=regVal.get(source);
         source = conversion(source,16,2);
         if(size==8) source = setsize("00000000",source);
         else source = setsize("0000000000000000",source);
@@ -722,6 +750,7 @@ let instruction = new Map([
 
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
         size = regSize.get(source);
+        document.getElementById(registernum1).innerHTML=regVal.get(source);
         source = conversion(source,16,2);
         if(size==8) source = setsize("00000000",source);
         else source = setsize("0000000000000000",source);
@@ -820,6 +849,8 @@ function isMemory(dest){
 }
 
 function parsing(input){ //mov ax, 1234H
+    document.getElementById(registernum1).innerHTML=" ";
+    document.getElementById(registernum2).innerHTML=" ";
     input = input.toUpperCase();
     splitArray = input.split(" ");
     cmnd = splitArray[0];
@@ -1055,4 +1086,3 @@ function littlendian(source){
     imm = imm2+imm1;
     return imm;
 }
-
