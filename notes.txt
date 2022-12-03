@@ -8,3 +8,30 @@ decode: control unit
 fetchOp:  memory, ALU regs
 execute: ALU
 store: memory
+
+add, sub, mul, div, and, xor, not, or, shr, shl, neg, inc, dec: fetch, decode, execute
+PC, IR 
+control unit
+ALU
+
+nop: fetch, decode
+PC, IR 
+control unit
+
+
+mov reg, [mem]: fetch, decode, fetchOp, execute
+PC, IR 
+controlunit
+memory (for fetchOp)
+ALU(?), reg 
+
+mov [mem],reg: fetch, decode, execute, store
+PC, IR
+controlunit
+ALU?
+memory
+
+mov reg, imm: fetch, decode, execute
+PC, IR
+controlunit
+ALU
