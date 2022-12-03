@@ -409,6 +409,11 @@ let instruction = new Map([
         {
             value=regVal.get(reg);
             value=parseInt(value,16);
+            if (value===0)
+            {
+                value="ffff";
+            }
+            else{
             value=value-1;
             value=value.toString(16);
             if (value.length>4){
@@ -427,6 +432,7 @@ let instruction = new Map([
             else
             {
                 setsize("0000",value);
+            }
             }
             regVal.set(regkey+"X",value);
             regVal.set(regkey+"L",value.slice(2,4));
