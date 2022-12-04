@@ -1064,16 +1064,23 @@ function isNumber(dest, source){
 function isMemory(dest){
     let hex = dest.slice(-2,-1);
     flag = true;
-    //aleenaaa if mem isnt hex dont return false, in that case ill convert the decimal into hex in my own check
     if (hex==='H'||hex==="h"){ //value is in hex
         dest=dest.slice(1,-2);
         if(!memory.has(dest)){
             return !flag;
         }
-        return flag;
     }
-    return !flag;
-
+    else{
+        let brack1 = dest.slice(0,1);
+        let brack2 = dest.slice(-1,dest.length);
+        if(brack1=="[" && brack2=="]"){
+            dest = dest.slice(1,dest.length-1);
+        }
+    }
+    if(!memory.has(dest)){
+            return !flag;
+        }
+    return flag;
 }
 
 function parsing(input){ //mov ax, 1234H
