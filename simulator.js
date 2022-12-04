@@ -138,12 +138,21 @@ function movregtoimm(reg,value){
         //console.log("imm vale larger than 4, error")
         errordisplay();
         return;}
+    if (regSize.get(reg)===8)
+    {
+        value=setsize("00",value);
+        if (value.length>2)
+        {
+            errordisplay();
+            return;
+        }
+    }
     document.getElementById("registernum1").innerHTML=value;
     regkey=reg.slice(0,1);
     you_decide=reg.slice(-1);
     if(you_decide==="H"||you_decide==="L")
     {
-        value=setsize("00",value);
+        // value=setsize("00",value);
         if (you_decide==="H")
         {
             value=value+regVal.get(regkey+"L");
