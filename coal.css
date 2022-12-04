@@ -17,7 +17,7 @@ root{
 }
 html{
     font-family:"Montserrat";
-    color :floralwhite;
+    color :papayawhip;
     border-color: floralwhite;
     background-color: #171c1b;
 }
@@ -354,7 +354,7 @@ main{
 
 .registers{
 
-    height: 38px;
+    height: 20%;
     text-align: center;
     box-shadow: 4px 4px 5px black;
     border-radius: 20px;
@@ -590,7 +590,7 @@ ul li{
 }
 #displayMachineCodes{
     margin-left: 1%;
-    padding-left: auto%;
+    padding-left: inherit;
     margin-top: 8%;
     width:90%;
     align-content: center;
@@ -612,7 +612,7 @@ ul li{
     height: 30px;
     font-size: large;
     border-radius: 20px;
-    color: #e2b714;
+    color: #074b4d;
     font-weight: bolder;
     font-family: Montserrat;
     text-shadow: #171c1b;
@@ -631,13 +631,14 @@ ul li{
     transform: translate(-50%,-50%);
 }
 #mm{
+    display: flex;
     align-content: center;
     align-items: center;
     width: 100%;
-    display: flex;
     justify-content: center;
 }
 #mcode{
+    justify-content: center;
     /*align-items: center;*/
     /*text-align: center;*/
     background-color: white;
