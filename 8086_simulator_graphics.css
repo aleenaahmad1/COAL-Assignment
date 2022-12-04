@@ -45,7 +45,7 @@ main{
 }
 .bakiajjebwalakaam{
     height: 90%;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 }
 #baki1{
     width: 50%;
@@ -64,7 +64,7 @@ main{
 }
 #textAboveAlu{
     height: 35%;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     /*margin-top: .5%;*/
     border-radius: 10px;
     box-shadow: 4px 4px 5px black;
@@ -81,7 +81,7 @@ main{
     transform: translate(-50%,-50%);
 }
 #ALUU{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     height: 70%;
     padding-top: -10px;
     margin-top: -25%;
@@ -93,7 +93,7 @@ main{
     /*margin-bottom: .5%;*/
 }
 #theTwoRegisters{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     height: 100%;
     margin-top: -25%;
     box-shadow: 4px 4px 5px black;
@@ -161,22 +161,22 @@ main{
 }
 
 .text-copy:nth-child(2){
-    stroke:  #e2b714;
+    stroke:  rebeccapurple;
     animation-delay: -2s;
 }
 
 .text-copy:nth-child(3){
-    stroke: #BD0034;
+    stroke: purple;
     animation-delay: -3s;
 }
 
 .text-copy:nth-child(4){
-    stroke: #BD0034;
+    stroke: hotpink;
     animation-delay: -4s;
 }
 
 .text-copy:nth-child(5){
-    stroke: #FDB731;
+    stroke: deepskyblue;
     animation-delay: -5s;
 }
 
@@ -283,7 +283,7 @@ main{
 
 }
 #pointer::-webkit-scrollbar-thumb{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 }
 #pointer::-webkit-scrollbar-track{
     background-color: #03091d;
@@ -301,11 +301,11 @@ main{
 
 }
 #socrate{
-     font-family: Montserrat;
+    font-family: Montserrat;
 }
 #displayMachineCode{
     /*font-family: 'Rubik Glitch', cursive;*/
-    color: #e2b714;
+    color:  hotpink;
     font-family: Montserrat;
     animation-name: stroke-offset;
 }
@@ -358,7 +358,7 @@ main{
     text-align: center;
     box-shadow: 4px 4px 5px black;
     border-radius: 20px;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     /*border-width: thick;*/
     /*border-color: mediumvioletred;*/
 
@@ -381,7 +381,7 @@ body::-webkit-scrollbar{
     width: 0.4rem;
 }
 body::-webkit-scrollbar-thumb{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 }
 body::-webkit-scrollbar-track{
     background-color: #03091d;
@@ -398,7 +398,7 @@ ul{
     width: 100%;
 }
 ul li{
-    background-color: #e2b714 ;
+    background-color: rebeccapurple ;
     padding-left: 10px;
     margin-top: 0;
     padding-top: 0;
@@ -410,7 +410,7 @@ ul li{
     /*color: #171c1b;*/
 }
 #n1{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 }
 .bakiajjebwalakaam1{
     margin-bottom: 6px;
@@ -429,7 +429,7 @@ ul li{
     text-align: center;
     font-kerning: auto;
     border-radius: 10px;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     position: relative;
     /*font-style: oblique ;*/
 }
@@ -447,7 +447,7 @@ ul li{
     height: 30%;
     color-rendering: optimizeQuality;
     text-align: center;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
     border-radius: 10px;
     position: relative;
 }
@@ -468,7 +468,7 @@ ul li{
     direction: ltr;
     align-items: center;
     border-radius: 10px;
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 
 }
 .bakiajjebwalakaam11{
@@ -486,7 +486,7 @@ ul li{
 
 }
 #ara:hover{
-    background-color:  #e2b714;
+    background-color:  rebeccapurple;
 }
 #submitButton:hover{
 
@@ -502,7 +502,7 @@ ul li{
     display: flex;
     border-style: ridge;
     border-radius: 10px;
-    border-color: #e2b714;
+    border-color: rebeccapurple;
     width: 50%;
     align-items: center;
     text-align: center;
@@ -621,8 +621,9 @@ ul li{
     position: relative;
 }
 #submitButton{
-    background-color: #e2b714;
-    font-family: 'Rubik Glitch', cursive;
+    color: hotpink;
+    background-color: rebeccapurple;
+    font-family: 'Montserrat', cursive;
     border-radius: 20px;
     font-size: x-large;
     position: absolute;
