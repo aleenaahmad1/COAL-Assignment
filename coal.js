@@ -130,19 +130,14 @@ function immtoreg(){
 //mov imm to reg
 function movregtoimm(reg,value){
     if (value.slice(-1)==='H'||value.slice(-1)==='h'){ //value is in hex
-        document.getElementById('mcode').innerHTML='INVALID INSTRUCTION';
-        // e=value.slice(0,-1);
+        value=value.slice(0,-1);
     }
     else{
-        value=conversion(value,10,16)
-    }
+        value=conversion(value,10,16)}
     if (value.length>4){
-        // console.log("imm vale larger than 4, error")
-        document.getElementById('mcode').innerHTML='Error! #imm value larger than 4'
-        return;
-    }
+        console.log("imm vale larger than 4, error")
+        return;}
     document.getElementById("registernum1").innerHTML=value;
-    regisLit('registernum1');
     regkey=reg.slice(0,1);
     you_decide=reg.slice(-1);
     if(you_decide==="H"||you_decide==="L")
@@ -161,7 +156,6 @@ function movregtoimm(reg,value){
     regVal.set(regkey+"L",value.slice(2,4));
     regVal.set(regkey+"H",value.slice(0,2));
     document.getElementById(regkey+'X').innerHTML=value;
-
     components.set("PC", 1);
     components.set("IR",1);
     components.set("ControlUnit",1);
@@ -213,8 +207,6 @@ function movregtoreg(dest,source){
     {
         val=regVal.get(source);
         document.getElementById("registernum1").innerHTML=val;
-        regisLit('registernum1');
-
         regkey=dest.slice(0,1);
         you_decide=dest.slice(-1);
         if (you_decide==="L" || you_decide==="H")
@@ -251,7 +243,6 @@ function movmemtoreg(dest,source){
     {
         val1=memory.get(source);
         document.getElementById("registernum1").innerHTML=val1;
-        regisLit('registernum1');
         regkey=dest.slice(0,1);
         regVal.set(dest,val1);
         if (regSize.get(dest)===8)
@@ -272,11 +263,7 @@ function movmemtoreg(dest,source){
         components.set("reg",1);
         memtoregflow(source);
     }
-    else{console.log("invalid mem location or dest reg")
-        document.getElementById('mcode').innerHTML='INVALID MEM LOCATION OR SOURCE REG';
-
-
-    }
+    else{console.log("invalid mem location or dest reg")}
 }
 
 //mov ([mem],reg) wala mov
@@ -285,8 +272,6 @@ function movregtomem(dest,source){
     if (regSize.has(source) && memory.has(dest))
     {
         document.getElementById("registernum1").innerHTML=regVal.get(source);
-        regisLit('registernum1');
-
         if (regSize.get(source)===8)
         {
             value=regVal.get(source);
@@ -333,11 +318,7 @@ function movregtomem(dest,source){
             }
         }
     }
-    else{console.log("invalid mem location or source reg");
-        document.getElementById('mcode').innerHTML='INVALID MEM LOCATION OR SOURCE REG';
-
-
-    }
+    else{console.log("invalid mem location or source reg");}
 }
 function addflow(){
     document.getElementById('div8').classList.add('div8');
@@ -403,11 +384,7 @@ let instruction = new Map([
             val1=regVal.get(source);
             val2=regVal.get(dest);
             document.getElementById("registernum1").innerHTML=val1;
-            regisLit('registernum1');
-
             document.getElementById("registernum2").innerHTML=val2;
-            regisLit('registernum2');
-
             val1=parseInt(val1,16);
             val2=parseInt(val2,16);
             val2=val2+val1;
@@ -506,8 +483,6 @@ let instruction = new Map([
         if (regSize.has(dest)){
             value=regVal.get(dest);
             document.getElementById("registernum1").innerHTML=value;
-            regisLit('registernum1');
-
             value=conversion(value,16,2);
             if (regSize.get(dest)===8){
                 value = setsize("00000000",value);
@@ -551,11 +526,7 @@ let instruction = new Map([
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
                 document.getElementById("registernum1").innerHTML=val1;
-                regisLit('registernum1');
-
                 document.getElementById("registernum2").innerHTML=val2;
-                regisLit('registernum2');
-
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -571,11 +542,7 @@ let instruction = new Map([
                 val1=regVal.get("AX");
                 val2=regVal.get(source);
                 document.getElementById("registernum1").innerHTML=val1;
-                regisLit('registernum1');
-
                 document.getElementById("registernum2").innerHTML=val2;
-                regisLit('registernum2');
-
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -608,8 +575,6 @@ let instruction = new Map([
         {
             value=regVal.get(reg);
             document.getElementById("registernum1").innerHTML=value;
-            regisLit('registernum1');
-
             value=parseInt(value,16);
             value=value+1;
             value=value.toString(16);
@@ -651,8 +616,6 @@ let instruction = new Map([
         {
             value=regVal.get(reg);
             document.getElementById("registernum1").innerHTML=value;
-            regisLit('registernum1');
-
             value=parseInt(value,16);
             if (value===0)
             {
@@ -699,12 +662,7 @@ let instruction = new Map([
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
-        regisLit('registernum1');
-
-
         document.getElementById("registernum2").innerHTML=val2;
-        regisLit('registernum2');
-
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -756,19 +714,13 @@ let instruction = new Map([
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
                 document.getElementById("registernum1").innerHTML=val1;
-                regisLit('registernum1');
-
                 document.getElementById("registernum2").innerHTML=val2;
-                regisLit('registernum2');
-
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 if (val2===0)
                 {
                     //errordisplay
                     console.log("denominator cant b zero!!!");
-                    document.getElementById('mcode').innerHTML='DENOMINATOR CAN NOT BE ZERO';
-
                     return;
                 }
                 quotient=parseInt(val1/val2);
@@ -792,8 +744,6 @@ let instruction = new Map([
                 if (val2===0)
                 {
                     //errordisplay
-                    document.getElementById('mcode').innerHTML='DENOMINATOR CAN NOT BE ZERO';
-
                     console.log("denominator cant b zero!!!");
                     return;
                 }
@@ -834,11 +784,7 @@ let instruction = new Map([
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
-        regisLit('registernum1');
-
         document.getElementById("registernum2").innerHTML=val2;
-        regisLit('registernum2');
-
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -889,8 +835,6 @@ let instruction = new Map([
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
         val1=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
-        regisLit('registernum1');
-
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
@@ -939,10 +883,7 @@ let instruction = new Map([
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
-        regisLit('registernum1');
-
         document.getElementById("registernum2").innerHTML=val2;
-        regisLit('registernum2');
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -1034,7 +975,6 @@ let instruction = new Map([
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
         size = regSize.get(source);
         document.getElementById("registernum1").innerHTML=regVal.get(source);
-        regisLit('registernum1');
         source = conversion(source,16,2);
         if(size==8) source = setsize("00000000",source);
         else source = setsize("0000000000000000",source);
@@ -1111,42 +1051,41 @@ function is_immediate(source){
 function isNumber(dest, source){
     if(!isNaN(source)){
         if(source>regSize.has(dest)){
-            document.getElementById('mcode').innerHTML='SIZE OF SOURCE > REGISTER';
-
             return false;
             //input again
         }
         return true;
     }
     else{
-        document.getElementById('mcode').innerHTML='ERROR';
         return false;
-
     }
 }
 
 function isMemory(dest){
     let hex = dest.slice(-2,-1);
     flag = true;
-    //aleenaaa if mem isnt hex dont return false, in that case ill convert the decimal into hex in my own check
     if (hex==='H'||hex==="h"){ //value is in hex
         dest=dest.slice(1,-2);
         if(!memory.has(dest)){
             return !flag;
         }
-        return flag;
     }
-    return !flag;
-
+    else{
+        let brack1 = dest.slice(0,1);
+        let brack2 = dest.slice(-1,dest.length);
+        if(brack1=="[" && brack2=="]"){
+            dest = dest.slice(1,dest.length-1);
+        }
+    }
+    if(!memory.has(dest)){
+            return !flag;
+        }
+    return flag;
 }
 
 function parsing(input){ //mov ax, 1234H
     document.getElementById("registernum1").innerHTML=" ";
-    regisLit('registernum1');
-
     document.getElementById("registernum2").innerHTML=" ";
-    regisLit('registernum1');
-
     input = input.toUpperCase();
     splitArray = input.split(" ");
     cmnd = splitArray[0];
@@ -1155,13 +1094,11 @@ function parsing(input){ //mov ax, 1234H
     let source;
 
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
-        document.getElementById('mcode').innerHTML='INVALID INSTRUCTION';
-        // console.log("Invalid instruction.");
+        console.log("Invalid instruction.");
         //input again
     }
     if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
-
-        document.getElementById('mcode').innerHTML='INVALID DESTINATION OPERAND';
+        console.log("Invalid destination operand.")
     }
 
     cmnd = splitArray[0];
@@ -1173,8 +1110,7 @@ function parsing(input){ //mov ax, 1234H
         dest = operands[0];
         //if fun(dest, source)
         if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
-            document.getElementById('mcode').innerHTML='INVALID OPERAND';
-            // console.log("Invalid source operand.");
+            console.log("Invalid source operand.");
             //get input again
         }
         source = operands[1];
@@ -1187,16 +1123,14 @@ function parsing(input){ //mov ax, 1234H
     }
     //else for another length of instruction?
     else{
-
-        document.getElementById('mcode').innerHTML='INVALID INSTRUCTION';
-        // console.log("Invalid instruction.");
+        console.log("Invalid instruction.");
         //input again
     }
 }
 
 function errordisplay(){
     // console.log("Error");
-    document.getElementById('mcode').innerHTML=('ERROR ! INVALID INSTRUCTION ');
+    document.getElementById('mcode').innerHTML=('ERROR SKILL ISSUE');
 }
 
 //twos comliment function
