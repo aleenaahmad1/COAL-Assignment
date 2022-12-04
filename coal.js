@@ -135,7 +135,8 @@ function movregtoimm(reg,value){
     else{
         value=conversion(value,10,16)}
     if (value.length>4){
-        console.log("imm vale larger than 4, error")
+        //console.log("imm vale larger than 4, error")
+        errordisplay();
         return;}
     document.getElementById("registernum1").innerHTML=value;
     regkey=reg.slice(0,1);
@@ -377,7 +378,8 @@ let instruction = new Map([
         {
             movregtoreg(dest,source);
         }
-        else{console.log("mov didnt slay");}
+        else{console.log("mov didnt slay");
+            errordisplay();}
     }],
     ["ADD", function(dest, source){                                                                         //INSTRUCTION 1
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
@@ -423,6 +425,7 @@ let instruction = new Map([
             regisLit(source.toLowerCase());
             regtoregflow();
         }
+        else errordisplay();
     }],
     ["SUB", function(dest,source){
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
@@ -478,6 +481,7 @@ let instruction = new Map([
             regisLit(source.toLowerCase());
             regtoregflow();
         }
+        else errordisplay();
     }],
     ["NEG", function(dest){
         if (regSize.has(dest)){
@@ -519,6 +523,7 @@ let instruction = new Map([
             regisLit(dest.toLowerCase());
             regtoregflow();
         }
+        else errordisplay();
     }],
     ["MUL", function(source){                                                               //INSTRUCTION 2
         if (regSize.has(source)){
@@ -569,6 +574,7 @@ let instruction = new Map([
                 regisLit('ax');
                 regtoregflow();
             }}
+            else errordisplay();
     }],
     ["INC", function(reg){                                                                                   //INSTRUCTION 3
         if (regSize.has(reg))
@@ -658,7 +664,8 @@ let instruction = new Map([
         }
         else {errordisplay();}
     }],
-    ["AND", function(dest, source){                                                                        //INSTRUCTION 5
+    ["AND", function(dest, source){      
+        if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                  //INSTRUCTION 5
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
@@ -707,6 +714,8 @@ let instruction = new Map([
         regisLit(dest.toLowerCase());
         regisLit(source.toLowerCase());
         regtoregflow();
+    }
+    else errordisplay();
     }],
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
         if (regSize.has(source)){
@@ -721,6 +730,7 @@ let instruction = new Map([
                 {
                     //errordisplay
                     console.log("denominator cant b zero!!!");
+                    errordisplay();
                     return;
                 }
                 quotient=parseInt(val1/val2);
@@ -743,7 +753,7 @@ let instruction = new Map([
                 val2=parseInt(val2,16);
                 if (val2===0)
                 {
-                    //errordisplay
+                    errordisplay();
                     console.log("denominator cant b zero!!!");
                     return;
                 }
@@ -776,11 +786,10 @@ let instruction = new Map([
                 regtoregflow();
             }
         }
-        else{
-            //error
-        }
+        else errordisplay();
     }],
-    ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
+    ["OR", function(dest, source){  
+        if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                                //INSTRUCTION 7
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
@@ -830,9 +839,12 @@ let instruction = new Map([
         regisLit(dest.toLowerCase());
         regisLit(source.toLowerCase());
         regtoregflow();
+    }
+    else errordisplay();
     }],
 
-    ["NOT", function(dest){                                                                                 //INSTRUCTION 8
+    ["NOT", function(dest){ 
+        if (regSize.has(dest)){                                                                               //INSTRUCTION 8
         val1=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
         val1=conversion(val1,16,2);
@@ -878,8 +890,11 @@ let instruction = new Map([
         highLiter();
         regisLit(dest.toLowerCase());
         regtoregflow();
+    }
+    else errordisplay();
     }],
-    ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
+    ["XOR", function(dest, source){    
+        if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                         //INSTRUCTION 9
         val1=regVal.get(source);
         val2=regVal.get(dest);
         document.getElementById("registernum1").innerHTML=val1;
@@ -929,8 +944,11 @@ let instruction = new Map([
         regisLit(dest.toLowerCase());
         regisLit(source.toLowerCase());
         regtoregflow();
+    }
+    else errordisplay();
     }],
-    ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
+    ["SHR", function(source,shift){ 
+        if (regSize.has(source)){                                                                        //INSTRUCTION 10
         size = regSize.get(source);
         document.getElementById("registernum1").innerHTML=regVal.get(source);
         source = conversion(source,16,2);
@@ -969,10 +987,12 @@ let instruction = new Map([
         highLiter();
         regisLit(source.toLowerCase());
         regtoregflow();
-
+    }
+    else errordisplay();
     }],
 
-    ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
+    ["SHL", function(source,shift){
+        if (regSize.has(source)){                                                                   //INSTRUCTION 11
         size = regSize.get(source);
         document.getElementById("registernum1").innerHTML=regVal.get(source);
         source = conversion(source,16,2);
@@ -1012,7 +1032,8 @@ let instruction = new Map([
         highLiter();
         regisLit(source.toLowerCase());
         regtoregflow();
-
+    }
+    else errordisplay();
     }],
     ["NOP", function(){}],["", function(){
         components.set("PC", 1);
@@ -1095,10 +1116,11 @@ function parsing(input){ //mov ax, 1234H
 
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
-        //input again
+        errordisplay();
     }
     if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
+        errordisplay();
     }
 
     cmnd = splitArray[0];
@@ -1111,6 +1133,7 @@ function parsing(input){ //mov ax, 1234H
         //if fun(dest, source)
         if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
             console.log("Invalid source operand.");
+            errordisplay();
             //get input again
         }
         source = operands[1];
@@ -1124,13 +1147,13 @@ function parsing(input){ //mov ax, 1234H
     //else for another length of instruction?
     else{
         console.log("Invalid instruction.");
-        //input again
+        errordisplay();
     }
 }
 
 function errordisplay(){
     // console.log("Error");
-    document.getElementById('mcode').innerHTML=('ERROR SKILL ISSUE');
+    document.getElementById('mcode').innerHTML=('ERROR');
 }
 
 //twos comliment function
