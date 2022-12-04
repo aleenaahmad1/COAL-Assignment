@@ -40,9 +40,92 @@ let memory = new Map([
 ]);
 
 let components = new Map([
-    ["PC", 0], ["IR", 0],["ControlUnit", 0]
-    ["memory",0],["ALU",0]
+    ["PC", 0], ["IR", 0],["ControlUnit", 0],
+        ["memory",0],["ALU",0],['reg',0]
 ])
+function highLiter(){
+    if (components.get('PC')===1){
+        document.getElementById('PC').classList.add('anime');
+    }
+    if (components.get('IR')===1){
+        document.getElementById('IR').classList.add('anime');
+    }
+    if (components.get('ControlUnit')===1){
+        document.getElementById('controller').classList.add('anime');
+    }
+
+    if (components.get('ALU')===1){
+        document.getElementById('ALUU').classList.add('anime');
+    }
+}
+function memoryLit( dest){
+    if (components.get('memory')===1){
+        document.getElementById(dest).classList.add('anime');
+    }
+}
+function regisLit( dest){
+    if (components.get('reg')===1){
+        document.getElementById(dest).classList.add('anime');
+
+    }
+
+
+}
+function memtoregflow(source){
+    document.getElementById('div8').classList.add('div8');
+    setTimeout(()=>{
+        document.getElementById('div9').classList.add('div9');
+    },3000)
+    setTimeout(()=>{
+        document.getElementById('div6').classList.add('div6');
+    },5000)
+    setTimeout(()=>{
+        document.getElementById('div11').classList.add('div11');
+    },8000)
+
+    setTimeout(()=>{
+        document.getElementById('div12').classList.add('div12');
+    },11000)
+    setTimeout(()=>{
+        document.getElementById('div2').classList.add('div2');
+    },14000)
+    setTimeout(()=>{
+        document.getElementById('div10').classList.add('div10');
+    },17000)
+
+    // setTimeout(setdiv1());
+    // document.getElementById('div1').classList.add('div1');
+    highLiter();
+    let regu=(regkey+'X').toLowerCase();
+    console.log(regu);
+    regisLit(regu);
+    memoryLit(source);
+
+}
+function immtoreg(){
+    document.getElementById('div8').classList.add('div8');
+    setTimeout(()=>{
+        document.getElementById('div9').classList.add('div9');
+    },3000)
+    setTimeout(()=>{
+        document.getElementById('div6').classList.add('div6');
+    },5000)
+    setTimeout(()=>{
+        document.getElementById('div2').classList.add('div2');
+    },8000)
+    setTimeout(()=>{
+        document.getElementById('div10').classList.add('div10');
+    },11000)
+
+    // setTimeout(setdiv1());
+    // document.getElementById('div1').classList.add('div1');
+    highLiter();
+    let regu=(regkey+'X').toLowerCase();
+    console.log(regu);
+    regisLit(regu);
+    // memoryLit(source);
+
+}
 
 //mov imm to reg
 function movregtoimm(reg,value){
@@ -54,7 +137,7 @@ function movregtoimm(reg,value){
     if (value.length>4){
         console.log("imm vale larger than 4, error")
         return;}
-    document.getElementById(registernum1).innerHTML=value;
+    document.getElementById("registernum1").innerHTML=value;
     regkey=reg.slice(0,1);
     you_decide=reg.slice(-1);
     if(you_decide==="H"||you_decide==="L")
@@ -77,7 +160,45 @@ function movregtoimm(reg,value){
     components.set("IR",1);
     components.set("ControlUnit",1);
     components.set("ALU",1);
+    components.set("reg",1);
+
+    highLiter();
+    let regu=(regkey+'X').toLowerCase();
+    console.log(regu);
+    regisLit(regu);
+    immtoreg();
     /////////////////////Arslan nai imm to reg Likh lia////
+}
+function regtoregflow(source){
+    document.getElementById('div8').classList.add('div8');
+    setTimeout(()=>{
+        document.getElementById('div9').classList.add('div9');
+    },3000)
+    setTimeout(()=>{
+        document.getElementById('div6').classList.add('div6');
+    },5000)
+    setTimeout(()=>{
+        document.getElementById('div13').classList.add('div13');
+    },8000)
+
+    setTimeout(()=>{
+        document.getElementById('div14').classList.add('div14');
+    },11000)
+    setTimeout(()=>{
+        document.getElementById('div2').classList.add('div2');
+    },14000)
+    setTimeout(()=>{
+        document.getElementById('div10').classList.add('div10');
+    },17000)
+
+    // setTimeout(setdiv1());
+    // document.getElementById('div1').classList.add('div1');
+    // highLiter();
+    // let regu=(regkey+'X').toLowerCase();
+    // console.log(regu);
+    // regisLit(regu);
+    // memoryLit(source);
+
 }
 
 // mov reg to reg
@@ -85,7 +206,7 @@ function movregtoreg(dest,source){
     if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)===regSize.get(source)))
     {
         val=regVal.get(source);
-        document.getElementById(registernum1).innerHTML=val;
+        document.getElementById("registernum1").innerHTML=val;
         regkey=dest.slice(0,1);
         you_decide=dest.slice(-1);
         if (you_decide==="L" || you_decide==="H")
@@ -105,6 +226,14 @@ function movregtoreg(dest,source){
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set('reg',1)
+        highLiter();
+        let regu=(regkey+'X').toLowerCase();
+        console.log(regu);
+        regisLit(regu);
+
+        regisLit(source.toLowerCase());
+        regtoregflow();
     }
 }
 
@@ -113,12 +242,12 @@ function movmemtoreg(dest,source){
     if (memory.has(source) && regSize.has(dest)) //assuming the brackets are removed from the memory location at this point
     {
         val1=memory.get(source);
-        document.getElementById(registernum1).innerHTML=val1;
+        document.getElementById("registernum1").innerHTML=val1;
         regkey=dest.slice(0,1);
         regVal.set(dest,val1);
         if (regSize.get(dest)===8)
         {
-            xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");   
+            xval=regVal.get(regkey+"H")+regVal.get(regkey+"L");
         }
         else
         {
@@ -131,27 +260,35 @@ function movmemtoreg(dest,source){
         components.set("ControlUnit",1);
         components.set("memory",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        memtoregflow(source);
     }
     else{console.log("invalid mem location or dest reg")}
 }
 
 //mov ([mem],reg) wala mov
 function movregtomem(dest,source){
+    regtoregflow()
     if (regSize.has(source) && memory.has(dest))
     {
-        document.getElementById(registernum1).innerHTML=regVal.get(source);
+        document.getElementById("registernum1").innerHTML=regVal.get(source);
         if (regSize.get(source)===8)
         {
             value=regVal.get(source);
             memory.set(dest,value);
             // setmem(dest,value);
-        document.getElementById(dest).innerHTML=value;
+            document.getElementById(dest).innerHTML=value;
         }
         else
         {
             regkey=source.slice(0,1);
             slayvalue=regVal.get(regkey+"L");
             memory.set(dest,slayvalue);
+            components.set("memory",1);
+            components.set("reg",1);
+
+            memoryLit(dest);
+            movregtoreg();
             document.getElementById(dest).innerHTML=slayvalue;
             slayvalue=regVal.get(regkey+"H");
             arslanmem=parseInt(dest,16);
@@ -171,10 +308,40 @@ function movregtomem(dest,source){
                 components.set("ControlUnit",1);
                 components.set("memory",1);
                 components.set("ALU",1);
+                components.set("reg",1);
+                highLiter();
+                let regu=(regkey+'X').toLowerCase();
+                console.log(regu);
+                regisLit(regu);
+                console.log(arslanmem);
+                memoryLit(arslanmem);
             }
         }
     }
     else{console.log("invalid mem location or source reg");}
+}
+function addflow(){
+    document.getElementById('div8').classList.add('div8');
+    setTimeout(()=>{
+        document.getElementById('div9').classList.add('div9');
+    },3000)
+    setTimeout(()=>{
+        document.getElementById('div6').classList.add('div6');
+    },5000)
+
+    setTimeout(()=>{
+        document.getElementById('div13').classList.add('div13');
+    },8000)
+
+    setTimeout(()=>{
+        document.getElementById('div14').classList.add('div14');
+    },11000)
+    setTimeout(()=>{
+        document.getElementById('div2').classList.add('div2');
+    },14000)
+    setTimeout(()=>{
+        document.getElementById('div10').classList.add('div10');
+    },17000)
 }
 
 let instruction = new Map([
@@ -216,8 +383,8 @@ let instruction = new Map([
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
             val1=regVal.get(source);
             val2=regVal.get(dest);
-            document.getElementById(registernum1).innerHTML=val1;
-            document.getElementById(registernum2).innerHTML=val2;
+            document.getElementById("registernum1").innerHTML=val1;
+            document.getElementById("registernum2").innerHTML=val2;
             val1=parseInt(val1,16);
             val2=parseInt(val2,16);
             val2=val2+val1;
@@ -249,14 +416,20 @@ let instruction = new Map([
             components.set("IR",1);
             components.set("ControlUnit",1);
             components.set("ALU",1);
+            components.set('reg',1);
+            // console.log
+            highLiter();
+            regisLit((regkey+'X').toLowerCase());
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
     }],
     ["SUB", function(dest,source){
         if ((regSize.has(source) && regSize.has(dest))&&(regSize.get(source)==regSize.get(dest))){
             val1=regVal.get(source);
             val2=regVal.get(dest);
-            document.getElementById(registernum1).innerHTML=val1;
-            document.getElementById(registernum2).innerHTML=val2;
+            document.getElementById("registernum1").innerHTML=val1;
+            document.getElementById("registernum2").innerHTML=val2;
             val1=parseInt(val1,16);
             val2=parseInt(val2,16);
             val2=val2-val1;
@@ -298,12 +471,18 @@ let instruction = new Map([
             components.set("IR",1);
             components.set("ControlUnit",1);
             components.set("ALU",1);
+            components.set('reg',1);
+            // console.log
+            highLiter();
+            regisLit((regkey+'X').toLowerCase());
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
     }],
     ["NEG", function(dest){
         if (regSize.has(dest)){
             value=regVal.get(dest);
-            document.getElementById(registernum1).innerHTML=value;
+            document.getElementById("registernum1").innerHTML=value;
             value=conversion(value,16,2);
             if (regSize.get(dest)===8){
                 value = setsize("00000000",value);
@@ -335,6 +514,10 @@ let instruction = new Map([
             components.set("IR",1);
             components.set("ControlUnit",1);
             components.set("ALU",1);
+            components.set('reg',1)
+            highLiter();
+            regisLit(dest.toLowerCase());
+            regtoregflow();
         }
     }],
     ["MUL", function(source){                                                               //INSTRUCTION 2
@@ -342,8 +525,8 @@ let instruction = new Map([
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
-                document.getElementById(registernum1).innerHTML=val1;
-                document.getElementById(registernum2).innerHTML=val2;
+                document.getElementById("registernum1").innerHTML=val1;
+                document.getElementById("registernum2").innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -358,8 +541,8 @@ let instruction = new Map([
             if (regSize.get(source)===16){
                 val1=regVal.get("AX");
                 val2=regVal.get(source);
-                document.getElementById(registernum1).innerHTML=val1;
-                document.getElementById(registernum2).innerHTML=val2;
+                document.getElementById("registernum1").innerHTML=val1;
+                document.getElementById("registernum2").innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 val1=val1*val2;
@@ -380,13 +563,18 @@ let instruction = new Map([
                 components.set("IR",1);
                 components.set("ControlUnit",1);
                 components.set("ALU",1);
+                components.set("reg",1);
+                highLiter();
+                regisLit(source.toLowerCase());
+                regisLit('ax');
+                regtoregflow();
             }}
     }],
     ["INC", function(reg){                                                                                   //INSTRUCTION 3
         if (regSize.has(reg))
         {
             value=regVal.get(reg);
-            document.getElementById(registernum1).innerHTML=value;
+            document.getElementById("registernum1").innerHTML=value;
             value=parseInt(value,16);
             value=value+1;
             value=value.toString(16);
@@ -416,6 +604,10 @@ let instruction = new Map([
             components.set("IR",1);
             components.set("ControlUnit",1);
             components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(reg.toLowerCase())
+            regtoregflow();
         }
         else {errordisplay();} //invalid reg
     }],
@@ -423,32 +615,32 @@ let instruction = new Map([
         if (regSize.has(reg))
         {
             value=regVal.get(reg);
-            document.getElementById(registernum1).innerHTML=value;
+            document.getElementById("registernum1").innerHTML=value;
             value=parseInt(value,16);
             if (value===0)
             {
                 value="ffff";
             }
             else{
-            value=value-1;
-            value=value.toString(16);
-            if (value.length>4){
-                value=value.slice(-4);}
-            regkey = reg.slice(0,1);
-            you_decide = reg.slice(-1);
-            if(you_decide==="H"||you_decide==="L")
-            {
-                setsize("00",value);
-                if(you_decide==="H")
+                value=value-1;
+                value=value.toString(16);
+                if (value.length>4){
+                    value=value.slice(-4);}
+                regkey = reg.slice(0,1);
+                you_decide = reg.slice(-1);
+                if(you_decide==="H"||you_decide==="L")
                 {
-                    value=value+regVal.get(regkey+"L");
+                    setsize("00",value);
+                    if(you_decide==="H")
+                    {
+                        value=value+regVal.get(regkey+"L");
+                    }
+                    else value=regVal.get(regkey+"H")+value;
                 }
-                else value=regVal.get(regkey+"H")+value;
-            }
-            else
-            {
-                setsize("0000",value);
-            }
+                else
+                {
+                    setsize("0000",value);
+                }
             }
             regVal.set(regkey+"X",value);
             regVal.set(regkey+"L",value.slice(2,4));
@@ -457,7 +649,10 @@ let instruction = new Map([
             components.set("PC", 1);
             components.set("IR",1);
             components.set("ControlUnit",1);
-            components.set("ALU",1);
+            components.set("ALU",1);components.set("reg",1);
+            highLiter();
+            regisLit(reg.toLowerCase())
+            regtoregflow();
 
             //setreg(regkey+"X",value);
         }
@@ -466,8 +661,8 @@ let instruction = new Map([
     ["AND", function(dest, source){                                                                        //INSTRUCTION 5
         val1=regVal.get(source);
         val2=regVal.get(dest);
-        document.getElementById(registernum1).innerHTML=val1;
-        document.getElementById(registernum2).innerHTML=val2;
+        document.getElementById("registernum1").innerHTML=val1;
+        document.getElementById("registernum2").innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -508,14 +703,18 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        highLiter();
+        regisLit(dest.toLowerCase());
+        regisLit(source.toLowerCase());
+        regtoregflow();
     }],
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
         if (regSize.has(source)){
             if (regSize.get(source)===8){
                 val1=regVal.get("AL");
                 val2=regVal.get(source);
-                document.getElementById(registernum1).innerHTML=val1;
-                document.getElementById(registernum2).innerHTML=val2;
+                document.getElementById("registernum1").innerHTML=val1;
+                document.getElementById("registernum2").innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 if (val2===0)
@@ -538,8 +737,8 @@ let instruction = new Map([
             if (regSize.get(source)===16){
                 val1=regVal.get("DX")+regVal.get("AX");
                 val2=regVal.get(source);
-                document.getElementById(registernum1).innerHTML=val1;
-                document.getElementById(registernum2).innerHTML=val2;
+                document.getElementById("registernum1").innerHTML=val1;
+                document.getElementById("registernum2").innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
                 if (val2===0)
@@ -568,6 +767,13 @@ let instruction = new Map([
                 components.set("IR",1);
                 components.set("ControlUnit",1);
                 components.set("ALU",1);
+                components.set("reg",1);
+                highLiter();
+                regisLit(source.toLowerCase());
+                regisLit("bx");
+                regisLit("dx");
+                regisLit(source.toLowerCase());
+                regtoregflow();
             }
         }
         else{
@@ -577,8 +783,8 @@ let instruction = new Map([
     ["OR", function(dest, source){                                                                                  //INSTRUCTION 7
         val1=regVal.get(source);
         val2=regVal.get(dest);
-        document.getElementById(registernum1).innerHTML=val1;
-        document.getElementById(registernum2).innerHTML=val2;
+        document.getElementById("registernum1").innerHTML=val1;
+        document.getElementById("registernum2").innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -619,11 +825,16 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        highLiter();
+        regisLit(dest.toLowerCase());
+        regisLit(source.toLowerCase());
+        regtoregflow();
     }],
 
     ["NOT", function(dest){                                                                                 //INSTRUCTION 8
         val1=regVal.get(dest);
-        document.getElementById(registernum1).innerHTML=val1;
+        document.getElementById("registernum1").innerHTML=val1;
         val1=conversion(val1,16,2);
         for(i=0;i<val1.length;i++)
         {
@@ -652,7 +863,7 @@ let instruction = new Map([
         }
         else
         {
-        val1 = setsize("0000",val1);
+            val1 = setsize("0000",val1);
         }
         regVal.set(regkey+"X",val1);
         regVal.set(regkey+"L",val1.slice(2,4));
@@ -663,12 +874,16 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        highLiter();
+        regisLit(dest.toLowerCase());
+        regtoregflow();
     }],
     ["XOR", function(dest, source){                                                                             //INSTRUCTION 9
         val1=regVal.get(source);
         val2=regVal.get(dest);
-        document.getElementById(registernum1).innerHTML=val1;
-        document.getElementById(registernum2).innerHTML=val2;
+        document.getElementById("registernum1").innerHTML=val1;
+        document.getElementById("registernum2").innerHTML=val2;
         val1=conversion(val1,16,2);
         val2=conversion(val2, 16, 2);
         if(val1.length!=val2.length) //sets size to be the same
@@ -709,10 +924,15 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        highLiter();
+        regisLit(dest.toLowerCase());
+        regisLit(source.toLowerCase());
+        regtoregflow();
     }],
     ["SHR", function(source,shift){                                                                         //INSTRUCTION 10
         size = regSize.get(source);
-        document.getElementById(registernum1).innerHTML=regVal.get(source);
+        document.getElementById("registernum1").innerHTML=regVal.get(source);
         source = conversion(source,16,2);
         if(size==8) source = setsize("00000000",source);
         else source = setsize("0000000000000000",source);
@@ -745,12 +965,16 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        highLiter();
+        regisLit(source.toLowerCase());
+        regtoregflow();
 
     }],
 
     ["SHL", function(source,shift){                                                                     //INSTRUCTION 11
         size = regSize.get(source);
-        document.getElementById(registernum1).innerHTML=regVal.get(source);
+        document.getElementById("registernum1").innerHTML=regVal.get(source);
         source = conversion(source,16,2);
         if(size==8) source = setsize("00000000",source);
         else source = setsize("0000000000000000",source);
@@ -784,6 +1008,10 @@ let instruction = new Map([
         components.set("IR",1);
         components.set("ControlUnit",1);
         components.set("ALU",1);
+        components.set("reg",1);
+        highLiter();
+        regisLit(source.toLowerCase());
+        regtoregflow();
 
     }],
     ["NOP", function(){}],["", function(){
@@ -849,8 +1077,8 @@ function isMemory(dest){
 }
 
 function parsing(input){ //mov ax, 1234H
-    document.getElementById(registernum1).innerHTML=" ";
-    document.getElementById(registernum2).innerHTML=" ";
+    document.getElementById("registernum1").innerHTML=" ";
+    document.getElementById("registernum2").innerHTML=" ";
     input = input.toUpperCase();
     splitArray = input.split(" ");
     cmnd = splitArray[0];
@@ -895,7 +1123,7 @@ function parsing(input){ //mov ax, 1234H
 
 function errordisplay(){
     // console.log("Error");
-    window.prompt('ERROR SKILL ISSUE');
+    document.getElementById('mcode').innerHTML=('ERROR SKILL ISSUE');
 }
 
 //twos comliment function
@@ -1020,9 +1248,9 @@ function translation(cmnd, dest, source){
     }//10111 00000
     else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
         let immcode = "101";
-        d = 1; 
+        d = 1;
         w = getW(dest); let imm;
-        h = source.charAt(source. length-1) 
+        h = source.charAt(source. length-1)
         console.log("H:", h);
         if(h=="H" || h=="h"){//immediate value is HEX
             source = source.slice(0,-1);
@@ -1031,7 +1259,7 @@ function translation(cmnd, dest, source){
         else{//decimal number
             if(source>256){
                 source = conversion(source, 10, 16);
-                immediate = littlendian(source);    
+                immediate = littlendian(source);
             }
             else{
                 immediate = conversion(source, 10, 2);
@@ -1066,12 +1294,12 @@ function littlendian(source){
     for(i=0;i<((4*lenhex)-lenbin);i++){
         imm=imm.replace(/^/,"0"); //appends zeroes as needed
     }
-    
+
     if(lenhex==2){
         return imm;
     }
     //IF HEX NUM>2 digits, little endian format needs to be applied
-    
+
     else if(lenhex==4){
         imm1= imm.slice(0,8);
         imm2 = imm.slice(8,16);
@@ -1080,7 +1308,7 @@ function littlendian(source){
         imm1= imm.slice(0,4);
         imm2 = imm.slice(4,12);
         for(i=0;i<4;i++){
-            imm1=imm1.replace(/^/,"0"); //appends zeroes 
+            imm1=imm1.replace(/^/,"0"); //appends zeroes
         }
     }
     imm = imm2+imm1;
