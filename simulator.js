@@ -1113,6 +1113,8 @@ function isMemory(dest){
     return flag;
 }
 
+var mflag = 1; //FOR machine code
+
 function parsing(input){ //mov ax, 1234H
     document.getElementById("registernum1").innerHTML=" ";
     document.getElementById("registernum2").innerHTML=" ";
@@ -1125,10 +1127,12 @@ function parsing(input){ //mov ax, 1234H
 
     if(!(instruction.has(splitArray[0]))){ //checks if instruction is valid
         console.log("Invalid instruction.");
+        mflag = 0;
         errordisplay();
     }
     if(!(regSize.has(operands[0]) || !(isMemory(operands[0])))){ //checks if destination is valid
         console.log("Invalid destination operand.")
+        mflag = 0;
         errordisplay();
     }
 
@@ -1142,6 +1146,7 @@ function parsing(input){ //mov ax, 1234H
         //if fun(dest, source)
         if(!(regSize.has(operands[1]) || isMemory(operands[1]) || is_immediate(operands[1]) || isNumber(operands[0], operands[1]))){ //immediate bhi hosakta hai
             console.log("Invalid source operand.");
+            mflag = 0;
             errordisplay();
             //get input again
         }
@@ -1156,6 +1161,7 @@ function parsing(input){ //mov ax, 1234H
     //else for another length of instruction?
     else{
         console.log("Invalid instruction.");
+        mflag = 0;
         errordisplay();
     }
 }
@@ -1257,7 +1263,13 @@ function getW(input){
 }
 
 function translation(cmnd, dest, source){
-    let d = "0"; let mod = "11"; var w; let finalCode;
+    if(mflag==0){
+        //ARSLAN INSERT ERROR MESSAGE HERE!
+        return 0; //idk im adding this so that it leaves function 
+        //maybe just change it to return errormsg    
+    }
+    else{
+        let d = "0"; let mod = "11"; var w; let finalCode;
     if(cmnd=="MOV" && (isMemory(dest) || isMemory(source)) ){ //mov reg, [mem]; mov [mem], reg opcode SAME as in map
         mod = "00";
         if(isMemory(dest)){ //MOV [MEM], REG
@@ -1323,9 +1335,10 @@ function translation(cmnd, dest, source){
             finalCode = machinecode(opcode.get(cmnd),d,w,fixedreg.get(cmnd),regCode.get(dest),mod)
             document.getElementById("mcode").innerHTML = finalCode;
         }
-    }
-}
-
+    }   
+ }
+}   
+    
 function littlendian(source){
     lenhex = source.length; //length of hex (number of hex digits)
     imm = conversion(source, 16, 2);//1234: 00010010 00110100->00110100 00010010
