@@ -1162,7 +1162,7 @@ function parsing(input){ //mov ax, 1234H
 
 function errordisplay(){
     // console.log("Error");
-    document.getElementById('mcode').innerHTML=('ERROR');
+    document.getElementById('mcode').innerHTML='ERROR';
 }
 
 //twos comliment function
