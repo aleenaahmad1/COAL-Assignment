@@ -398,7 +398,7 @@ let instruction = new Map([
             you_decide = dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
-                setsize("00",val2);
+                val2 = setsize("00",val2);
                 if(you_decide==="H")
                 {
                     val2=val2+regVal.get(regkey+"L");
@@ -407,7 +407,7 @@ let instruction = new Map([
             }
             else
             {
-                setsize("0000",val2);
+                val2 = setsize("0000",val2);
             }
             regVal.set(regkey+"X",val2);
             regVal.set(regkey+"L",val2.slice(2,4));
@@ -454,7 +454,7 @@ let instruction = new Map([
             you_decide = dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
-                setsize("00",val2);
+                val2 = setsize("00",val2);
                 if(you_decide==="H")
                 {
                     val2=val2+regVal.get(regkey+"L");
@@ -463,7 +463,7 @@ let instruction = new Map([
             }
             else
             {
-                setsize("0000",val2);
+                val2 = setsize("0000",val2);
             }
             regVal.set(regkey+"X",val2);
             regVal.set(regkey+"L",val2.slice(2,4));
@@ -498,7 +498,7 @@ let instruction = new Map([
             you_decide=dest.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
-                setsize("00",value);
+                value = setsize("00",value);
                 if(you_decide==="H")
                 {
                     value = value+regVal.get(regkey+"L");
@@ -507,7 +507,7 @@ let instruction = new Map([
             }
             else
             {
-                setsize("0000",value);
+                value = setsize("0000",value);
             }
             regVal.set(regkey+"X",value);
             regVal.set(regkey+"L",value.slice(2,4));
@@ -590,7 +590,7 @@ let instruction = new Map([
             you_decide = reg.slice(-1);
             if(you_decide==="H"||you_decide==="L")
             {
-                setsize("00",value);
+                value = setsize("00",value);
                 if(you_decide==="H")
                 {
                     value=value+regVal.get(regkey+"L");
@@ -599,7 +599,7 @@ let instruction = new Map([
             }
             else
             {
-                setsize("0000",value);
+                value = setsize("0000",value);
             }
             regVal.set(regkey+"X",value);
             regVal.set(regkey+"L",value.slice(2,4));
@@ -636,7 +636,7 @@ let instruction = new Map([
                 you_decide = reg.slice(-1);
                 if(you_decide==="H"||you_decide==="L")
                 {
-                    setsize("00",value);
+                    value = setsize("00",value);
                     if(you_decide==="H")
                     {
                         value=value+regVal.get(regkey+"L");
@@ -645,7 +645,7 @@ let instruction = new Map([
                 }
                 else
                 {
-                    setsize("0000",value);
+                    value = setsize("0000",value);
                 }
             }
             regVal.set(regkey+"X",value);
@@ -690,7 +690,7 @@ let instruction = new Map([
         you_decide = dest.slice(-1);
         if(you_decide=="H"||you_decide=="L")
         {
-            setsize("00",val2);
+            val2 = setsize("00",val2);
             if(you_decide=="H")
             {
                 val2=val2+regVal.get(regkey+"L");
@@ -699,7 +699,7 @@ let instruction = new Map([
         }
         else
         {
-            setsize("0000",val2);
+            val2 = setsize("0000",val2);
         }
         regVal.set(regkey+"X",val2);
         regVal.set(regkey+"L",val2.slice(2,4));
@@ -780,7 +780,7 @@ let instruction = new Map([
                 components.set("reg",1);
                 highLiter();
                 regisLit(source.toLowerCase());
-                regisLit("bx");
+                regisLit("ax");
                 regisLit("dx");
                 regisLit(source.toLowerCase());
                 regtoregflow();
