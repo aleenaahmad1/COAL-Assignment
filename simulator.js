@@ -41,7 +41,7 @@ let memory = new Map([
 
 let components = new Map([
     ["PC", 0], ["IR", 0],["ControlUnit", 0],
-        ["memory",0],["ALU",0],['reg',0]
+    ["memory",0],["ALU",0],['reg',0]
 ])
 function highLiter(){
     if (components.get('PC')===1){
@@ -328,7 +328,9 @@ function movregtomem(dest,source){
             }
         }
     }
-    else{console.log("invalid mem location or source reg");}
+    else{console.log("invalid mem location or source reg");
+    document.getElementById('mcode').innerHTML='INVALID MEM LOCATION OR SOURCE REG'
+    }
 }
 function addflow(){
     document.getElementById('div8').classList.add('div8');
@@ -583,7 +585,7 @@ let instruction = new Map([
                 regisLit('ax');
                 regtoregflow();
             }}
-            else errordisplay();
+        else errordisplay();
     }],
     ["INC", function(reg){                                                                                   //INSTRUCTION 3
         if (regSize.has(reg))
@@ -673,58 +675,58 @@ let instruction = new Map([
         }
         else {errordisplay();}
     }],
-    ["AND", function(dest, source){      
+    ["AND", function(dest, source){
         if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                  //INSTRUCTION 5
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        document.getElementById("registernum1").innerHTML=val1;
-        document.getElementById("registernum2").innerHTML=val2;
-        val1=conversion(val1,16,2);
-        val2=conversion(val2, 16, 2);
-        if(val1.length!=val2.length) //sets size to be the same
-        {
-            val1 = setsize(val2,val1);
-            val2 = setsize(val1,val2);
-        }
-        for(i=0;i<val1.length;i++)
-        {
-            if(val1[i]=="1" && val2[i]=="1")
+            val1=regVal.get(source);
+            val2=regVal.get(dest);
+            document.getElementById("registernum1").innerHTML=val1;
+            document.getElementById("registernum2").innerHTML=val2;
+            val1=conversion(val1,16,2);
+            val2=conversion(val2, 16, 2);
+            if(val1.length!=val2.length) //sets size to be the same
             {
-                val2 = val2.replaceAt(i,"1");
+                val1 = setsize(val2,val1);
+                val2 = setsize(val1,val2);
             }
-            else val2 = val2.replaceAt(i,"0");
-        }
-        val2 = conversion(val2,2,16);
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide=="H"||you_decide=="L")
-        {
-            val2 = setsize("00",val2);
-            if(you_decide=="H")
+            for(i=0;i<val1.length;i++)
             {
-                val2=val2+regVal.get(regkey+"L");
+                if(val1[i]=="1" && val2[i]=="1")
+                {
+                    val2 = val2.replaceAt(i,"1");
+                }
+                else val2 = val2.replaceAt(i,"0");
             }
-            else val2=regVal.get(regkey+"H")+val2;
+            val2 = conversion(val2,2,16);
+            regkey = dest.slice(0,1);
+            you_decide = dest.slice(-1);
+            if(you_decide=="H"||you_decide=="L")
+            {
+                val2 = setsize("00",val2);
+                if(you_decide=="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
+            }
+            else
+            {
+                val2 = setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //setreg(destname,val2);
+            document.getElementById(regkey+'X').innerHTML=val2;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            highLiter();
+            regisLit(dest.toLowerCase());
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
-        else
-        {
-            val2 = setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-        document.getElementById(regkey+'X').innerHTML=val2;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        highLiter();
-        regisLit(dest.toLowerCase());
-        regisLit(source.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
+        else errordisplay();
     }],
     ["DIV", function(source){                                                                                    //INSTRUCTION 6
         if (regSize.has(source)){
@@ -735,11 +737,16 @@ let instruction = new Map([
                 document.getElementById("registernum2").innerHTML=val2;
                 val1=parseInt(val1,16);
                 val2=parseInt(val2,16);
+                console.log(val2);
                 if (val2===0)
+
                 {
                     //errordisplay
-                    console.log("denominator cant b zero!!!");
                     errordisplay();
+                    mflag=0;
+                    console.log("denominator cant b zero!!!");
+                    document.getElementById('mcode').innerHTML='DENOMINATOR CAN NOT BE ZERO!'
+
                     return;
                 }
                 quotient=parseInt(val1/val2);
@@ -762,7 +769,8 @@ let instruction = new Map([
                 val2=parseInt(val2,16);
                 if (val2===0)
                 {
-                    errordisplay();
+                    document.getElementById('mcode').innerHTML='DENOMINATOR CAN NOT BE ZERO!';
+                    setTimeout(errordisplay(),2000);
                     console.log("denominator cant b zero!!!");
                     return;
                 }
@@ -797,252 +805,252 @@ let instruction = new Map([
         }
         else errordisplay();
     }],
-    ["OR", function(dest, source){  
+    ["OR", function(dest, source){
         if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                                //INSTRUCTION 7
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        document.getElementById("registernum1").innerHTML=val1;
-        document.getElementById("registernum2").innerHTML=val2;
-        val1=conversion(val1,16,2);
-        val2=conversion(val2, 16, 2);
-        if(val1.length!=val2.length) //sets size to be the same
-        {
-            val1 = setsize(val2,val1);
-            val2 = setsize(val1,val2);
-        }
-        for(i=0;i<val1.length;i++)
-        {
-            if(val1[i]=="1" || val2[i]=="1")
+            val1=regVal.get(source);
+            val2=regVal.get(dest);
+            document.getElementById("registernum1").innerHTML=val1;
+            document.getElementById("registernum2").innerHTML=val2;
+            val1=conversion(val1,16,2);
+            val2=conversion(val2, 16, 2);
+            if(val1.length!=val2.length) //sets size to be the same
             {
-                val2 = val2.replaceAt(i,"1");
+                val1 = setsize(val2,val1);
+                val2 = setsize(val1,val2);
             }
-            else val2 = val2.replaceAt(i,"0");
-        }
-        val2 = conversion(val2,2,16);
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide=="H"||you_decide=="L")
-        {
-            val2  = setsize("00",val2);
-            if(you_decide=="H")
+            for(i=0;i<val1.length;i++)
             {
-                val2=val2+regVal.get(regkey+"L");
+                if(val1[i]=="1" || val2[i]=="1")
+                {
+                    val2 = val2.replaceAt(i,"1");
+                }
+                else val2 = val2.replaceAt(i,"0");
             }
-            else val2=regVal.get(regkey+"H")+val2;
+            val2 = conversion(val2,2,16);
+            regkey = dest.slice(0,1);
+            you_decide = dest.slice(-1);
+            if(you_decide=="H"||you_decide=="L")
+            {
+                val2  = setsize("00",val2);
+                if(you_decide=="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
+            }
+            else
+            {
+                val2 = setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //setreg(destname,val2);
+            document.getElementById(regkey+'X').innerHTML=val2;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(dest.toLowerCase());
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
-        else
-        {
-            val2 = setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-        document.getElementById(regkey+'X').innerHTML=val2;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        components.set("reg",1);
-        highLiter();
-        regisLit(dest.toLowerCase());
-        regisLit(source.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
+        else errordisplay();
     }],
 
-    ["NOT", function(dest){ 
+    ["NOT", function(dest){
         if (regSize.has(dest)){                                                                               //INSTRUCTION 8
-        val1=regVal.get(dest);
-        document.getElementById("registernum1").innerHTML=val1;
-        val1=conversion(val1,16,2);
-        for(i=0;i<val1.length;i++)
-        {
-            if(val1[i]=="0")
+            val1=regVal.get(dest);
+            document.getElementById("registernum1").innerHTML=val1;
+            val1=conversion(val1,16,2);
+            for(i=0;i<val1.length;i++)
             {
-                val1 = val1.replaceAt(i,"1");
+                if(val1[i]=="0")
+                {
+                    val1 = val1.replaceAt(i,"1");
+                }
+                else val1 = val1.replaceAt(i,"0");
             }
-            else val1 = val1.replaceAt(i,"0");
-        }
-        len=val1.length;
-        for(i=0;i<(regSize.get(dest)-len);i++)
-        {
-            val1 = val1.replace(/^/,"1");
-        }
-        val1 = conversion(val1,2,16);
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide=="H"||you_decide=="L")
-        {
-            val1 = setsize("00",val1);
-            if(you_decide=="H")
+            len=val1.length;
+            for(i=0;i<(regSize.get(dest)-len);i++)
             {
-                val1=val1+regVal.get(regkey+"L");
+                val1 = val1.replace(/^/,"1");
             }
-            else val1=regVal.get(regkey+"H")+val1;
-        }
-        else
-        {
-            val1 = setsize("0000",val1);
-        }
-        regVal.set(regkey+"X",val1);
-        regVal.set(regkey+"L",val1.slice(2,4));
-        regVal.set(regkey+"H",val1.slice(0,2));
-        //setreg(destname,val1);
-        document.getElementById(regkey+'X').innerHTML=val1;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        components.set("reg",1);
-        highLiter();
-        regisLit(dest.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
-    }],
-    ["XOR", function(dest, source){    
-        if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                         //INSTRUCTION 9
-        val1=regVal.get(source);
-        val2=regVal.get(dest);
-        document.getElementById("registernum1").innerHTML=val1;
-        document.getElementById("registernum2").innerHTML=val2;
-        val1=conversion(val1,16,2);
-        val2=conversion(val2, 16, 2);
-        if(val1.length!=val2.length) //sets size to be the same
-        {
-            val1 = setsize(val2,val1);
-            val2 = setsize(val1,val2);
-        }
-        for(i=0;i<val1.length;i++)
-        {
-            if(val1[i]!=val2[i])
-            {
-                val2 = val2.replaceAt(i,"1");
-            }
-            else val2 = val2.replaceAt(i,"0");
-        }
-        val2 = conversion(val2,2,16);
-        regkey = dest.slice(0,1);
-        you_decide = dest.slice(-1);
-        if(you_decide=="H"||you_decide=="L")
-        {
-            val2 = setsize("00",val2);
-            if(you_decide=="H")
-            {
-                val2=val2+regVal.get(regkey+"L");
-            }
-            else val2=regVal.get(regkey+"H")+val2;
-        }
-        else
-        {
-            val2 = setsize("0000",val2);
-        }
-        regVal.set(regkey+"X",val2);
-        regVal.set(regkey+"L",val2.slice(2,4));
-        regVal.set(regkey+"H",val2.slice(0,2));
-        //setreg(destname,val2);
-        document.getElementById(regkey+'X').innerHTML=val2;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        components.set("reg",1);
-        highLiter();
-        regisLit(dest.toLowerCase());
-        regisLit(source.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
-    }],
-    ["SHR", function(source,shift){ 
-        if (regSize.has(source)){                                                                        //INSTRUCTION 10
-        size = regSize.get(source);
-        document.getElementById("registernum1").innerHTML=regVal.get(source);
-        source = conversion(source,16,2);
-        if(size==8) source = setsize("00000000",source);
-        else source = setsize("0000000000000000",source);
-        source = source.slice(0,size-shift);
-        regkey= source.slice(0,1);
-        for(i=0;i<shift;i++)
-        {
-            source = source.replace(/^/,"0")
-        }
-        source = conversion(source,2,16);
-        if (size==8)
-        {
+            val1 = conversion(val1,2,16);
+            regkey = dest.slice(0,1);
             you_decide = dest.slice(-1);
-            source = setsize("00",source);
-            if(you_decide=="H")
+            if(you_decide=="H"||you_decide=="L")
             {
-                source=source+regVal.get(regkey+"L");
+                val1 = setsize("00",val1);
+                if(you_decide=="H")
+                {
+                    val1=val1+regVal.get(regkey+"L");
+                }
+                else val1=regVal.get(regkey+"H")+val1;
             }
-            else source=regVal.get(regkey+"H")+source;
+            else
+            {
+                val1 = setsize("0000",val1);
+            }
+            regVal.set(regkey+"X",val1);
+            regVal.set(regkey+"L",val1.slice(2,4));
+            regVal.set(regkey+"H",val1.slice(0,2));
+            //setreg(destname,val1);
+            document.getElementById(regkey+'X').innerHTML=val1;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(dest.toLowerCase());
+            regtoregflow();
         }
-        else
-        {
-            source = setsize("0000",source);
+        else errordisplay();
+    }],
+    ["XOR", function(dest, source){
+        if ((regSize.has(dest)&&regSize.has(source))&&(regSize.get(source)==regSize.get(dest))){                                                                         //INSTRUCTION 9
+            val1=regVal.get(source);
+            val2=regVal.get(dest);
+            document.getElementById("registernum1").innerHTML=val1;
+            document.getElementById("registernum2").innerHTML=val2;
+            val1=conversion(val1,16,2);
+            val2=conversion(val2, 16, 2);
+            if(val1.length!=val2.length) //sets size to be the same
+            {
+                val1 = setsize(val2,val1);
+                val2 = setsize(val1,val2);
+            }
+            for(i=0;i<val1.length;i++)
+            {
+                if(val1[i]!=val2[i])
+                {
+                    val2 = val2.replaceAt(i,"1");
+                }
+                else val2 = val2.replaceAt(i,"0");
+            }
+            val2 = conversion(val2,2,16);
+            regkey = dest.slice(0,1);
+            you_decide = dest.slice(-1);
+            if(you_decide=="H"||you_decide=="L")
+            {
+                val2 = setsize("00",val2);
+                if(you_decide=="H")
+                {
+                    val2=val2+regVal.get(regkey+"L");
+                }
+                else val2=regVal.get(regkey+"H")+val2;
+            }
+            else
+            {
+                val2 = setsize("0000",val2);
+            }
+            regVal.set(regkey+"X",val2);
+            regVal.set(regkey+"L",val2.slice(2,4));
+            regVal.set(regkey+"H",val2.slice(0,2));
+            //setreg(destname,val2);
+            document.getElementById(regkey+'X').innerHTML=val2;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(dest.toLowerCase());
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
-        regVal.set(regkey+"X",source);
-        regVal.set(regkey+"L",source.slice(2,4));
-        regVal.set(regkey+"H",source.slice(0,2));
-        document.getElementById(regkey+'X').innerHTML=source;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        components.set("reg",1);
-        highLiter();
-        regisLit(source.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
+        else errordisplay();
+    }],
+    ["SHR", function(source,shift){
+        if (regSize.has(source)){                                                                        //INSTRUCTION 10
+            size = regSize.get(source);
+            document.getElementById("registernum1").innerHTML=regVal.get(source);
+            source = conversion(source,16,2);
+            if(size==8) source = setsize("00000000",source);
+            else source = setsize("0000000000000000",source);
+            source = source.slice(0,size-shift);
+            regkey= source.slice(0,1);
+            for(i=0;i<shift;i++)
+            {
+                source = source.replace(/^/,"0")
+            }
+            source = conversion(source,2,16);
+            if (size==8)
+            {
+                you_decide = dest.slice(-1);
+                source = setsize("00",source);
+                if(you_decide=="H")
+                {
+                    source=source+regVal.get(regkey+"L");
+                }
+                else source=regVal.get(regkey+"H")+source;
+            }
+            else
+            {
+                source = setsize("0000",source);
+            }
+            regVal.set(regkey+"X",source);
+            regVal.set(regkey+"L",source.slice(2,4));
+            regVal.set(regkey+"H",source.slice(0,2));
+            document.getElementById(regkey+'X').innerHTML=source;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(source.toLowerCase());
+            regtoregflow();
+        }
+        else errordisplay();
     }],
 
     ["SHL", function(source,shift){
         if (regSize.has(source)){                                                                   //INSTRUCTION 11
-        size = regSize.get(source);
-        document.getElementById("registernum1").innerHTML=regVal.get(source);
-        source = conversion(source,16,2);
-        if(size==8) source = setsize("00000000",source);
-        else source = setsize("0000000000000000",source);
-        source = source.slice(shift);
-        regkey = source.slice(0,1);
-        for(i=0;i<shift;i++)
-        {
-            source = source.concat("0");
-        }
-        source = conversion(source,2,16);
-        if (size==8)
-        {
-            you_decide = dest.slice(-1);
-            source = setsize("00",source);
-            if(you_decide=="H")
+            size = regSize.get(source);
+            document.getElementById("registernum1").innerHTML=regVal.get(source);
+            source = conversion(source,16,2);
+            if(size==8) source = setsize("00000000",source);
+            else source = setsize("0000000000000000",source);
+            source = source.slice(shift);
+            regkey = source.slice(0,1);
+            for(i=0;i<shift;i++)
             {
-                source=source+regVal.get(regkey+"L");
+                source = source.concat("0");
             }
-            else source=regVal.get(regkey+"H")+source;
+            source = conversion(source,2,16);
+            if (size==8)
+            {
+                you_decide = dest.slice(-1);
+                source = setsize("00",source);
+                if(you_decide=="H")
+                {
+                    source=source+regVal.get(regkey+"L");
+                }
+                else source=regVal.get(regkey+"H")+source;
+            }
+            else
+            {
+                source = setsize("0000",source);
+            }
+            regVal.set(regkey+"X",source);
+            regVal.set(regkey+"L",source.slice(2,4));
+            regVal.set(regkey+"H",source.slice(0,2));
+            //setreg(destname,source);
+            document.getElementById(regkey+'X').innerHTML=source;
+            components.set("PC", 1);
+            components.set("IR",1);
+            components.set("ControlUnit",1);
+            components.set("ALU",1);
+            components.set("reg",1);
+            highLiter();
+            regisLit(source.toLowerCase());
+            regtoregflow();
         }
-        else
-        {
-            source = setsize("0000",source);
-        }
-        regVal.set(regkey+"X",source);
-        regVal.set(regkey+"L",source.slice(2,4));
-        regVal.set(regkey+"H",source.slice(0,2));
-        //setreg(destname,source);
-        document.getElementById(regkey+'X').innerHTML=source;
-        components.set("PC", 1);
-        components.set("IR",1);
-        components.set("ControlUnit",1);
-        components.set("ALU",1);
-        components.set("reg",1);
-        highLiter();
-        regisLit(source.toLowerCase());
-        regtoregflow();
-    }
-    else errordisplay();
+        else errordisplay();
     }],
     ["NOP", function(){}],["", function(){
         components.set("PC", 1);
@@ -1108,8 +1116,8 @@ function isMemory(dest){
         }
     }
     if(!memory.has(dest)){
-            return !flag;
-        }
+        return !flag;
+    }
     return flag;
 }
 
@@ -1168,7 +1176,8 @@ function parsing(input){ //mov ax, 1234H
 
 function errordisplay(){
     // console.log("Error");
-    document.getElementById('mcode').innerHTML='ERROR';
+    mflag=0;
+    setTimeout(()=>{document.getElementById('mcode').innerHTML='ERROR'},1000);
 }
 
 //twos comliment function
@@ -1265,80 +1274,81 @@ function getW(input){
 function translation(cmnd, dest, source){
     if(mflag==0){
         //ARSLAN INSERT ERROR MESSAGE HERE!
-        return 0; //idk im adding this so that it leaves function 
-        //maybe just change it to return errormsg    
+        setTimeout(()=>{document.getElementById('mcode').innerHTML='ERROR! INVALID INSTRUCTION ';},1000);
+        return 0; //idk im adding this so that it leaves function
+        //maybe just change it to return errormsg
     }
     else{
         let d = "0"; let mod = "11"; var w; let finalCode;
-    if(cmnd=="MOV" && (isMemory(dest) || isMemory(source)) ){ //mov reg, [mem]; mov [mem], reg opcode SAME as in map
-        mod = "00";
-        if(isMemory(dest)){ //MOV [MEM], REG
-            d = 0;
-            w = getW(source); //SLICE MEMORY BEFORE PASSING
-            dest = dest.slice(1,-2); //removing brackets and H from memory
-            dest = conversion(dest, 16, 2);
-            len = dest.length;
-            for(i=0;i<(16-len);i++){
-                dest=dest.replace(/^/,"0");
+        if(cmnd=="MOV" && (isMemory(dest) || isMemory(source)) ){ //mov reg, [mem]; mov [mem], reg opcode SAME as in map
+            mod = "00";
+            if(isMemory(dest)){ //MOV [MEM], REG
+                d = 0;
+                w = getW(source); //SLICE MEMORY BEFORE PASSING
+                dest = dest.slice(1,-2); //removing brackets and H from memory
+                dest = conversion(dest, 16, 2);
+                len = dest.length;
+                for(i=0;i<(16-len);i++){
+                    dest=dest.replace(/^/,"0");
+                }
+                finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(source),dest,mod);
+                document.getElementById("mcode").innerHTML = finalCode;
             }
-            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(source),dest,mod);
-            document.getElementById("mcode").innerHTML = finalCode;
-        }
-        else if(isMemory(source)){ //MOV REG, [MEM]
+            else if(isMemory(source)){ //MOV REG, [MEM]
+                d = 1;
+                w = getW(dest);
+                source = source.slice(1,-2); //removing brackets and H from memory
+                source = conversion(source, 16, 2);
+                len = source.length;
+                for(i=0;i<(16-len);i++){
+                    source=source.replace(/^/,"0");
+                }
+                finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),source,mod);
+                document.getElementById("mcode").innerHTML = finalCode;
+            }
+        }//10111 00000
+        else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
+            let immcode = "101";
             d = 1;
-            w = getW(dest);
-            source = source.slice(1,-2); //removing brackets and H from memory
-            source = conversion(source, 16, 2);
-            len = source.length;
-            for(i=0;i<(16-len);i++){
-                source=source.replace(/^/,"0");
-            }
-            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),source,mod);
-            document.getElementById("mcode").innerHTML = finalCode;
-        }
-    }//10111 00000
-    else if(cmnd == "MOV" && (!isMemory(source) && !regSize.has(source))){//MOV REG, IMM(source) CAN EITHER BE DEC OR HEX
-        let immcode = "101";
-        d = 1;
-        w = getW(dest); let imm;
-        h = source.charAt(source. length-1)
-        console.log("H:", h);
-        if(h=="H" || h=="h"){//immediate value is HEX
-            source = source.slice(0,-1);
-            immediate = littlendian(source);
-        }
-        else{//decimal number
-            if(source>256){
-                source = conversion(source, 10, 16);
+            w = getW(dest); let imm;
+            h = source.charAt(source. length-1)
+            console.log("H:", h);
+            if(h=="H" || h=="h"){//immediate value is HEX
+                source = source.slice(0,-1);
                 immediate = littlendian(source);
             }
-            else{
-                immediate = conversion(source, 10, 2);
+            else{//decimal number
+                if(source>256){
+                    source = conversion(source, 10, 16);
+                    immediate = littlendian(source);
+                }
+                else{
+                    immediate = conversion(source, 10, 2);
+                }
+            }
+            finalCode = machinecode(immcode,d,w,regCode.get(dest),immediate);
+            document.getElementById("mcode").innerHTML = finalCode;
+        }
+        else{ //move and dest & source is REG OR command not move (dest and source will be reg hi ig lol)
+            w = getW(dest);
+            if(arguments.length == 3){
+                finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),regCode.get(source),mod);
+                document.getElementById("mcode").innerHTML = finalCode;
+            }
+            else if(arguments.length == 2){
+                if(cmnd=="SHR" || cmnd=="SHL"){
+                    d = "0";
+                }
+                else{
+                    d= "1";
+                }
+                finalCode = machinecode(opcode.get(cmnd),d,w,fixedreg.get(cmnd),regCode.get(dest),mod)
+                document.getElementById("mcode").innerHTML = finalCode;
             }
         }
-        finalCode = machinecode(immcode,d,w,regCode.get(dest),immediate);
-        document.getElementById("mcode").innerHTML = finalCode;
     }
-    else{ //move and dest & source is REG OR command not move (dest and source will be reg hi ig lol)
-        w = getW(dest);
-        if(arguments.length == 3){
-            finalCode = machinecode(opcode.get(cmnd),d,w,regCode.get(dest),regCode.get(source),mod);
-            document.getElementById("mcode").innerHTML = finalCode;
-        }
-        else if(arguments.length == 2){
-            if(cmnd=="SHR" || cmnd=="SHL"){
-                d = "0";
-            }
-            else{
-                d= "1";
-            }
-            finalCode = machinecode(opcode.get(cmnd),d,w,fixedreg.get(cmnd),regCode.get(dest),mod)
-            document.getElementById("mcode").innerHTML = finalCode;
-        }
-    }   
- }
-}   
-    
+}
+
 function littlendian(source){
     lenhex = source.length; //length of hex (number of hex digits)
     imm = conversion(source, 16, 2);//1234: 00010010 00110100->00110100 00010010
