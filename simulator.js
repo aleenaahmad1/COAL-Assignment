@@ -1275,6 +1275,7 @@ function translation(cmnd, dest, source){
     if(mflag==0){
         //ARSLAN INSERT ERROR MESSAGE HERE!
         setTimeout(()=>{document.getElementById('mcode').innerHTML='ERROR! INVALID INSTRUCTION ';},1000);
+        mflag = 1;
         return 0; //idk im adding this so that it leaves function
         //maybe just change it to return errormsg
     }
